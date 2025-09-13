@@ -242,8 +242,8 @@ router.get("/blog", async (req, res) => {
     if (req.query.search) {
       const { Op } = require("sequelize");
       query[Op.or] = [
-        { title: { [Op.iLike]: `%${req.query.search}%` } },
-        { excerpt: { [Op.iLike]: `%${req.query.search}%` } },
+        { title: { [Op.like]: `%${req.query.search}%` } },
+        { excerpt: { [Op.like]: `%${req.query.search}%` } },
       ];
     }
 
@@ -338,6 +338,7 @@ router.get("/blog/:slug", async (req, res) => {
     await blog.save();
 
     // Get related posts - simpler query for MySQL
+    const { Op } = require("sequelize");
     const relatedPosts = await Blog.findAll({
       where: {
         id: { [Op.ne]: blog.id },
