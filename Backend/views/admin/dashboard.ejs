@@ -1,0 +1,243 @@
+<!-- Statistics Cards -->
+<div class="row mb-4">
+  <div class="col-lg-3 col-md-6 mb-3">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: var(--admin-primary)">
+        <i class="fas fa-folder"></i>
+      </div>
+      <div class="stat-number"><%= stats.totalProjects %></div>
+      <div class="stat-label">Total Projects</div>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-md-6 mb-3">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: var(--admin-success)">
+        <i class="fas fa-chart-bar"></i>
+      </div>
+      <div class="stat-number"><%= stats.totalSkills %></div>
+      <div class="stat-label">Skills Listed</div>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-md-6 mb-3">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: var(--admin-warning)">
+        <i class="fas fa-blog"></i>
+      </div>
+      <div class="stat-number"><%= stats.totalBlogs %></div>
+      <div class="stat-label">Blog Posts</div>
+    </div>
+  </div>
+
+  <div class="col-lg-3 col-md-6 mb-3">
+    <div class="stat-card">
+      <div class="stat-icon" style="background: var(--admin-danger)">
+        <i class="fas fa-envelope"></i>
+      </div>
+      <div class="stat-number"><%= stats.totalContacts %></div>
+      <div class="stat-label">Contact Messages</div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="admin-card">
+      <div class="card-header bg-transparent border-0 py-3">
+        <h5 class="mb-0"><i class="fas fa-bolt"></i> Quick Actions</h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-2 col-md-4 col-6 mb-3">
+            <a href="/admin/projects/new" class="btn btn-admin-primary w-100">
+              <i class="fas fa-plus"></i><br />
+              <small>Add Project</small>
+            </a>
+          </div>
+          <div class="col-lg-2 col-md-4 col-6 mb-3">
+            <a href="/admin/skills/new" class="btn btn-success w-100">
+              <i class="fas fa-plus"></i><br />
+              <small>Add Skill</small>
+            </a>
+          </div>
+          <div class="col-lg-2 col-md-4 col-6 mb-3">
+            <a href="/admin/blog/new" class="btn btn-warning w-100">
+              <i class="fas fa-plus"></i><br />
+              <small>New Post</small>
+            </a>
+          </div>
+          <div class="col-lg-2 col-md-4 col-6 mb-3">
+            <a href="/admin/contacts" class="btn btn-info w-100">
+              <i class="fas fa-envelope"></i><br />
+              <small>View Messages</small>
+            </a>
+          </div>
+          <div class="col-lg-2 col-md-4 col-6 mb-3">
+            <a href="/" target="_blank" class="btn btn-secondary w-100">
+              <i class="fas fa-external-link-alt"></i><br />
+              <small>View Site</small>
+            </a>
+          </div>
+          <div class="col-lg-2 col-md-4 col-6 mb-3">
+            <a href="/api-docs" target="_blank" class="btn btn-dark w-100">
+              <i class="fas fa-code"></i><br />
+              <small>API Docs</small>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Content -->
+<div class="row">
+  <!-- Recent Contacts -->
+  <div class="col-lg-6 mb-4">
+    <div class="admin-card">
+      <div
+        class="card-header bg-transparent border-0 py-3 d-flex justify-content-between align-items-center"
+      >
+        <h5 class="mb-0"><i class="fas fa-envelope"></i> Recent Messages</h5>
+        <a href="/admin/contacts" class="btn btn-sm btn-outline-primary"
+          >View All</a
+        >
+      </div>
+      <div class="card-body p-0">
+        <% if (recentContacts.length > 0) { %>
+        <div class="list-group list-group-flush">
+          <% recentContacts.forEach(function(contact) { %>
+          <div
+            class="list-group-item d-flex justify-content-between align-items-start"
+          >
+            <div class="flex-grow-1">
+              <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1"><%= contact.name %></h6>
+                <small class="text-muted"
+                  ><%= moment(contact.createdAt).fromNow() %></small
+                >
+              </div>
+              <p class="mb-1 text-muted small"><%= contact.subject %></p>
+              <small class="text-muted"><%= contact.email %></small>
+            </div>
+            <span
+              class="badge bg-<%= contact.status === 'new' ? 'danger' : contact.status === 'read' ? 'warning' : 'success' %> ms-2"
+            >
+              <%= contact.status %>
+            </span>
+          </div>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <div class="text-center py-4 text-muted">
+          <i class="fas fa-inbox fa-2x mb-2"></i>
+          <p>No recent messages</p>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Blog Posts -->
+  <div class="col-lg-6 mb-4">
+    <div class="admin-card">
+      <div
+        class="card-header bg-transparent border-0 py-3 d-flex justify-content-between align-items-center"
+      >
+        <h5 class="mb-0"><i class="fas fa-blog"></i> Recent Blog Posts</h5>
+        <a href="/admin/blog" class="btn btn-sm btn-outline-primary"
+          >View All</a
+        >
+      </div>
+      <div class="card-body p-0">
+        <% if (recentBlogs.length > 0) { %>
+        <div class="list-group list-group-flush">
+          <% recentBlogs.forEach(function(blog) { %>
+          <div class="list-group-item">
+            <div class="d-flex w-100 justify-content-between">
+              <h6 class="mb-1"><%= blog.title %></h6>
+              <small class="text-muted"
+                ><%= moment(blog.createdAt).fromNow() %></small
+              >
+            </div>
+            <p class="mb-1 text-muted small">
+              <%= blog.excerpt.substring(0, 100) %>...
+            </p>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">
+                By <%= blog.author.name %> • <%= blog.category %>
+              </small>
+              <span
+                class="badge bg-<%= blog.status === 'published' ? 'success' : blog.status === 'draft' ? 'warning' : 'secondary' %>"
+              >
+                <%= blog.status %>
+              </span>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+        <% } else { %>
+        <div class="text-center py-4 text-muted">
+          <i class="fas fa-blog fa-2x mb-2"></i>
+          <p>No blog posts yet</p>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- System Information -->
+<div class="row">
+  <div class="col-12">
+    <div class="admin-card">
+      <div class="card-header bg-transparent border-0 py-3">
+        <h5 class="mb-0">
+          <i class="fas fa-info-circle"></i> System Information
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-3 mb-3">
+            <div class="border rounded p-3 text-center">
+              <i class="fas fa-server fa-2x text-primary mb-2"></i>
+              <h6>Server Status</h6>
+              <span class="badge bg-success">Online</span>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="border rounded p-3 text-center">
+              <i class="fas fa-database fa-2x text-success mb-2"></i>
+              <h6>Database</h6>
+              <span class="badge bg-success">Connected</span>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="border rounded p-3 text-center">
+              <i class="fas fa-envelope fa-2x text-info mb-2"></i>
+              <h6>Email Service</h6>
+              <span
+                class="badge bg-<%= process.env.EMAIL_HOST ? 'success' : 'warning' %>"
+              >
+                <%= process.env.EMAIL_HOST ? 'Configured' : 'Not Set' %>
+              </span>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="border rounded p-3 text-center">
+              <i class="fas fa-shield-alt fa-2x text-warning mb-2"></i>
+              <h6>Environment</h6>
+              <span
+                class="badge bg-<%= process.env.NODE_ENV === 'production' ? 'success' : 'warning' %>"
+              >
+                <%= process.env.NODE_ENV || 'development' %>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
