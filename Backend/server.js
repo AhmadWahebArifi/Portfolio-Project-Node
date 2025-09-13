@@ -117,6 +117,9 @@ app.use((req, res, next) => {
 // View Routes
 app.use("/", require("./routes/views"));
 
+// Admin Routes
+app.use("/admin", require("./routes/admin"));
+
 // API Routes
 app.use("/api/contact", require("./routes/contact"));
 app.use("/api/projects", require("./routes/projects"));
