@@ -1,65 +1,91 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const { sequelize } = require("../config/database");
 
-const skillSchema = new mongoose.Schema(
+const Skill = sequelize.define(
+  "Skill",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     name: {
-      type: String,
-      required: [true, "Please provide a skill name"],
-      trim: true,
+      type: DataTypes.STRING(50),
+      allowNull: false,
       unique: true,
-      maxlength: [50, "Skill name cannot be more than 50 characters"],
+      validate: {
+        notEmpty: { msg: "Please provide a skill name" },
+        len: {
+          args: [1, 50],
+          msg: "Skill name cannot be more than 50 characters",
+        },
+      },
     },
     category: {
-      type: String,
-      required: [true, "Please provide a skill category"],
-      enum: [
+      type: DataTypes.ENUM(
         "frontend",
         "backend",
         "database",
         "devops",
         "tools",
         "soft-skills",
-        "other",
-      ],
+        "other"
+      ),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide a skill category" },
+      },
     },
     proficiency: {
-      type: Number,
-      required: [true, "Please provide proficiency level"],
-      min: [1, "Proficiency must be at least 1"],
-      max: [100, "Proficiency cannot exceed 100"],
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      validate: {
+        min: { args: 1, msg: "Proficiency must be at least 1" },
+        max: { args: 100, msg: "Proficiency cannot exceed 100" },
+        notEmpty: { msg: "Please provide proficiency level" },
+      },
     },
     icon: {
-      type: String, // URL or icon class name
-      default: "",
+      type: DataTypes.STRING,
+      defaultValue: "",
     },
     color: {
-      type: String,
-      default: "#3498db",
+      type: DataTypes.STRING,
+      defaultValue: "#3498db",
     },
     yearsOfExperience: {
-      type: Number,
-      min: [0, "Years of experience cannot be negative"],
-      default: 0,
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      validate: {
+        min: { args: 0, msg: "Years of experience cannot be negative" },
+      },
     },
     description: {
-      type: String,
-      maxlength: [300, "Description cannot be more than 300 characters"],
+      type: DataTypes.STRING(300),
+      validate: {
+        len: {
+          args: [0, 300],
+          msg: "Description cannot be more than 300 characters",
+        },
+      },
     },
     order: {
-      type: Number,
-      default: 0,
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
     isVisible: {
-      type: Boolean,
-      default: true,
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
   },
   {
-    timestamps: true,
+    tableName: "skills",
+    indexes: [
+      {
+        fields: ["category", "order"],
+      },
+    ],
   }
 );
 
-// Index for better query performance
-skillSchema.index({ category: 1, order: 1 });
-
-module.exports = mongoose.model("Skill", skillSchema);
+module.exports = Skill;
