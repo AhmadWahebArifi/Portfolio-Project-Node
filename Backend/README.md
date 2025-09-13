@@ -1,33 +1,59 @@
-# Portfolio Backend API
+# Complete Portfolio Website with Node.js & EJS
 
-A comprehensive Node.js backend API for a portfolio website with authentication, content management, and contact functionality.
+A comprehensive full-stack portfolio website built with Node.js, Express, MongoDB, and EJS templating. Features both a public portfolio website and a complete admin dashboard for content management.
 
-## Features
+## 🌟 Features
 
-- **Authentication & Authorization**: JWT-based auth with role-based access control
-- **Contact Management**: Contact form with email notifications
-- **Project Management**: CRUD operations for portfolio projects
-- **Skills Management**: Categorized skills with proficiency levels
-- **Blog System**: Full-featured blog with categories, tags, and search
+### Public Website
+
+- **Responsive Portfolio**: Modern, mobile-first design
+- **Project Showcase**: Detailed project pages with filtering
+- **Skills Display**: Categorized skills with proficiency levels
+- **Blog System**: Full-featured blog with categories and tags
+- **Contact Form**: Working contact form with email notifications
+- **SEO Optimized**: Meta tags, structured data, and clean URLs
+
+### Admin Dashboard
+
+- **Complete CMS**: Manage all content through web interface
+- **Authentication**: Secure admin login with sessions
+- **Project Management**: CRUD operations for projects
+- **Skills Management**: Add, edit, and organize skills
+- **Blog Management**: Write and publish blog posts
+- **Contact Management**: View and respond to messages
+- **Dashboard Analytics**: Overview of site statistics
+
+### Technical Features
+
+- **REST API**: Complete API for all operations
+- **Authentication & Authorization**: JWT + session-based auth
 - **Email Integration**: Automated email notifications
-- **Image Upload**: Support for image uploads (Cloudinary integration)
-- **API Documentation**: Swagger/OpenAPI documentation
-- **Security**: Rate limiting, CORS, helmet, input validation
-- **Database**: MongoDB with Mongoose ODM
+- **Image Upload**: Support for project and blog images
+- **Search & Filtering**: Advanced content filtering
+- **Responsive Design**: Works on all devices
+- **Security**: Rate limiting, input validation, CORS
+- **API Documentation**: Swagger/OpenAPI docs
 
-## Tech Stack
+## 💻 Tech Stack
+
+### Backend
 
 - **Runtime**: Node.js
 - **Framework**: Express.js
-- **Database**: MongoDB
-- **ODM**: Mongoose
-- **Authentication**: JWT (jsonwebtoken)
+- **Template Engine**: EJS
+- **Database**: MongoDB with Mongoose
+- **Authentication**: JWT + Express Sessions
 - **Validation**: express-validator
 - **Email**: Nodemailer
 - **File Upload**: Multer + Cloudinary
-- **Documentation**: Swagger
 - **Security**: Helmet, CORS, bcryptjs
-- **Development**: Nodemon, Jest
+
+### Frontend
+
+- **Styling**: Bootstrap 5 + Custom CSS
+- **Icons**: Font Awesome
+- **JavaScript**: Vanilla JS + Bootstrap JS
+- **Fonts**: Google Fonts (Poppins & Inter)
 
 ## Installation
 
