@@ -1,88 +1,107 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const { sequelize } = require("../config/database");
 
-const projectSchema = new mongoose.Schema(
+const Project = sequelize.define(
+  "Project",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     title: {
-      type: String,
-      required: [true, "Please provide a project title"],
-      trim: true,
-      maxlength: [100, "Title cannot be more than 100 characters"],
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide a project title" },
+        len: {
+          args: [1, 100],
+          msg: "Title cannot be more than 100 characters",
+        },
+      },
     },
     description: {
-      type: String,
-      required: [true, "Please provide a project description"],
-      maxlength: [500, "Description cannot be more than 500 characters"],
+      type: DataTypes.STRING(500),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide a project description" },
+        len: {
+          args: [1, 500],
+          msg: "Description cannot be more than 500 characters",
+        },
+      },
     },
     longDescription: {
-      type: String,
-      maxlength: [2000, "Long description cannot be more than 2000 characters"],
-    },
-    technologies: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
-    images: [
-      {
-        url: String,
-        alt: String,
-      },
-    ],
-    liveUrl: {
-      type: String,
+      type: DataTypes.TEXT,
       validate: {
-        validator: function (v) {
-          return !v || /^https?:\/\/.+/.test(v);
+        len: {
+          args: [0, 2000],
+          msg: "Long description cannot be more than 2000 characters",
         },
-        message: "Please provide a valid URL",
+      },
+    },
+    technologies: {
+      type: DataTypes.JSON,
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "At least one technology is required" },
+      },
+    },
+    images: {
+      type: DataTypes.JSON,
+      defaultValue: [],
+    },
+    liveUrl: {
+      type: DataTypes.STRING,
+      validate: {
+        isUrl: { msg: "Please provide a valid URL" },
       },
     },
     githubUrl: {
-      type: String,
+      type: DataTypes.STRING,
       validate: {
-        validator: function (v) {
-          return !v || /^https?:\/\/.+/.test(v);
-        },
-        message: "Please provide a valid URL",
+        isUrl: { msg: "Please provide a valid URL" },
       },
     },
     category: {
-      type: String,
-      required: [true, "Please provide a project category"],
-      enum: ["web", "mobile", "desktop", "api", "other"],
+      type: DataTypes.ENUM("web", "mobile", "desktop", "api", "other"),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide a project category" },
+      },
     },
     status: {
-      type: String,
-      enum: ["planning", "in-progress", "completed", "on-hold"],
-      default: "planning",
+      type: DataTypes.ENUM("planning", "in-progress", "completed", "on-hold"),
+      defaultValue: "planning",
     },
     featured: {
-      type: Boolean,
-      default: false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     startDate: {
-      type: Date,
-      default: Date.now,
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
     },
     endDate: {
-      type: Date,
+      type: DataTypes.DATE,
     },
     order: {
-      type: Number,
-      default: 0,
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
     isPublic: {
-      type: Boolean,
-      default: true,
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
   },
   {
-    timestamps: true,
+    tableName: "projects",
+    indexes: [
+      {
+        fields: ["category", "featured", "order"],
+      },
+    ],
   }
 );
 
-// Index for better query performance
-projectSchema.index({ category: 1, featured: -1, order: 1 });
-
-module.exports = mongoose.model("Project", projectSchema);
+module.exports = Project;
