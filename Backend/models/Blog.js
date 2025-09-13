@@ -1,110 +1,155 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const { sequelize } = require("../config/database");
 
-const blogSchema = new mongoose.Schema(
+const Blog = sequelize.define(
+  "Blog",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     title: {
-      type: String,
-      required: [true, "Please provide a blog title"],
-      trim: true,
-      maxlength: [200, "Title cannot be more than 200 characters"],
+      type: DataTypes.STRING(200),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide a blog title" },
+        len: {
+          args: [1, 200],
+          msg: "Title cannot be more than 200 characters",
+        },
+      },
     },
     slug: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
       unique: true,
-      lowercase: true,
     },
     excerpt: {
-      type: String,
-      required: [true, "Please provide an excerpt"],
-      maxlength: [300, "Excerpt cannot be more than 300 characters"],
+      type: DataTypes.STRING(300),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide an excerpt" },
+        len: {
+          args: [1, 300],
+          msg: "Excerpt cannot be more than 300 characters",
+        },
+      },
     },
     content: {
-      type: String,
-      required: [true, "Please provide blog content"],
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide blog content" },
+      },
     },
     featuredImage: {
-      url: String,
-      alt: String,
+      type: DataTypes.JSON,
     },
-    author: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    tags: [
-      {
-        type: String,
-        trim: true,
+    authorId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "users",
+        key: "id",
       },
-    ],
+    },
+    tags: {
+      type: DataTypes.JSON,
+      defaultValue: [],
+    },
     category: {
-      type: String,
-      required: [true, "Please provide a category"],
-      enum: [
+      type: DataTypes.ENUM(
         "technology",
         "web-development",
         "programming",
         "tutorials",
         "career",
         "personal",
-        "other",
-      ],
+        "other"
+      ),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide a category" },
+      },
     },
     status: {
-      type: String,
-      enum: ["draft", "published", "archived"],
-      default: "draft",
+      type: DataTypes.ENUM("draft", "published", "archived"),
+      defaultValue: "draft",
     },
     publishedAt: {
-      type: Date,
+      type: DataTypes.DATE,
     },
     readTime: {
-      type: Number, // in minutes
-      default: 5,
+      type: DataTypes.INTEGER,
+      defaultValue: 5,
     },
     views: {
-      type: Number,
-      default: 0,
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
     likes: {
-      type: Number,
-      default: 0,
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
     featured: {
-      type: Boolean,
-      default: false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     metaDescription: {
-      type: String,
-      maxlength: [160, "Meta description cannot be more than 160 characters"],
-    },
-    seoKeywords: [
-      {
-        type: String,
+      type: DataTypes.STRING(160),
+      validate: {
+        len: {
+          args: [0, 160],
+          msg: "Meta description cannot be more than 160 characters",
+        },
       },
-    ],
+    },
+    seoKeywords: {
+      type: DataTypes.JSON,
+      defaultValue: [],
+    },
   },
   {
-    timestamps: true,
+    tableName: "blogs",
+    indexes: [
+      {
+        fields: ["status", "publishedAt"],
+      },
+      {
+        fields: ["slug"],
+        unique: true,
+      },
+    ],
+    hooks: {
+      beforeCreate: (blog) => {
+        if (!blog.slug && blog.title) {
+          blog.slug = blog.title
+            .toLowerCase()
+            .replace(/[^a-zA-Z0-9]/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "");
+        }
+      },
+      beforeUpdate: (blog) => {
+        if (blog.changed("title") && !blog.changed("slug")) {
+          blog.slug = blog.title
+            .toLowerCase()
+            .replace(/[^a-zA-Z0-9]/g, "-")
+            .replace(/-+/g, "-")
+            .replace(/^-|-$/g, "");
+        }
+      },
+    },
   }
 );
 
-// Index for better query performance
-blogSchema.index({ status: 1, publishedAt: -1 });
-blogSchema.index({ slug: 1 });
-blogSchema.index({ tags: 1 });
+// Define associations
+Blog.associate = (models) => {
+  Blog.belongsTo(models.User, {
+    foreignKey: "authorId",
+    as: "author",
+  });
+};
 
-// Generate slug from title before saving
-blogSchema.pre("save", function (next) {
-  if (this.isModified("title") && !this.slug) {
-    this.slug = this.title
-      .toLowerCase()
-      .replace(/[^a-zA-Z0-9]/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-  }
-  next();
-});
-
-module.exports = mongoose.model("Blog", blogSchema);
+module.exports = Blog;
