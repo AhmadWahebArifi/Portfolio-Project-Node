@@ -1,0 +1,24 @@
+<section class="py-5 mt-5">
+  <div class="container">
+    <div class="text-center">
+      <div class="mb-4">
+        <i class="fas fa-exclamation-triangle fa-5x text-warning"></i>
+      </div>
+      <h1 class="display-1 fw-bold text-muted"><%= error.status %></h1>
+      <h2 class="mb-4">Oops! Something went wrong</h2>
+      <p class="lead mb-4"><%= error.message %></p>
+
+      <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+        <a href="/" class="btn btn-primary btn-lg">
+          <i class="fas fa-home"></i> Go Home
+        </a>
+        <button
+          onclick="history.back()"
+          class="btn btn-outline-secondary btn-lg"
+        >
+          <i class="fas fa-arrow-left"></i> Go Back
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
