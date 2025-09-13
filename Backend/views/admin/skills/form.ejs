@@ -1,0 +1,150 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-chart-bar"></i> <%= skill.id ? 'Edit' : 'Add New' %> Skill</h2>
+  <a href="/admin/skills" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left"></i> Back to Skills
+  </a>
+</div>
+
+<div class="admin-card">
+  <div class="card-body">
+    <form action="<%= action %>" method="POST">
+      <% if (method === 'PUT') { %>
+      <input type="hidden" name="_method" value="PUT">
+      <% } %>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="name" class="form-label">Skill Name *</label>
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              name="name"
+              value="<%= skill.name || '' %>"
+              required
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="category" class="form-label">Category *</label>
+            <select class="form-select" id="category" name="category" required>
+              <option value="">Select Category</option>
+              <option value="frontend" <%= skill.category === 'frontend' ? 'selected' : '' %>>Frontend</option>
+              <option value="backend" <%= skill.category === 'backend' ? 'selected' : '' %>>Backend</option>
+              <option value="database" <%= skill.category === 'database' ? 'selected' : '' %>>Database</option>
+              <option value="devops" <%= skill.category === 'devops' ? 'selected' : '' %>>DevOps</option>
+              <option value="tools" <%= skill.category === 'tools' ? 'selected' : '' %>>Tools</option>
+              <option value="soft-skills" <%= skill.category === 'soft-skills' ? 'selected' : '' %>>Soft Skills</option>
+              <option value="other" <%= skill.category === 'other' ? 'selected' : '' %>>Other</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="proficiency" class="form-label">Proficiency (1-100) *</label>
+            <input
+              type="range"
+              class="form-range"
+              id="proficiency"
+              name="proficiency"
+              min="1"
+              max="100"
+              value="<%= skill.proficiency || 50 %>"
+              oninput="document.getElementById('proficiencyValue').textContent = this.value + '%'"
+            />
+            <div class="text-center">
+              <span id="proficiencyValue"><%= skill.proficiency || 50 %>%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="mb-3">
+            <label for="yearsOfExperience" class="form-label">Years of Experience</label>
+            <input
+              type="number"
+              class="form-control"
+              id="yearsOfExperience"
+              name="yearsOfExperience"
+              value="<%= skill.yearsOfExperience || 0 %>"
+              min="0"
+              max="50"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="icon" class="form-label">Icon Class</label>
+            <input
+              type="text"
+              class="form-control"
+              id="icon"
+              name="icon"
+              value="<%= skill.icon || '' %>"
+              placeholder="fab fa-js-square"
+            />
+            <div class="form-text">FontAwesome icon class (e.g., fab fa-js-square)</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="color" class="form-label">Color</label>
+            <input
+              type="color"
+              class="form-control form-control-color"
+              id="color"
+              name="color"
+              value="<%= skill.color || '#3498db' %>"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea
+          class="form-control"
+          id="description"
+          name="description"
+          rows="3"
+          placeholder="Brief description of your experience with this skill"
+        ><%= skill.description || '' %></textarea>
+      </div>
+
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="mb-3">
+            <label for="order" class="form-label">Display Order</label>
+            <input
+              type="number"
+              class="form-control"
+              id="order"
+              name="order"
+              value="<%= skill.order || 0 %>"
+            />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-check mt-4">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="isVisible"
+              name="isVisible"
+              value="true"
+              <%= skill.isVisible !== false ? 'checked' : '' %>
+            />
+            <label class="form-check-label" for="isVisible">
+              <i class="fas fa-eye text-success"></i> Visible on Website
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2">
+        <a href="/admin/skills" class="btn btn-outline-secondary">Cancel</a>
+        <button type="submit" class="btn btn-admin-primary">
+          <i class="fas fa-save"></i> <%= skill.id ? 'Update' : 'Create' %> Skill
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
