@@ -1,74 +1,94 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
+const { sequelize } = require("../config/database");
 
-const contactSchema = new mongoose.Schema(
+const Contact = sequelize.define(
+  "Contact",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     name: {
-      type: String,
-      required: [true, "Please provide your name"],
-      trim: true,
-      maxlength: [50, "Name cannot be more than 50 characters"],
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide your name" },
+        len: { args: [1, 50], msg: "Name cannot be more than 50 characters" },
+      },
     },
     email: {
-      type: String,
-      required: [true, "Please provide your email"],
-      lowercase: true,
-      match: [
-        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-        "Please provide a valid email",
-      ],
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      validate: {
+        isEmail: { msg: "Please provide a valid email" },
+        notEmpty: { msg: "Please provide your email" },
+      },
+      set(value) {
+        this.setDataValue("email", value.toLowerCase());
+      },
     },
     subject: {
-      type: String,
-      required: [true, "Please provide a subject"],
-      trim: true,
-      maxlength: [100, "Subject cannot be more than 100 characters"],
+      type: DataTypes.STRING(100),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide a subject" },
+        len: {
+          args: [1, 100],
+          msg: "Subject cannot be more than 100 characters",
+        },
+      },
     },
     message: {
-      type: String,
-      required: [true, "Please provide a message"],
-      maxlength: [1000, "Message cannot be more than 1000 characters"],
+      type: DataTypes.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide a message" },
+        len: {
+          args: [1, 1000],
+          msg: "Message cannot be more than 1000 characters",
+        },
+      },
     },
     phone: {
-      type: String,
-      trim: true,
+      type: DataTypes.STRING(20),
     },
     company: {
-      type: String,
-      trim: true,
+      type: DataTypes.STRING(100),
     },
     status: {
-      type: String,
-      enum: ["new", "read", "replied", "closed"],
-      default: "new",
+      type: DataTypes.ENUM("new", "read", "replied", "closed"),
+      defaultValue: "new",
     },
     priority: {
-      type: String,
-      enum: ["low", "normal", "high", "urgent"],
-      default: "normal",
+      type: DataTypes.ENUM("low", "normal", "high", "urgent"),
+      defaultValue: "normal",
     },
     ipAddress: {
-      type: String,
+      type: DataTypes.STRING(45),
     },
     userAgent: {
-      type: String,
+      type: DataTypes.TEXT,
     },
     replied: {
-      type: Boolean,
-      default: false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     repliedAt: {
-      type: Date,
+      type: DataTypes.DATE,
     },
     notes: {
-      type: String,
+      type: DataTypes.TEXT,
     },
   },
   {
-    timestamps: true,
+    tableName: "contacts",
+    indexes: [
+      {
+        fields: ["status", "priority", "createdAt"],
+      },
+    ],
   }
 );
 
-// Index for better query performance
-contactSchema.index({ status: 1, priority: -1, createdAt: -1 });
-
-module.exports = mongoose.model("Contact", contactSchema);
+module.exports = Contact;
