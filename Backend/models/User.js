@@ -1,61 +1,86 @@
-const mongoose = require("mongoose");
+const { DataTypes } = require("sequelize");
 const bcrypt = require("bcryptjs");
+const { sequelize } = require("../config/database");
 
-const userSchema = new mongoose.Schema(
+const User = sequelize.define(
+  "User",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     name: {
-      type: String,
-      required: [true, "Please provide a name"],
-      trim: true,
-      maxlength: [50, "Name cannot be more than 50 characters"],
+      type: DataTypes.STRING(50),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide a name" },
+        len: { args: [1, 50], msg: "Name cannot be more than 50 characters" },
+      },
     },
     email: {
-      type: String,
-      required: [true, "Please provide an email"],
+      type: DataTypes.STRING(100),
+      allowNull: false,
       unique: true,
-      lowercase: true,
-      match: [
-        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-        "Please provide a valid email",
-      ],
+      validate: {
+        isEmail: { msg: "Please provide a valid email" },
+        notEmpty: { msg: "Please provide an email" },
+      },
+      set(value) {
+        this.setDataValue("email", value.toLowerCase());
+      },
     },
     password: {
-      type: String,
-      required: [true, "Please provide a password"],
-      minlength: [6, "Password must be at least 6 characters"],
-      select: false,
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Please provide a password" },
+        len: { args: [6, 255], msg: "Password must be at least 6 characters" },
+      },
     },
     role: {
-      type: String,
-      enum: ["admin", "user"],
-      default: "user",
+      type: DataTypes.ENUM("admin", "user"),
+      defaultValue: "user",
     },
     avatar: {
-      type: String,
-      default: "",
+      type: DataTypes.STRING,
+      defaultValue: "",
     },
     isActive: {
-      type: Boolean,
-      default: true,
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
   },
   {
-    timestamps: true,
+    tableName: "users",
+    hooks: {
+      beforeCreate: async (user) => {
+        if (user.password) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+      beforeUpdate: async (user) => {
+        if (user.changed("password")) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+    },
   }
 );
 
-// Encrypt password before saving
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    next();
-  }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
-
-// Compare password method
-userSchema.methods.comparePassword = async function (enteredPassword) {
+// Instance method to compare password
+User.prototype.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model("User", userSchema);
+// Class method to find user with password
+User.findWithPassword = function (options) {
+  return this.findOne({
+    ...options,
+    attributes: { include: ["password"] },
+  });
+};
+
+module.exports = User;
