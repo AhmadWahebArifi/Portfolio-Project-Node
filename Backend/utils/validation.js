@@ -1,0 +1,171 @@
+const { body, validationResult } = require("express-validator");
+
+// Handle validation errors
+const handleValidationErrors = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: "Validation failed",
+      errors: errors.array(),
+    });
+  }
+  next();
+};
+
+// Contact form validation
+const validateContactForm = [
+  body("name")
+    .trim()
+    .isLength({ min: 2, max: 50 })
+    .withMessage("Name must be between 2 and 50 characters")
+    .escape(),
+  body("email")
+    .isEmail()
+    .normalizeEmail()
+    .withMessage("Please provide a valid email"),
+  body("subject")
+    .trim()
+    .isLength({ min: 5, max: 100 })
+    .withMessage("Subject must be between 5 and 100 characters")
+    .escape(),
+  body("message")
+    .trim()
+    .isLength({ min: 10, max: 1000 })
+    .withMessage("Message must be between 10 and 1000 characters")
+    .escape(),
+  body("phone").optional().trim().escape(),
+  body("company").optional().trim().escape(),
+  handleValidationErrors,
+];
+
+// User registration validation
+const validateUserRegistration = [
+  body("name")
+    .trim()
+    .isLength({ min: 2, max: 50 })
+    .withMessage("Name must be between 2 and 50 characters")
+    .escape(),
+  body("email")
+    .isEmail()
+    .normalizeEmail()
+    .withMessage("Please provide a valid email"),
+  body("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage(
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number"
+    ),
+  handleValidationErrors,
+];
+
+// User login validation
+const validateUserLogin = [
+  body("email")
+    .isEmail()
+    .normalizeEmail()
+    .withMessage("Please provide a valid email"),
+  body("password").notEmpty().withMessage("Password is required"),
+  handleValidationErrors,
+];
+
+// Project validation
+const validateProject = [
+  body("title")
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage("Title must be between 2 and 100 characters")
+    .escape(),
+  body("description")
+    .trim()
+    .isLength({ min: 10, max: 500 })
+    .withMessage("Description must be between 10 and 500 characters")
+    .escape(),
+  body("longDescription")
+    .optional()
+    .trim()
+    .isLength({ max: 2000 })
+    .withMessage("Long description cannot exceed 2000 characters"),
+  body("technologies")
+    .isArray({ min: 1 })
+    .withMessage("At least one technology is required"),
+  body("category")
+    .isIn(["web", "mobile", "desktop", "api", "other"])
+    .withMessage("Invalid category"),
+  body("liveUrl").optional().isURL().withMessage("Please provide a valid URL"),
+  body("githubUrl")
+    .optional()
+    .isURL()
+    .withMessage("Please provide a valid URL"),
+  handleValidationErrors,
+];
+
+// Skill validation
+const validateSkill = [
+  body("name")
+    .trim()
+    .isLength({ min: 1, max: 50 })
+    .withMessage("Skill name must be between 1 and 50 characters")
+    .escape(),
+  body("category")
+    .isIn([
+      "frontend",
+      "backend",
+      "database",
+      "devops",
+      "tools",
+      "soft-skills",
+      "other",
+    ])
+    .withMessage("Invalid category"),
+  body("proficiency")
+    .isInt({ min: 1, max: 100 })
+    .withMessage("Proficiency must be between 1 and 100"),
+  body("yearsOfExperience")
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage("Years of experience cannot be negative"),
+  handleValidationErrors,
+];
+
+// Blog validation
+const validateBlog = [
+  body("title")
+    .trim()
+    .isLength({ min: 5, max: 200 })
+    .withMessage("Title must be between 5 and 200 characters")
+    .escape(),
+  body("excerpt")
+    .trim()
+    .isLength({ min: 10, max: 300 })
+    .withMessage("Excerpt must be between 10 and 300 characters")
+    .escape(),
+  body("content")
+    .trim()
+    .isLength({ min: 50 })
+    .withMessage("Content must be at least 50 characters"),
+  body("category")
+    .isIn([
+      "technology",
+      "web-development",
+      "programming",
+      "tutorials",
+      "career",
+      "personal",
+      "other",
+    ])
+    .withMessage("Invalid category"),
+  body("tags").optional().isArray().withMessage("Tags must be an array"),
+  handleValidationErrors,
+];
+
+module.exports = {
+  validateContactForm,
+  validateUserRegistration,
+  validateUserLogin,
+  validateProject,
+  validateSkill,
+  validateBlog,
+  handleValidationErrors,
+};
