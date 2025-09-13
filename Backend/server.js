@@ -4,13 +4,79 @@ const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
+const session = require("express-session");
+const MySQLStore = require("express-mysql-session")(session);
+const flash = require("express-flash");
+const methodOverride = require("method-override");
+const expressLayouts = require("express-ejs-layouts");
+const path = require("path");
 require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// View engine setup
+app.use(expressLayouts);
+app.set("layout", "layout");
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Static files
+app.use(express.static(path.join(__dirname, "public")));
+
+// Session configuration
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "your-session-secret-here",
+    resave: false,
+    saveUninitialized: false,
+    store: new MySQLStore({
+      host: process.env.DB_HOST || "localhost",
+      port: process.env.DB_PORT || 3306,
+      user: process.env.DB_USER || "root",
+      password: process.env.DB_PASSWORD || "",
+      database: process.env.DB_NAME || "portfolio",
+    }),
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
+  })
+);
+
+// Flash messages
+app.use(flash());
+
+// Method override for forms
+app.use(methodOverride("_method"));
+
 // Security middleware
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+        ],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+        ],
+        fontSrc: [
+          "'self'",
+          "https://cdn.jsdelivr.net",
+          "https://cdnjs.cloudflare.com",
+        ],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
+    },
+  })
+);
 app.use(compression());
 
 // Rate limiting
@@ -37,10 +103,21 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(morgan("combined"));
 
 // Database connection
-const connectDB = require("./config/database");
+const { connectDB } = require("./config/database");
 connectDB();
 
-// Routes
+// Global variables for views
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null;
+  res.locals.messages = req.flash();
+  res.locals.currentPath = req.path;
+  next();
+});
+
+// View Routes
+app.use("/", require("./routes/views"));
+
+// API Routes
 app.use("/api/contact", require("./routes/contact"));
 app.use("/api/projects", require("./routes/projects"));
 app.use("/api/skills", require("./routes/skills"));
@@ -83,23 +160,47 @@ app.get("/health", (req, res) => {
 
 // 404 handler
 app.use("*", (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
+  if (req.path.startsWith("/api/")) {
+    res.status(404).json({
+      success: false,
+      message: "API route not found",
+    });
+  } else {
+    res.status(404).render("error", {
+      title: "Page Not Found",
+      error: {
+        status: 404,
+        message: "The page you are looking for does not exist.",
+      },
+    });
+  }
 });
 
 // Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: "Something went wrong!",
-    error:
-      process.env.NODE_ENV === "development"
-        ? err.message
-        : "Internal server error",
-  });
+
+  if (req.path.startsWith("/api/")) {
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong!",
+      error:
+        process.env.NODE_ENV === "development"
+          ? err.message
+          : "Internal server error",
+    });
+  } else {
+    res.status(500).render("error", {
+      title: "Server Error",
+      error: {
+        status: 500,
+        message:
+          process.env.NODE_ENV === "development"
+            ? err.message
+            : "Something went wrong!",
+      },
+    });
+  }
 });
 
 app.listen(PORT, () => {
