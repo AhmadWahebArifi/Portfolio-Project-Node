@@ -126,54 +126,58 @@ router.get("/skills", async (req, res) => {
 
     // Get featured skills (top proficiency)
     const featuredSkills = skills
-      .filter(skill => skill.proficiency >= 80)
+      .filter((skill) => skill.proficiency >= 80)
       .sort((a, b) => b.proficiency - a.proficiency)
       .slice(0, 6);
 
     // Calculate average experience
-    const avgExperience = skills.length > 0 
-      ? Math.round(skills.reduce((sum, skill) => sum + skill.yearsOfExperience, 0) / skills.length)
-      : 0;
+    const avgExperience =
+      skills.length > 0
+        ? Math.round(
+            skills.reduce((sum, skill) => sum + skill.yearsOfExperience, 0) /
+              skills.length
+          )
+        : 0;
 
     // Helper functions for the view
     const getCategoryIcon = (category) => {
       const icons = {
-        'frontend': 'laptop-code',
-        'backend': 'server',
-        'database': 'database',
-        'devops': 'cloud',
-        'tools': 'tools',
-        'soft-skills': 'users',
-        'other': 'cog'
+        frontend: "laptop-code",
+        backend: "server",
+        database: "database",
+        devops: "cloud",
+        tools: "tools",
+        "soft-skills": "users",
+        other: "cog",
       };
-      return icons[category] || 'code';
+      return icons[category] || "code";
     };
 
     const getCategoryDescription = (category) => {
       const descriptions = {
-        'frontend': 'User interface development and client-side technologies',
-        'backend': 'Server-side development and API creation',
-        'database': 'Data storage, management, and optimization',
-        'devops': 'Deployment, infrastructure, and automation',
-        'tools': 'Development tools and productivity software',
-        'soft-skills': 'Communication, leadership, and collaboration',
-        'other': 'Additional skills and technologies'
+        frontend: "User interface development and client-side technologies",
+        backend: "Server-side development and API creation",
+        database: "Data storage, management, and optimization",
+        devops: "Deployment, infrastructure, and automation",
+        tools: "Development tools and productivity software",
+        "soft-skills": "Communication, leadership, and collaboration",
+        other: "Additional skills and technologies",
       };
-      return descriptions[category] || 'Technical expertise and knowledge';
+      return descriptions[category] || "Technical expertise and knowledge";
     };
 
     const getSkillLevel = (proficiency) => {
-      if (proficiency >= 90) return 'expert';
-      if (proficiency >= 75) return 'advanced';
-      if (proficiency >= 50) return 'intermediate';
-      return 'beginner';
+      if (proficiency >= 90) return "expert";
+      if (proficiency >= 75) return "advanced";
+      if (proficiency >= 50) return "intermediate";
+      return "beginner";
     };
 
     const getSkillLevelText = (proficiency) => {
-      if (proficiency >= 90) return 'Expert';
-      if (proficiency >= 75) return 'Advanced';
-      if (proficiency >= 50) return 'Intermediate';
-      return 'Beginner';
+      if (proficiency >= 90) return "Expert";
+      if (proficiency >= 75) return "Advanced";
+      if (proficiency >= 50) return "Intermediate";
+      return "Beginner";
     };
 
     res.render("skills", {
@@ -185,7 +189,7 @@ router.get("/skills", async (req, res) => {
       getCategoryIcon,
       getCategoryDescription,
       getSkillLevel,
-      getSkillLevelText
+      getSkillLevelText,
     });
   } catch (error) {
     console.error("Skills page error:", error);
@@ -196,13 +200,16 @@ router.get("/skills", async (req, res) => {
       featuredSkills: [],
       totalSkills: 0,
       avgExperience: 0,
-      getCategoryIcon: () => 'code',
-      getCategoryDescription: () => '',
-      getSkillLevel: () => 'beginner',
-      getSkillLevelText: () => 'Beginner'
+      getCategoryIcon: () => "code",
+      getCategoryDescription: () => "",
+      getSkillLevel: () => "beginner",
+      getSkillLevelText: () => "Beginner",
     });
   }
 });
+
+// About page
+router.get("/about", async (req, res) => {
   try {
     const skills = await Skill.findAll({
       where: { isVisible: true },
@@ -257,54 +264,58 @@ router.get("/skills", async (req, res) => {
 
     // Get featured skills (top proficiency)
     const featuredSkills = skills
-      .filter(skill => skill.proficiency >= 80)
+      .filter((skill) => skill.proficiency >= 80)
       .sort((a, b) => b.proficiency - a.proficiency)
       .slice(0, 6);
 
     // Calculate average experience
-    const avgExperience = skills.length > 0 
-      ? Math.round(skills.reduce((sum, skill) => sum + skill.yearsOfExperience, 0) / skills.length)
-      : 0;
+    const avgExperience =
+      skills.length > 0
+        ? Math.round(
+            skills.reduce((sum, skill) => sum + skill.yearsOfExperience, 0) /
+              skills.length
+          )
+        : 0;
 
     // Helper functions for the view
     const getCategoryIcon = (category) => {
       const icons = {
-        'frontend': 'laptop-code',
-        'backend': 'server',
-        'database': 'database',
-        'devops': 'cloud',
-        'tools': 'tools',
-        'soft-skills': 'users',
-        'other': 'cog'
+        frontend: "laptop-code",
+        backend: "server",
+        database: "database",
+        devops: "cloud",
+        tools: "tools",
+        "soft-skills": "users",
+        other: "cog",
       };
-      return icons[category] || 'code';
+      return icons[category] || "code";
     };
 
     const getCategoryDescription = (category) => {
       const descriptions = {
-        'frontend': 'User interface development and client-side technologies',
-        'backend': 'Server-side development and API creation',
-        'database': 'Data storage, management, and optimization',
-        'devops': 'Deployment, infrastructure, and automation',
-        'tools': 'Development tools and productivity software',
-        'soft-skills': 'Communication, leadership, and collaboration',
-        'other': 'Additional skills and technologies'
+        frontend: "User interface development and client-side technologies",
+        backend: "Server-side development and API creation",
+        database: "Data storage, management, and optimization",
+        devops: "Deployment, infrastructure, and automation",
+        tools: "Development tools and productivity software",
+        "soft-skills": "Communication, leadership, and collaboration",
+        other: "Additional skills and technologies",
       };
-      return descriptions[category] || 'Technical expertise and knowledge';
+      return descriptions[category] || "Technical expertise and knowledge";
     };
 
     const getSkillLevel = (proficiency) => {
-      if (proficiency >= 90) return 'expert';
-      if (proficiency >= 75) return 'advanced';
-      if (proficiency >= 50) return 'intermediate';
-      return 'beginner';
+      if (proficiency >= 90) return "expert";
+      if (proficiency >= 75) return "advanced";
+      if (proficiency >= 50) return "intermediate";
+      return "beginner";
     };
 
     const getSkillLevelText = (proficiency) => {
-      if (proficiency >= 90) return 'Expert';
-      if (proficiency >= 75) return 'Advanced';
-      if (proficiency >= 50) return 'Intermediate';
-      return 'Beginner';
+      if (proficiency >= 90) return "Expert";
+      if (proficiency >= 75) return "Advanced";
+      if (proficiency >= 50) return "Intermediate";
+      return "Beginner";
     };
 
     res.render("skills", {
@@ -316,7 +327,7 @@ router.get("/skills", async (req, res) => {
       getCategoryIcon,
       getCategoryDescription,
       getSkillLevel,
-      getSkillLevelText
+      getSkillLevelText,
     });
   } catch (error) {
     console.error("Skills page error:", error);
@@ -327,13 +338,15 @@ router.get("/skills", async (req, res) => {
       featuredSkills: [],
       totalSkills: 0,
       avgExperience: 0,
-      getCategoryIcon: () => 'code',
-      getCategoryDescription: () => '',
-      getSkillLevel: () => 'beginner',
-      getSkillLevelText: () => 'Beginner'
+      getCategoryIcon: () => "code",
+      getCategoryDescription: () => "",
+      getSkillLevel: () => "beginner",
+      getSkillLevelText: () => "Beginner",
     });
   }
 });
+
+// Projects page
 router.get("/projects", async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
