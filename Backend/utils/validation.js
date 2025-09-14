@@ -72,6 +72,20 @@ const validateUserLogin = [
 
 // Project validation
 const validateProject = [
+  // Transform technologies string to array before validation
+  (req, res, next) => {
+    if (req.body.technologies && typeof req.body.technologies === "string") {
+      req.body.technologies = req.body.technologies
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t.length > 0);
+    }
+    // Ensure technologies is an array
+    if (req.body.technologies && !Array.isArray(req.body.technologies)) {
+      req.body.technologies = [];
+    }
+    next();
+  },
   body("title")
     .trim()
     .isLength({ min: 2, max: 100 })
@@ -131,6 +145,20 @@ const validateSkill = [
 
 // Blog validation
 const validateBlog = [
+  // Transform tags string to array before validation
+  (req, res, next) => {
+    if (req.body.tags && typeof req.body.tags === "string") {
+      req.body.tags = req.body.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t.length > 0);
+    }
+    // Ensure tags is an array if provided
+    if (req.body.tags && !Array.isArray(req.body.tags)) {
+      req.body.tags = [];
+    }
+    next();
+  },
   body("title")
     .trim()
     .isLength({ min: 5, max: 200 })
