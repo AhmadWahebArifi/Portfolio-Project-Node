@@ -46,10 +46,13 @@ router.get("/", optionalAuth, async (req, res) => {
       query.isVisible = req.query.visible === "true";
     }
 
-    const skills = await Skill.find(query).sort({
-      category: 1,
-      order: 1,
-      proficiency: -1,
+    const skills = await Skill.findAll({
+      where: query,
+      order: [
+        ["category", "ASC"],
+        ["order", "ASC"],
+        ["proficiency", "DESC"],
+      ],
     });
 
     // Group skills by category
@@ -88,10 +91,13 @@ router.get("/", optionalAuth, async (req, res) => {
  */
 router.get("/categories", async (req, res) => {
   try {
-    const skills = await Skill.find({ isVisible: true }).sort({
-      category: 1,
-      order: 1,
-      proficiency: -1,
+    const skills = await Skill.findAll({
+      where: { isVisible: true },
+      order: [
+        ["category", "ASC"],
+        ["order", "ASC"],
+        ["proficiency", "DESC"],
+      ],
     });
 
     // Group skills by category
@@ -223,7 +229,7 @@ router.post(
     } catch (error) {
       console.error("Create skill error:", error);
 
-      if (error.code === 11000) {
+      if (error.name === "SequelizeUniqueConstraintError") {
         return res.status(400).json({
           success: false,
           message: "Skill with this name already exists",
@@ -264,10 +270,7 @@ router.post(
  */
 router.put("/:id", protect, authorize("admin"), async (req, res) => {
   try {
-    const skill = await Skill.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const skill = await Skill.findByPk(req.params.id);
 
     if (!skill) {
       return res.status(404).json({
@@ -276,6 +279,8 @@ router.put("/:id", protect, authorize("admin"), async (req, res) => {
       });
     }
 
+    await skill.update(req.body);
+
     res.status(200).json({
       success: true,
       data: skill,
@@ -283,7 +288,7 @@ router.put("/:id", protect, authorize("admin"), async (req, res) => {
   } catch (error) {
     console.error("Update skill error:", error);
 
-    if (error.code === 11000) {
+    if (error.name === "SequelizeUniqueConstraintError") {
       return res.status(400).json({
         success: false,
         message: "Skill with this name already exists",
@@ -317,7 +322,7 @@ router.put("/:id", protect, authorize("admin"), async (req, res) => {
  */
 router.delete("/:id", protect, authorize("admin"), async (req, res) => {
   try {
-    const skill = await Skill.findById(req.params.id);
+    const skill = await Skill.findByPk(req.params.id);
 
     if (!skill) {
       return res.status(404).json({
@@ -326,7 +331,7 @@ router.delete("/:id", protect, authorize("admin"), async (req, res) => {
       });
     }
 
-    await skill.deleteOne();
+    await skill.destroy();
 
     res.status(200).json({
       success: true,
@@ -374,9 +379,12 @@ router.put("/reorder", protect, authorize("admin"), async (req, res) => {
     const { skills } = req.body;
 
     // Update order for each skill
-    const updatePromises = skills.map(({ id, order }) =>
-      Skill.findByIdAndUpdate(id, { order }, { new: true })
-    );
+    const updatePromises = skills.map(async ({ id, order }) => {
+      const skill = await Skill.findByPk(id);
+      if (skill) {
+        return skill.update({ order });
+      }
+    });
 
     await Promise.all(updatePromises);
 
@@ -427,7 +435,7 @@ router.post("/bulk", protect, authorize("admin"), async (req, res) => {
       });
     }
 
-    const createdSkills = await Skill.insertMany(skills);
+    const createdSkills = await Skill.bulkCreate(skills);
 
     res.status(201).json({
       success: true,
