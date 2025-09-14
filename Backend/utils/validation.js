@@ -132,6 +132,31 @@ const validateProject = [
 
 // Skill validation
 const validateSkill = [
+  // Transform and normalize form data before validation
+  (req, res, next) => {
+    // Handle boolean fields (checkboxes)
+    if (req.body.isVisible !== undefined) {
+      req.body.isVisible =
+        req.body.isVisible === "true" || req.body.isVisible === true;
+    } else {
+      // Default to true if not provided (checkbox unchecked)
+      req.body.isVisible = true;
+    }
+
+    // Handle numeric fields
+    if (req.body.proficiency) {
+      req.body.proficiency = parseInt(req.body.proficiency, 10) || 50;
+    }
+    if (req.body.yearsOfExperience) {
+      req.body.yearsOfExperience =
+        parseInt(req.body.yearsOfExperience, 10) || 0;
+    }
+    if (req.body.order) {
+      req.body.order = parseInt(req.body.order, 10) || 0;
+    }
+
+    next();
+  },
   body("name")
     .trim()
     .isLength({ min: 1, max: 50 })
