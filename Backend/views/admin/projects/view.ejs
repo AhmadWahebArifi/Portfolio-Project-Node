@@ -1,0 +1,351 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2><i class="fas fa-folder"></i> Project Details</h2>
+  <div class="btn-group">
+    <a href="/admin/projects" class="btn btn-outline-secondary">
+      <i class="fas fa-arrow-left"></i> Back to Projects
+    </a>
+    <a
+      href="/admin/projects/<%= project.id %>/edit"
+      class="btn btn-admin-primary"
+    >
+      <i class="fas fa-edit"></i> Edit Project
+    </a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-8">
+    <!-- Project Information -->
+    <div class="admin-card mb-4">
+      <div class="card-header bg-transparent border-0 py-3">
+        <h5 class="mb-0">
+          <i class="fas fa-info-circle text-primary"></i> Project Information
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Title:</strong>
+          </div>
+          <div class="col-sm-9"><%= project.title %></div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Description:</strong>
+          </div>
+          <div class="col-sm-9"><%= project.description %></div>
+        </div>
+
+        <% if (project.longDescription) { %>
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Long Description:</strong>
+          </div>
+          <div class="col-sm-9">
+            <div class="border rounded p-3 bg-light">
+              <%= project.longDescription %>
+            </div>
+          </div>
+        </div>
+        <% } %>
+
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Category:</strong>
+          </div>
+          <div class="col-sm-9">
+            <span class="badge bg-secondary text-capitalize">
+              <%= project.category %>
+            </span>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Status:</strong>
+          </div>
+          <div class="col-sm-9">
+            <span
+              class="badge bg-<%= project.status === 'completed' ? 'success' : project.status === 'in-progress' ? 'warning' : 'info' %>"
+            >
+              <%= project.status.replace('-', ' ').replace(/\b\w/g, l =>
+              l.toUpperCase()) %>
+            </span>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Technologies:</strong>
+          </div>
+          <div class="col-sm-9">
+            <% let techs = []; try { techs = Array.isArray(project.technologies)
+            ? project.technologies : JSON.parse(project.technologies || '[]'); }
+            catch (e) { techs = []; } %> <% if (techs && techs.length > 0) { %>
+            <% techs.forEach(function(tech) { %>
+            <span class="badge bg-primary me-1 mb-1"><%= tech %></span>
+            <% }); %> <% } else { %>
+            <span class="text-muted">No technologies specified</span>
+            <% } %>
+          </div>
+        </div>
+
+        <% if (project.liveUrl || project.githubUrl) { %>
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Links:</strong>
+          </div>
+          <div class="col-sm-9">
+            <% if (project.liveUrl) { %>
+            <a
+              href="<%= project.liveUrl %>"
+              target="_blank"
+              class="btn btn-sm btn-outline-success me-2"
+            >
+              <i class="fas fa-external-link-alt"></i> Live Demo
+            </a>
+            <% } %> <% if (project.githubUrl) { %>
+            <a
+              href="<%= project.githubUrl %>"
+              target="_blank"
+              class="btn btn-sm btn-outline-dark"
+            >
+              <i class="fab fa-github"></i> Source Code
+            </a>
+            <% } %>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Additional Details -->
+    <div class="admin-card">
+      <div class="card-header bg-transparent border-0 py-3">
+        <h5 class="mb-0">
+          <i class="fas fa-cogs text-info"></i> Additional Details
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Display Order:</strong>
+          </div>
+          <div class="col-sm-9"><%= project.order || 0 %></div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Featured:</strong>
+          </div>
+          <div class="col-sm-9">
+            <% if (project.featured) { %>
+            <i class="fas fa-star text-warning"></i> Yes <% } else { %>
+            <i class="far fa-star text-muted"></i> No <% } %>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Public:</strong>
+          </div>
+          <div class="col-sm-9">
+            <% if (project.isPublic) { %>
+            <i class="fas fa-eye text-success"></i> Public <% } else { %>
+            <i class="fas fa-eye-slash text-muted"></i> Private <% } %>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Created:</strong>
+          </div>
+          <div class="col-sm-9">
+            <%= moment(project.createdAt).format('MMMM DD, YYYY [at] h:mm A') %>
+          </div>
+        </div>
+
+        <% if (project.updatedAt && project.updatedAt !== project.createdAt) {
+        %>
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Last Updated:</strong>
+          </div>
+          <div class="col-sm-9">
+            <%= moment(project.updatedAt).format('MMMM DD, YYYY [at] h:mm A') %>
+          </div>
+        </div>
+        <% } %> <% if (project.startDate) { %>
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>Start Date:</strong>
+          </div>
+          <div class="col-sm-9">
+            <%= moment(project.startDate).format('MMMM DD, YYYY') %>
+          </div>
+        </div>
+        <% } %> <% if (project.endDate) { %>
+        <div class="row mb-3">
+          <div class="col-sm-3">
+            <strong>End Date:</strong>
+          </div>
+          <div class="col-sm-9">
+            <%= moment(project.endDate).format('MMMM DD, YYYY') %>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-4">
+    <!-- Quick Actions -->
+    <div class="admin-card mb-4">
+      <div class="card-header bg-transparent border-0 py-3">
+        <h5 class="mb-0">
+          <i class="fas fa-bolt text-warning"></i> Quick Actions
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a
+            href="/projects/<%= project.id %>"
+            target="_blank"
+            class="btn btn-outline-primary"
+          >
+            <i class="fas fa-external-link-alt"></i> View Public Page
+          </a>
+
+          <a
+            href="/admin/projects/<%= project.id %>/edit"
+            class="btn btn-outline-success"
+          >
+            <i class="fas fa-edit"></i> Edit Project
+          </a>
+
+          <button
+            type="button"
+            class="btn btn-outline-warning"
+            onclick="toggleFeature()"
+          >
+            <i class="fas fa-star"></i>
+            <%= project.featured ? 'Remove from Featured' : 'Mark as Featured'
+            %>
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline-info"
+            onclick="toggleVisibility()"
+          >
+            <i class="fas fa-<%= project.isPublic ? 'eye-slash' : 'eye' %>"></i>
+            <%= project.isPublic ? 'Make Private' : 'Make Public' %>
+          </button>
+
+          <hr />
+
+          <form
+            action="/admin/projects/<%= project.id %>?_method=DELETE"
+            method="POST"
+            onsubmit="return confirmDelete()"
+          >
+            <button type="submit" class="btn btn-outline-danger w-100">
+              <i class="fas fa-trash"></i> Delete Project
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Statistics -->
+    <div class="admin-card">
+      <div class="card-header bg-transparent border-0 py-3">
+        <h5 class="mb-0">
+          <i class="fas fa-chart-bar text-success"></i> Project Stats
+        </h5>
+      </div>
+      <div class="card-body">
+        <div class="row text-center">
+          <div class="col-6">
+            <div class="border-end">
+              <h4 class="text-primary mb-1"><%= project.id %></h4>
+              <small class="text-muted">Project ID</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <h4 class="text-success mb-1"><%= techs ? techs.length : 0 %></h4>
+            <small class="text-muted">Technologies</small>
+          </div>
+        </div>
+
+        <hr />
+
+        <div class="row text-center">
+          <div class="col-12">
+            <small class="text-muted">
+              Project has been online for
+              <strong><%= moment(project.createdAt).fromNow() %></strong>
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function confirmDelete() {
+    return confirm(
+      "Are you sure you want to delete this project? This action cannot be undone."
+    );
+  }
+
+  function toggleFeature() {
+    if (confirm("Toggle featured status for this project?")) {
+      // Implementation for toggling featured status via AJAX
+      fetch(`/admin/projects/<%= project.id %>/toggle-featured`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert("Error updating project status");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Error updating project status");
+        });
+    }
+  }
+
+  function toggleVisibility() {
+    if (confirm("Toggle public visibility for this project?")) {
+      // Implementation for toggling visibility via AJAX
+      fetch(`/admin/projects/<%= project.id %>/toggle-visibility`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            location.reload();
+          } else {
+            alert("Error updating project visibility");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("Error updating project visibility");
+        });
+    }
+  }
+</script>
