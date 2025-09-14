@@ -64,14 +64,7 @@ router.get("/projects/new", requireAdmin, (req, res) => {
 // Create project
 router.post("/projects", requireAdmin, validateProject, async (req, res) => {
   try {
-    const projectData = { ...req.body };
-    if (typeof projectData.technologies === "string") {
-      projectData.technologies = projectData.technologies
-        .split(",")
-        .map((t) => t.trim());
-    }
-
-    await Project.create(projectData);
+    await Project.create(req.body);
     req.flash("success", "Project created successfully!");
     res.redirect("/admin/projects");
   } catch (error) {
@@ -119,14 +112,7 @@ router.put("/projects/:id", requireAdmin, validateProject, async (req, res) => {
       return res.redirect("/admin/projects");
     }
 
-    const projectData = { ...req.body };
-    if (typeof projectData.technologies === "string") {
-      projectData.technologies = projectData.technologies
-        .split(",")
-        .map((t) => t.trim());
-    }
-
-    await project.update(projectData);
+    await project.update(req.body);
     req.flash("success", "Project updated successfully!");
     res.redirect("/admin/projects");
   } catch (error) {
