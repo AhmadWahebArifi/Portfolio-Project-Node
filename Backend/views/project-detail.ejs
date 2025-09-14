@@ -1,0 +1,458 @@
+<!-- Project Header -->
+<section class="py-5 mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/projects">Projects</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              <%= project.title %>
+            </li>
+          </ol>
+        </nav>
+
+        <div class="mb-4">
+          <span class="badge bg-primary me-2">
+            <%= project.category.charAt(0).toUpperCase() +
+            project.category.slice(1) %>
+          </span>
+          <% if (project.featured) { %>
+          <span class="badge bg-warning">Featured</span>
+          <% } %> <% if (project.status) { %>
+          <span
+            class="badge bg-<%= project.status === 'completed' ? 'success' : project.status === 'in-progress' ? 'warning' : 'secondary' %>"
+          >
+            <%= project.status.charAt(0).toUpperCase() +
+            project.status.slice(1).replace('-', ' ') %>
+          </span>
+          <% } %>
+        </div>
+
+        <h1 class="display-4 fw-bold mb-4"><%= project.title %></h1>
+
+        <p class="lead mb-4"><%= project.description %></p>
+
+        <!-- Project Actions -->
+        <div class="d-flex gap-3 flex-wrap mb-5">
+          <% if (project.liveUrl) { %>
+          <a
+            href="<%= project.liveUrl %>"
+            target="_blank"
+            class="btn btn-primary btn-lg"
+          >
+            <i class="fas fa-external-link-alt"></i> View Live Demo
+          </a>
+          <% } %> <% if (project.githubUrl) { %>
+          <a
+            href="<%= project.githubUrl %>"
+            target="_blank"
+            class="btn btn-outline-primary btn-lg"
+          >
+            <i class="fab fa-github"></i> View Source Code
+          </a>
+          <% } %> <% if (project.caseStudyUrl) { %>
+          <a
+            href="<%= project.caseStudyUrl %>"
+            target="_blank"
+            class="btn btn-outline-secondary btn-lg"
+          >
+            <i class="fas fa-file-alt"></i> Case Study
+          </a>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Project Gallery -->
+<% if (project.images && project.images.length > 0) { %>
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <h3 class="fw-bold mb-4">Project Gallery</h3>
+
+        <!-- Main Image -->
+        <div class="mb-4">
+          <img
+            src="<%= project.images[0].url %>"
+            alt="<%= project.images[0].alt || project.title %>"
+            class="img-fluid rounded shadow-lg"
+            style="width: 100%; max-height: 500px; object-fit: cover"
+            id="mainImage"
+          />
+        </div>
+
+        <!-- Thumbnail Gallery -->
+        <% if (project.images.length > 1) { %>
+        <div class="row">
+          <% project.images.forEach(function(image, index) { %>
+          <div class="col-md-3 col-6 mb-3">
+            <img
+              src="<%= image.url %>"
+              alt="<%= image.alt || project.title %>"
+              class="img-fluid rounded shadow-sm gallery-thumb <%= index === 0 ? 'active' : '' %>"
+              style="
+                height: 120px;
+                width: 100%;
+                object-fit: cover;
+                cursor: pointer;
+              "
+              onclick="changeMainImage('<%= image.url %>', '<%= image.alt || project.title %>')"
+            />
+          </div>
+          <% }); %>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Project Details -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <h3 class="fw-bold mb-4">About This Project</h3>
+
+        <% if (project.longDescription) { %>
+        <div class="project-content mb-4">
+          <%- renderMarkdown(project.longDescription) %>
+        </div>
+        <% } %>
+
+        <!-- Features -->
+        <% if (project.features && project.features.length > 0) { %>
+        <h4 class="fw-bold mb-3">Key Features</h4>
+        <ul class="list-group list-group-flush mb-4">
+          <% project.features.forEach(function(feature) { %>
+          <li class="list-group-item border-0 ps-0">
+            <i class="fas fa-check-circle text-success me-2"></i>
+            <%= feature %>
+          </li>
+          <% }); %>
+        </ul>
+        <% } %>
+
+        <!-- Challenges & Solutions -->
+        <% if (project.challenges || project.solutions) { %>
+        <div class="row mb-4">
+          <% if (project.challenges) { %>
+          <div class="col-md-6 mb-3">
+            <h5 class="fw-bold">Challenges</h5>
+            <div class="project-content">
+              <%- renderMarkdown(project.challenges) %>
+            </div>
+          </div>
+          <% } %> <% if (project.solutions) { %>
+          <div class="col-md-6 mb-3">
+            <h5 class="fw-bold">Solutions</h5>
+            <div class="project-content">
+              <%- renderMarkdown(project.solutions) %>
+            </div>
+          </div>
+          <% } %>
+        </div>
+        <% } %>
+
+        <!-- What I Learned -->
+        <% if (project.learnings) { %>
+        <h4 class="fw-bold mb-3">What I Learned</h4>
+        <div class="project-content mb-4">
+          <%- renderMarkdown(project.learnings) %>
+        </div>
+        <% } %>
+      </div>
+
+      <div class="col-lg-4">
+        <!-- Project Info Sidebar -->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Project Information</h5>
+          </div>
+          <div class="card-body">
+            <% if (project.duration) { %>
+            <div class="mb-3">
+              <strong
+                ><i class="fas fa-clock text-primary me-2"></i>Duration:</strong
+              >
+              <div><%= project.duration %></div>
+            </div>
+            <% } %> <% if (project.role) { %>
+            <div class="mb-3">
+              <strong
+                ><i class="fas fa-user text-primary me-2"></i>My Role:</strong
+              >
+              <div><%= project.role %></div>
+            </div>
+            <% } %> <% if (project.teamSize) { %>
+            <div class="mb-3">
+              <strong
+                ><i class="fas fa-users text-primary me-2"></i>Team
+                Size:</strong
+              >
+              <div><%= project.teamSize %></div>
+            </div>
+            <% } %> <% if (project.client) { %>
+            <div class="mb-3">
+              <strong
+                ><i class="fas fa-building text-primary me-2"></i
+                >Client:</strong
+              >
+              <div><%= project.client %></div>
+            </div>
+            <% } %>
+
+            <div class="mb-3">
+              <strong
+                ><i class="fas fa-calendar text-primary me-2"></i
+                >Completed:</strong
+              >
+              <div>
+                <%= moment(project.completedAt ||
+                project.createdAt).format('MMMM YYYY') %>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technologies Used -->
+        <% if (project.technologies && project.technologies.length > 0) { %>
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Technologies Used</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap gap-2">
+              <% project.technologies.forEach(function(tech) { %>
+              <span class="badge bg-secondary"><%= tech %></span>
+              <% }); %>
+            </div>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Project Stats -->
+        <% if (project.metrics) { %>
+        <div class="card mt-4">
+          <div class="card-header">
+            <h5 class="card-title mb-0">Project Metrics</h5>
+          </div>
+          <div class="card-body">
+            <% if (project.metrics.performanceImprovement) { %>
+            <div class="mb-2">
+              <small class="text-muted">Performance Improvement</small>
+              <div class="fw-bold text-success">
+                +<%= project.metrics.performanceImprovement %>%
+              </div>
+            </div>
+            <% } %> <% if (project.metrics.codeReduction) { %>
+            <div class="mb-2">
+              <small class="text-muted">Code Reduction</small>
+              <div class="fw-bold text-info">
+                -<%= project.metrics.codeReduction %>%
+              </div>
+            </div>
+            <% } %> <% if (project.metrics.userSatisfaction) { %>
+            <div class="mb-2">
+              <small class="text-muted">User Satisfaction</small>
+              <div class="fw-bold text-warning">
+                <%= project.metrics.userSatisfaction %>%
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Contact CTA -->
+        <div class="card mt-4 bg-primary text-white">
+          <div class="card-body text-center">
+            <h6 class="card-title">Interested in working together?</h6>
+            <p class="card-text small">Let's discuss your next project!</p>
+            <a href="/contact" class="btn btn-light">
+              <i class="fas fa-envelope"></i> Get in Touch
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Related Projects -->
+<% if (relatedProjects && relatedProjects.length > 0) { %>
+<section class="py-5">
+  <div class="container">
+    <h3 class="fw-bold mb-4 text-center">Related Projects</h3>
+    <div class="row">
+      <% relatedProjects.forEach(function(relatedProject) { %>
+      <div class="col-lg-4 mb-4">
+        <div class="card h-100">
+          <% if (relatedProject.images && relatedProject.images.length > 0) { %>
+          <img
+            src="<%= relatedProject.images[0].url %>"
+            class="card-img-top"
+            alt="<%= relatedProject.title %>"
+            style="height: 200px; object-fit: cover"
+          />
+          <% } %>
+
+          <div class="card-body d-flex flex-column">
+            <div class="mb-2">
+              <span class="badge bg-primary">
+                <%= relatedProject.category.charAt(0).toUpperCase() +
+                relatedProject.category.slice(1) %>
+              </span>
+            </div>
+
+            <h5 class="card-title">
+              <a
+                href="/projects/<%= relatedProject.id %>"
+                class="text-decoration-none text-dark"
+              >
+                <%= relatedProject.title %>
+              </a>
+            </h5>
+
+            <p class="card-text text-muted">
+              <%= relatedProject.description %>
+            </p>
+
+            <div class="mt-auto">
+              <div class="d-flex gap-2">
+                <% if (relatedProject.liveUrl) { %>
+                <a
+                  href="<%= relatedProject.liveUrl %>"
+                  target="_blank"
+                  class="btn btn-sm btn-outline-primary"
+                >
+                  <i class="fas fa-external-link-alt"></i> Live
+                </a>
+                <% } %> <% if (relatedProject.githubUrl) { %>
+                <a
+                  href="<%= relatedProject.githubUrl %>"
+                  target="_blank"
+                  class="btn btn-sm btn-outline-secondary"
+                >
+                  <i class="fab fa-github"></i> Code
+                </a>
+                <% } %>
+                <a
+                  href="/projects/<%= relatedProject.id %>"
+                  class="btn btn-sm btn-primary ms-auto"
+                >
+                  View Details
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Navigation -->
+<section class="py-4 bg-light">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center">
+      <a href="/projects" class="btn btn-outline-primary">
+        <i class="fas fa-arrow-left"></i> Back to Projects
+      </a>
+      <div class="text-end">
+        <a href="/contact" class="btn btn-primary">
+          <i class="fas fa-envelope"></i> Let's Work Together
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .project-content {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .project-content h1,
+  .project-content h2,
+  .project-content h3,
+  .project-content h4,
+  .project-content h5,
+  .project-content h6 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .project-content p {
+    margin-bottom: 1.2rem;
+  }
+
+  .project-content blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    background: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+
+  .project-content pre {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  .project-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .gallery-thumb {
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+  }
+
+  .gallery-thumb:hover,
+  .gallery-thumb.active {
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+  }
+
+  .card {
+    transition: all 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  }
+</style>
+
+<script>
+  function changeMainImage(newSrc, newAlt) {
+    const mainImage = document.getElementById("mainImage");
+    mainImage.src = newSrc;
+    mainImage.alt = newAlt;
+
+    // Update active thumbnail
+    document.querySelectorAll(".gallery-thumb").forEach((thumb) => {
+      thumb.classList.remove("active");
+    });
+    event.target.classList.add("active");
+  }
+</script>
