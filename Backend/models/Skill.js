@@ -29,6 +29,8 @@ const Skill = sequelize.define(
         "devops",
         "tools",
         "soft-skills",
+        "data-science",
+        "security",
         "other"
       ),
       allowNull: false,
