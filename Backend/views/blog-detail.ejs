@@ -1,0 +1,314 @@
+<!-- Blog Header -->
+<section class="py-5 mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item"><a href="/blog">Blog</a></li>
+            <li class="breadcrumb-item active" aria-current="page">
+              <%= blog.title %>
+            </li>
+          </ol>
+        </nav>
+
+        <div class="mb-4">
+          <span class="badge bg-primary me-2">
+            <%= blog.category.charAt(0).toUpperCase() +
+            blog.category.slice(1).replace('-', ' ') %>
+          </span>
+          <% if (blog.featured) { %>
+          <span class="badge bg-warning">Featured</span>
+          <% } %>
+        </div>
+
+        <h1 class="display-4 fw-bold mb-4"><%= blog.title %></h1>
+
+        <div class="row align-items-center mb-4">
+          <div class="col-md-8">
+            <div class="d-flex align-items-center">
+              <% if (blog.author && blog.author.avatar) { %>
+              <img
+                src="<%= blog.author.avatar %>"
+                alt="<%= blog.author.name %>"
+                class="rounded-circle me-3"
+                style="width: 50px; height: 50px; object-fit: cover"
+              />
+              <% } else { %>
+              <div
+                class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3"
+                style="width: 50px; height: 50px"
+              >
+                <i class="fas fa-user"></i>
+              </div>
+              <% } %>
+              <div>
+                <h6 class="mb-0">
+                  <%= blog.author ? blog.author.name : 'Admin' %>
+                </h6>
+                <small class="text-muted">
+                  <i class="fas fa-calendar me-1"></i>
+                  <%= moment(blog.publishedAt).format('MMMM DD, YYYY') %>
+                </small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <div class="text-muted small">
+              <div>
+                <i class="fas fa-clock me-1"></i> <%= blog.readTime %> min read
+              </div>
+              <div><i class="fas fa-eye me-1"></i> <%= blog.views %> views</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Featured Image -->
+        <% if (blog.featuredImage && blog.featuredImage.url) { %>
+        <div class="mb-5">
+          <img
+            src="<%= blog.featuredImage.url %>"
+            alt="<%= blog.title %>"
+            class="img-fluid rounded shadow-lg"
+            style="width: 100%; max-height: 400px; object-fit: cover"
+          />
+          <% if (blog.featuredImage.alt) { %>
+          <figcaption class="text-center text-muted mt-2">
+            <%= blog.featuredImage.alt %>
+          </figcaption>
+          <% } %>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Blog Content -->
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <!-- Blog Content -->
+        <div class="blog-content mb-5"><%- renderMarkdown(blog.content) %></div>
+
+        <!-- Tags -->
+        <% if (blog.tags && blog.tags.length > 0) { %>
+        <div class="mb-4">
+          <h6 class="fw-bold mb-3">Tags:</h6>
+          <div class="d-flex flex-wrap gap-2">
+            <% blog.tags.forEach(function(tag) { %>
+            <a
+              href="/blog?tag=<%= encodeURIComponent(tag) %>"
+              class="badge bg-secondary text-decoration-none"
+            >
+              #<%= tag %>
+            </a>
+            <% }); %>
+          </div>
+        </div>
+        <% } %>
+
+        <!-- Share Buttons -->
+        <div class="mb-5">
+          <h6 class="fw-bold mb-3">Share this post:</h6>
+          <div class="d-flex gap-2">
+            <a
+              href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(blog.title) %>&url=<%= encodeURIComponent(req.protocol + '://' + req.get('host') + req.originalUrl) %>"
+              target="_blank"
+              class="btn btn-outline-primary btn-sm"
+            >
+              <i class="fab fa-twitter"></i> Twitter
+            </a>
+            <a
+              href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(req.protocol + '://' + req.get('host') + req.originalUrl) %>"
+              target="_blank"
+              class="btn btn-outline-primary btn-sm"
+            >
+              <i class="fab fa-facebook"></i> Facebook
+            </a>
+            <a
+              href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(req.protocol + '://' + req.get('host') + req.originalUrl) %>"
+              target="_blank"
+              class="btn btn-outline-primary btn-sm"
+            >
+              <i class="fab fa-linkedin"></i> LinkedIn
+            </a>
+            <button
+              class="btn btn-outline-secondary btn-sm"
+              onclick="copyToClipboard()"
+            >
+              <i class="fas fa-link"></i> Copy Link
+            </button>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <div
+          class="d-flex justify-content-between align-items-center border-top pt-4"
+        >
+          <a href="/blog" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Back to Blog
+          </a>
+          <div class="text-end">
+            <a href="/contact" class="btn btn-primary">
+              <i class="fas fa-envelope"></i> Get in Touch
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Related Posts -->
+<% if (relatedPosts && relatedPosts.length > 0) { %>
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h3 class="fw-bold mb-4">Related Posts</h3>
+        <div class="row">
+          <% relatedPosts.forEach(function(post) { %>
+          <div class="col-md-4 mb-4">
+            <article class="card h-100">
+              <% if (post.featuredImage && post.featuredImage.url) { %>
+              <img
+                src="<%= post.featuredImage.url %>"
+                class="card-img-top"
+                alt="<%= post.title %>"
+                style="height: 150px; object-fit: cover"
+              />
+              <% } %>
+
+              <div class="card-body">
+                <h6 class="card-title">
+                  <a
+                    href="/blog/<%= post.slug %>"
+                    class="text-decoration-none text-dark"
+                  >
+                    <%= post.title %>
+                  </a>
+                </h6>
+                <p class="card-text small text-muted">
+                  <%= post.excerpt.substring(0, 100) %>...
+                </p>
+                <div class="text-muted small">
+                  <i class="fas fa-calendar"></i>
+                  <%= moment(post.publishedAt).format('MMM DD, YYYY') %>
+                </div>
+              </div>
+            </article>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- Newsletter Subscription -->
+<section class="py-5 bg-primary text-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6 mx-auto text-center">
+        <h3 class="mb-3">Enjoyed this post?</h3>
+        <p class="mb-4">
+          Subscribe to get notified about new blog posts and tutorials.
+        </p>
+        <form class="d-flex gap-2">
+          <input
+            type="email"
+            class="form-control"
+            placeholder="Enter your email"
+            required
+          />
+          <button type="submit" class="btn btn-light">
+            <i class="fas fa-paper-plane"></i> Subscribe
+          </button>
+        </form>
+        <small class="text-light opacity-75 mt-2 d-block">
+          No spam, unsubscribe at any time.
+        </small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .blog-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .blog-content h1,
+  .blog-content h2,
+  .blog-content h3,
+  .blog-content h4,
+  .blog-content h5,
+  .blog-content h6 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+
+  .blog-content p {
+    margin-bottom: 1.5rem;
+  }
+
+  .blog-content blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    font-style: italic;
+    background: #f8f9fa;
+    padding: 1rem 1.5rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+
+  .blog-content pre {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+  }
+
+  .blog-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .blog-content ul,
+  .blog-content ol {
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+  }
+
+  .blog-content li {
+    margin-bottom: 0.5rem;
+  }
+</style>
+
+<script>
+  function copyToClipboard() {
+    navigator.clipboard.writeText(window.location.href).then(function () {
+      // Show success feedback
+      const btn = event.target.closest("button");
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      btn.classList.remove("btn-outline-secondary");
+      btn.classList.add("btn-success");
+
+      setTimeout(function () {
+        btn.innerHTML = originalText;
+        btn.classList.remove("btn-success");
+        btn.classList.add("btn-outline-secondary");
+      }, 2000);
+    });
+  }
+</script>
