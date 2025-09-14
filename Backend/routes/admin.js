@@ -103,6 +103,27 @@ router.get("/projects/:id/edit", requireAdmin, async (req, res) => {
   }
 });
 
+// View project details
+router.get("/projects/:id", requireAdmin, async (req, res) => {
+  try {
+    const project = await Project.findByPk(req.params.id);
+    if (!project) {
+      req.flash("error", "Project not found");
+      return res.redirect("/admin/projects");
+    }
+
+    res.render("admin/projects/view", {
+      title: `Project: ${project.title}`,
+      layout: "admin/layout",
+      project,
+    });
+  } catch (error) {
+    console.error("View project error:", error);
+    req.flash("error", "Error loading project");
+    res.redirect("/admin/projects");
+  }
+});
+
 // Update project
 router.put("/projects/:id", requireAdmin, validateProject, async (req, res) => {
   try {
@@ -140,6 +161,58 @@ router.delete("/projects/:id", requireAdmin, async (req, res) => {
     res.redirect("/admin/projects");
   }
 });
+
+// Toggle project featured status
+router.post("/projects/:id/toggle-featured", requireAdmin, async (req, res) => {
+  try {
+    const project = await Project.findByPk(req.params.id);
+    if (!project) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Project not found" });
+    }
+
+    await project.update({ featured: !project.featured });
+    res.json({
+      success: true,
+      message: `Project ${
+        project.featured ? "removed from" : "marked as"
+      } featured`,
+      featured: !project.featured,
+    });
+  } catch (error) {
+    console.error("Toggle featured error:", error);
+    res.status(500).json({ success: false, message: "Error updating project" });
+  }
+});
+
+// Toggle project visibility
+router.post(
+  "/projects/:id/toggle-visibility",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const project = await Project.findByPk(req.params.id);
+      if (!project) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Project not found" });
+      }
+
+      await project.update({ isPublic: !project.isPublic });
+      res.json({
+        success: true,
+        message: `Project made ${project.isPublic ? "private" : "public"}`,
+        isPublic: !project.isPublic,
+      });
+    } catch (error) {
+      console.error("Toggle visibility error:", error);
+      res
+        .status(500)
+        .json({ success: false, message: "Error updating project" });
+    }
+  }
+);
 
 // ================== SKILLS MANAGEMENT ==================
 
