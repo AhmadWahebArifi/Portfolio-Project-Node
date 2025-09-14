@@ -5,7 +5,7 @@
       <div class="col-lg-6">
         <h1 class="display-4 fw-bold mb-4">My Skills & Expertise</h1>
         <p class="lead mb-4">
-          A comprehensive overview of my technical skills, proficiency levels, 
+          A comprehensive overview of my technical skills, proficiency levels,
           and years of experience across different technologies and frameworks.
         </p>
         <div class="hero-stats">
@@ -18,7 +18,9 @@
             </div>
             <div class="col-sm-4">
               <div class="stat-item">
-                <h3 class="stat-number"><%= Object.keys(groupedSkills).length %></h3>
+                <h3 class="stat-number">
+                  <%= Object.keys(groupedSkills).length %>
+                </h3>
                 <p class="stat-label">Categories</p>
               </div>
             </div>
@@ -34,13 +36,15 @@
       <div class="col-lg-6">
         <div class="hero-animation">
           <div class="floating-icons">
-            <% if (featuredSkills.length > 0) { %>
-            <% featuredSkills.slice(0, 6).forEach(function(skill, index) { %>
+            <% if (featuredSkills.length > 0) { %> <% featuredSkills.slice(0,
+            6).forEach(function(skill, index) { %>
             <div class="floating-icon icon-<%= index + 1 %>">
-              <i class="<%= skill.icon %>" style="color: <%= skill.color %>;"></i>
+              <i
+                class="<%= skill.icon %>"
+                style="color: <%= skill.color %>"
+              ></i>
             </div>
-            <% }); %>
-            <% } %>
+            <% }); %> <% } %>
           </div>
         </div>
       </div>
@@ -67,7 +71,8 @@
           <% Object.keys(groupedSkills).forEach(function(category) { %>
           <button class="btn btn-outline-primary" data-filter="<%= category %>">
             <i class="fas fa-<%= getCategoryIcon(category) %>"></i>
-            <%= category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+            <%= category.replace('-', ' ').replace(/\b\w/g, l =>
+            l.toUpperCase()) %>
           </button>
           <% }); %>
         </div>
@@ -80,8 +85,12 @@
       <div class="skill-category" data-category="<%= category %>">
         <div class="category-header mb-4">
           <h3 class="category-title">
-            <i class="fas fa-<%= getCategoryIcon(category) %> me-2" style="color: var(--primary-color);"></i>
-            <%= category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+            <i
+              class="fas fa-<%= getCategoryIcon(category) %> me-2"
+              style="color: var(--primary-color)"
+            ></i>
+            <%= category.replace('-', ' ').replace(/\b\w/g, l =>
+            l.toUpperCase()) %>
           </h3>
           <p class="category-description">
             <%= getCategoryDescription(category) %>
@@ -96,41 +105,53 @@
                 <div class="skill-header">
                   <div class="skill-icon">
                     <% if (skill.icon) { %>
-                    <i class="<%= skill.icon %>" style="color: <%= skill.color %>;"></i>
+                    <i
+                      class="<%= skill.icon %>"
+                      style="color: <%= skill.color %>"
+                    ></i>
                     <% } else { %>
-                    <i class="fas fa-code" style="color: <%= skill.color %>;"></i>
+                    <i
+                      class="fas fa-code"
+                      style="color: <%= skill.color %>"
+                    ></i>
                     <% } %>
                   </div>
                   <div class="skill-info">
                     <h4 class="skill-name"><%= skill.name %></h4>
                     <p class="skill-experience">
-                      <%= skill.yearsOfExperience %> year<%= skill.yearsOfExperience !== 1 ? 's' : '' %> experience
+                      <%= skill.yearsOfExperience %> year<%=
+                      skill.yearsOfExperience !== 1 ? 's' : '' %> experience
                     </p>
                   </div>
                 </div>
 
                 <% if (skill.description) { %>
-                <p class="skill-description">
-                  <%= skill.description %>
-                </p>
+                <p class="skill-description"><%= skill.description %></p>
                 <% } %>
 
                 <div class="skill-progress">
                   <div class="progress-header">
                     <span class="progress-label">Proficiency</span>
-                    <span class="progress-value"><%= skill.proficiency %>%</span>
+                    <span class="progress-value"
+                      ><%= skill.proficiency %>%</span
+                    >
                   </div>
                   <div class="progress">
-                    <div 
-                      class="progress-bar" 
-                      style="width: <%= skill.proficiency %>%; background-color: <%= skill.color %>;"
+                    <div
+                      class="progress-bar"
+                      style="
+                        width: <%= skill.proficiency %>%;
+                        background-color: <%= skill.color %>;
+                      "
                       data-proficiency="<%= skill.proficiency %>"
                     ></div>
                   </div>
                 </div>
 
                 <div class="skill-level">
-                  <span class="level-badge level-<%= getSkillLevel(skill.proficiency) %>">
+                  <span
+                    class="level-badge level-<%= getSkillLevel(skill.proficiency) %>"
+                  >
                     <%= getSkillLevelText(skill.proficiency) %>
                   </span>
                 </div>
@@ -164,7 +185,8 @@
       <div class="col-md-6 col-lg-4 mb-4">
         <div class="category-chart">
           <h4 class="chart-title">
-            <%= category.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase()) %>
+            <%= category.replace('-', ' ').replace(/\b\w/g, l =>
+            l.toUpperCase()) %>
           </h4>
           <div class="category-skills">
             <% groupedSkills[category].slice(0, 5).forEach(function(skill) { %>
@@ -174,9 +196,12 @@
                 <span class="skill-bar-value"><%= skill.proficiency %>%</span>
               </div>
               <div class="skill-bar-track">
-                <div 
-                  class="skill-bar-fill" 
-                  style="width: <%= skill.proficiency %>%; background-color: <%= skill.color %>;"
+                <div
+                  class="skill-bar-fill"
+                  style="
+                    width: <%= skill.proficiency %>%;
+                    background-color: <%= skill.color %>;
+                  "
                 ></div>
               </div>
             </div>
@@ -214,344 +239,397 @@
 </section>
 
 <style>
-/* Skills Page Styles */
-.hero-section {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-  position: relative;
-  overflow: hidden;
-}
+  /* Skills Page Styles */
+  .hero-section {
+    background: linear-gradient(
+      135deg,
+      var(--primary-color),
+      var(--secondary-color)
+    );
+    position: relative;
+    overflow: hidden;
+  }
 
-.hero-stats .stat-item {
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.stat-number {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 0;
-  color: white;
-}
-
-.stat-label {
-  font-size: 0.9rem;
-  opacity: 0.9;
-  margin-bottom: 0;
-}
-
-.floating-icons {
-  position: relative;
-  height: 400px;
-}
-
-.floating-icon {
-  position: absolute;
-  font-size: 2rem;
-  animation: float 6s ease-in-out infinite;
-}
-
-.floating-icon.icon-1 { top: 10%; left: 20%; animation-delay: 0s; }
-.floating-icon.icon-2 { top: 20%; right: 15%; animation-delay: 1s; }
-.floating-icon.icon-3 { top: 40%; left: 10%; animation-delay: 2s; }
-.floating-icon.icon-4 { top: 60%; right: 20%; animation-delay: 3s; }
-.floating-icon.icon-5 { bottom: 20%; left: 25%; animation-delay: 4s; }
-.floating-icon.icon-6 { bottom: 10%; right: 10%; animation-delay: 5s; }
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-.skill-filters .btn {
-  margin: 0.25rem;
-  border-radius: 50px;
-  padding: 0.5rem 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.skill-filters .btn.active,
-.skill-filters .btn:hover {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: white;
-  transform: translateY(-2px);
-}
-
-.skill-category {
-  margin-bottom: 3rem;
-}
-
-.category-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.category-title {
-  font-size: 1.8rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-}
-
-.category-description {
-  color: #6c757d;
-  font-size: 1.1rem;
-}
-
-.skill-card {
-  background: white;
-  border-radius: 15px;
-  padding: 1.5rem;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
-  border: 1px solid #f0f0f0;
-}
-
-.skill-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-}
-
-.skill-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.skill-icon {
-  font-size: 2rem;
-  margin-right: 1rem;
-  width: 50px;
-  text-align: center;
-}
-
-.skill-name {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.skill-experience {
-  color: #6c757d;
-  font-size: 0.9rem;
-  margin-bottom: 0;
-}
-
-.skill-description {
-  color: #6c757d;
-  font-size: 0.95rem;
-  margin-bottom: 1rem;
-  line-height: 1.5;
-}
-
-.skill-progress {
-  margin-bottom: 1rem;
-}
-
-.progress-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.progress-label {
-  font-weight: 500;
-  font-size: 0.9rem;
-}
-
-.progress-value {
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.progress {
-  height: 8px;
-  border-radius: 10px;
-  background-color: #f0f0f0;
-}
-
-.progress-bar {
-  border-radius: 10px;
-  transition: width 1s ease;
-}
-
-.level-badge {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 50px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.level-badge.level-beginner { background-color: #ffeaa7; color: #fdcb6e; }
-.level-badge.level-intermediate { background-color: #81ecec; color: #00b894; }
-.level-badge.level-advanced { background-color: #fd79a8; color: #e84393; }
-.level-badge.level-expert { background-color: #a29bfe; color: #6c5ce7; }
-
-.category-chart {
-  background: white;
-  border-radius: 15px;
-  padding: 1.5rem;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  height: 100%;
-}
-
-.chart-title {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.skill-bar {
-  margin-bottom: 1rem;
-}
-
-.skill-bar-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.skill-bar-name {
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.skill-bar-value {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-.skill-bar-track {
-  height: 6px;
-  background-color: #f0f0f0;
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.skill-bar-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 1s ease;
-}
-
-.cta-section {
-  background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-  border-radius: 20px;
-  padding: 3rem 2rem;
-}
-
-.cta-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.cta-description {
-  font-size: 1.2rem;
-  color: #6c757d;
-  margin-bottom: 2rem;
-}
-
-.cta-buttons .btn {
-  border-radius: 50px;
-  padding: 0.75rem 2rem;
-  font-weight: 600;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .hero-section .row {
+  .hero-stats .stat-item {
     text-align: center;
-  }
-  
-  .floating-icons {
-    height: 200px;
-  }
-  
-  .skill-filters .btn {
-    font-size: 0.9rem;
-    padding: 0.4rem 1rem;
-  }
-  
-  .cta-title {
-    font-size: 2rem;
-  }
-  
-  .cta-buttons .btn {
-    display: block;
-    width: 100%;
     margin-bottom: 1rem;
   }
-}
 
-/* Animation on scroll */
-.skill-card {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.6s ease;
-}
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    color: white;
+  }
 
-.skill-card.animate {
-  opacity: 1;
-  transform: translateY(0);
-}
+  .stat-label {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 0;
+  }
+
+  .floating-icons {
+    position: relative;
+    height: 400px;
+  }
+
+  .floating-icon {
+    position: absolute;
+    font-size: 2rem;
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .floating-icon.icon-1 {
+    top: 10%;
+    left: 20%;
+    animation-delay: 0s;
+  }
+  .floating-icon.icon-2 {
+    top: 20%;
+    right: 15%;
+    animation-delay: 1s;
+  }
+  .floating-icon.icon-3 {
+    top: 40%;
+    left: 10%;
+    animation-delay: 2s;
+  }
+  .floating-icon.icon-4 {
+    top: 60%;
+    right: 20%;
+    animation-delay: 3s;
+  }
+  .floating-icon.icon-5 {
+    bottom: 20%;
+    left: 25%;
+    animation-delay: 4s;
+  }
+  .floating-icon.icon-6 {
+    bottom: 10%;
+    right: 10%;
+    animation-delay: 5s;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  .skill-filters .btn {
+    margin: 0.25rem;
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s ease;
+  }
+
+  .skill-filters .btn.active,
+  .skill-filters .btn:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .skill-category {
+    margin-bottom: 3rem;
+  }
+
+  .category-header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .category-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .category-description {
+    color: #6c757d;
+    font-size: 1.1rem;
+  }
+
+  .skill-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+  }
+
+  .skill-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+  }
+
+  .skill-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .skill-icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+    width: 50px;
+    text-align: center;
+  }
+
+  .skill-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .skill-experience {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 0;
+  }
+
+  .skill-description {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .skill-progress {
+    margin-bottom: 1rem;
+  }
+
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+  }
+
+  .progress-value {
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  .progress {
+    height: 8px;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+  }
+
+  .progress-bar {
+    border-radius: 10px;
+    transition: width 1s ease;
+  }
+
+  .level-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .level-badge.level-beginner {
+    background-color: #ffeaa7;
+    color: #fdcb6e;
+  }
+  .level-badge.level-intermediate {
+    background-color: #81ecec;
+    color: #00b894;
+  }
+  .level-badge.level-advanced {
+    background-color: #fd79a8;
+    color: #e84393;
+  }
+  .level-badge.level-expert {
+    background-color: #a29bfe;
+    color: #6c5ce7;
+  }
+
+  .category-chart {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    height: 100%;
+  }
+
+  .chart-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+
+  .skill-bar {
+    margin-bottom: 1rem;
+  }
+
+  .skill-bar-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+  }
+
+  .skill-bar-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .skill-bar-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  .skill-bar-track {
+    height: 6px;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .skill-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+  }
+
+  .cta-section {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-radius: 20px;
+    padding: 3rem 2rem;
+  }
+
+  .cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .cta-description {
+    font-size: 1.2rem;
+    color: #6c757d;
+    margin-bottom: 2rem;
+  }
+
+  .cta-buttons .btn {
+    border-radius: 50px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .hero-section .row {
+      text-align: center;
+    }
+
+    .floating-icons {
+      height: 200px;
+    }
+
+    .skill-filters .btn {
+      font-size: 0.9rem;
+      padding: 0.4rem 1rem;
+    }
+
+    .cta-title {
+      font-size: 2rem;
+    }
+
+    .cta-buttons .btn {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
+
+  /* Animation on scroll */
+  .skill-card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+
+  .skill-card.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Category filtering
-  const filterButtons = document.querySelectorAll('[data-filter]');
-  const skillCategories = document.querySelectorAll('.skill-category');
-  
-  filterButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const filter = this.getAttribute('data-filter');
-      
-      // Update active button
-      filterButtons.forEach(btn => btn.classList.remove('active'));
-      this.classList.add('active');
-      
-      // Filter categories
-      skillCategories.forEach(category => {
-        if (filter === 'all' || category.getAttribute('data-category') === filter) {
-          category.style.display = 'block';
-        } else {
-          category.style.display = 'none';
-        }
+  document.addEventListener("DOMContentLoaded", function () {
+    // Category filtering
+    const filterButtons = document.querySelectorAll("[data-filter]");
+    const skillCategories = document.querySelectorAll(".skill-category");
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const filter = this.getAttribute("data-filter");
+
+        // Update active button
+        filterButtons.forEach((btn) => btn.classList.remove("active"));
+        this.classList.add("active");
+
+        // Filter categories
+        skillCategories.forEach((category) => {
+          if (
+            filter === "all" ||
+            category.getAttribute("data-category") === filter
+          ) {
+            category.style.display = "block";
+          } else {
+            category.style.display = "none";
+          }
+        });
       });
     });
+
+    // Animate progress bars on scroll
+    const observerOptions = {
+      threshold: 0.3,
+      rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate");
+
+          // Animate progress bars
+          const progressBars = entry.target.querySelectorAll(
+            ".progress-bar, .skill-bar-fill"
+          );
+          progressBars.forEach((bar) => {
+            const width =
+              bar.getAttribute("data-proficiency") || bar.style.width;
+            bar.style.width = "0%";
+            setTimeout(() => {
+              bar.style.width = width.includes("%") ? width : width + "%";
+            }, 200);
+          });
+        }
+      });
+    }, observerOptions);
+
+    // Observe skill cards
+    document
+      .querySelectorAll(".skill-card, .category-chart")
+      .forEach((card) => {
+        observer.observe(card);
+      });
   });
-  
-  // Animate progress bars on scroll
-  const observerOptions = {
-    threshold: 0.3,
-    rootMargin: '0px 0px -50px 0px'
-  };
-  
-  const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate');
-        
-        // Animate progress bars
-        const progressBars = entry.target.querySelectorAll('.progress-bar, .skill-bar-fill');
-        progressBars.forEach(bar => {
-          const width = bar.getAttribute('data-proficiency') || bar.style.width;
-          bar.style.width = '0%';
-          setTimeout(() => {
-            bar.style.width = width.includes('%') ? width : width + '%';
-          }, 200);
-        });
-      }
-    });
-  }, observerOptions);
-  
-  // Observe skill cards
-  document.querySelectorAll('.skill-card, .category-chart').forEach(card => {
-    observer.observe(card);
-  });
-});
 </script>
