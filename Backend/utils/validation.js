@@ -72,8 +72,9 @@ const validateUserLogin = [
 
 // Project validation
 const validateProject = [
-  // Transform technologies string to array before validation
+  // Transform and normalize form data before validation
   (req, res, next) => {
+    // Handle technologies field (string to array conversion)
     if (req.body.technologies && typeof req.body.technologies === "string") {
       req.body.technologies = req.body.technologies
         .split(",")
@@ -84,6 +85,20 @@ const validateProject = [
     if (req.body.technologies && !Array.isArray(req.body.technologies)) {
       req.body.technologies = [];
     }
+
+    // Handle boolean fields (checkboxes)
+    // When checkboxes are checked, they send "true" as string
+    // When unchecked, they don't send the field at all
+    req.body.featured =
+      req.body.featured === "true" || req.body.featured === true;
+    req.body.isPublic =
+      req.body.isPublic === "true" || req.body.isPublic === true;
+
+    // Handle numeric fields
+    if (req.body.order) {
+      req.body.order = parseInt(req.body.order, 10) || 0;
+    }
+
     next();
   },
   body("title")
@@ -145,8 +160,9 @@ const validateSkill = [
 
 // Blog validation
 const validateBlog = [
-  // Transform tags string to array before validation
+  // Transform and normalize form data before validation
   (req, res, next) => {
+    // Handle tags field (string to array conversion)
     if (req.body.tags && typeof req.body.tags === "string") {
       req.body.tags = req.body.tags
         .split(",")
@@ -157,6 +173,17 @@ const validateBlog = [
     if (req.body.tags && !Array.isArray(req.body.tags)) {
       req.body.tags = [];
     }
+
+    // Handle boolean fields (checkboxes)
+    if (req.body.published !== undefined) {
+      req.body.published =
+        req.body.published === "true" || req.body.published === true;
+    }
+    if (req.body.featured !== undefined) {
+      req.body.featured =
+        req.body.featured === "true" || req.body.featured === true;
+    }
+
     next();
   },
   body("title")
