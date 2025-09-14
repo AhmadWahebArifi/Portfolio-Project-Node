@@ -29,14 +29,16 @@ const connectDB = async () => {
     await sequelize.authenticate();
     console.log("MySQL Connected successfully");
 
-    // Sync database in development
+    // Sync database - use force only if needed, alter can cause index conflicts
     if (process.env.NODE_ENV === "development") {
-      await sequelize.sync({ alter: true });
+      // Use { force: false } to avoid recreating tables and causing index issues
+      await sequelize.sync({ force: false });
       console.log("Database synchronized");
     }
   } catch (error) {
     console.error("Database connection error:", error.message);
-    process.exit(1);
+    // Don't exit process, let the app continue running
+    console.log("Continuing without database sync...");
   }
 };
 
