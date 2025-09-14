@@ -581,9 +581,12 @@ router.get("/contact", (req, res) => {
 
 // Resume download
 router.get("/resume", (req, res) => {
-  const resumePath = path.join(__dirname, "../public/assets/documents/Ahmad_Waheb_Arifi_Resume.pdf");
-  const fs = require('fs');
-  
+  const resumePath = path.join(
+    __dirname,
+    "../public/assets/documents/Ahmad_Waheb_Arifi_Resume.pdf"
+  );
+  const fs = require("fs");
+
   // Check if resume file exists
   if (fs.existsSync(resumePath)) {
     res.download(resumePath, "Ahmad_Waheb_Arifi_Resume.pdf", (err) => {
@@ -594,7 +597,10 @@ router.get("/resume", (req, res) => {
       }
     });
   } else {
-    req.flash("error", "Resume not found. Please contact Ahmad for the latest version.");
+    req.flash(
+      "error",
+      "Resume not found. Please contact Ahmad for the latest version."
+    );
     res.redirect("/");
   }
 });
