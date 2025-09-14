@@ -581,10 +581,7 @@ router.get("/contact", (req, res) => {
 
 // Resume download
 router.get("/resume", (req, res) => {
-  const resumePath = path.join(
-    __dirname,
-    "../public/assets/documents/Ahmad_Waheb_Arifi_Resume.pdf"
-  );
+  const resumePath = path.join(__dirname, "../public/ahmad.pdf");
   const fs = require("fs");
 
   // Check if resume file exists
