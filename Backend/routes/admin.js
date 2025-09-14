@@ -127,13 +127,28 @@ router.get("/projects/:id", requireAdmin, async (req, res) => {
 // Update project
 router.put("/projects/:id", requireAdmin, validateProject, async (req, res) => {
   try {
+    console.log("UPDATE PROJECT - Raw body:", req.body);
+
     const project = await Project.findByPk(req.params.id);
     if (!project) {
       req.flash("error", "Project not found");
       return res.redirect("/admin/projects");
     }
 
+    console.log("UPDATE PROJECT - Before update:", {
+      id: project.id,
+      featured: project.featured,
+      isPublic: project.isPublic,
+    });
+
     await project.update(req.body);
+
+    console.log("UPDATE PROJECT - After update:", {
+      id: project.id,
+      featured: project.featured,
+      isPublic: project.isPublic,
+    });
+
     req.flash("success", "Project updated successfully!");
     res.redirect("/admin/projects");
   } catch (error) {
@@ -146,13 +161,20 @@ router.put("/projects/:id", requireAdmin, validateProject, async (req, res) => {
 // Delete project
 router.delete("/projects/:id", requireAdmin, async (req, res) => {
   try {
+    console.log("DELETE PROJECT - Request params:", req.params);
+    console.log("DELETE PROJECT - Request method:", req.method);
+
     const project = await Project.findByPk(req.params.id);
     if (!project) {
+      console.log("DELETE PROJECT - Project not found for ID:", req.params.id);
       req.flash("error", "Project not found");
       return res.redirect("/admin/projects");
     }
 
+    console.log("DELETE PROJECT - Found project:", project.title);
     await project.destroy();
+    console.log("DELETE PROJECT - Successfully deleted");
+
     req.flash("success", "Project deleted successfully!");
     res.redirect("/admin/projects");
   } catch (error) {
