@@ -107,9 +107,19 @@
             </p>
 
             <!-- Tags -->
-            <% if (blog.tags && blog.tags.length > 0) { %>
+            <% 
+              let tagsArray = [];
+              try {
+                if (blog.tags) {
+                  tagsArray = Array.isArray(blog.tags) ? blog.tags : JSON.parse(blog.tags);
+                }
+              } catch (e) {
+                tagsArray = [];
+              }
+            %>
+            <% if (tagsArray && tagsArray.length > 0) { %>
             <div class="mb-2">
-              <% blog.tags.slice(0, 3).forEach(function(tag) { %>
+              <% tagsArray.slice(0, 3).forEach(function(tag) { %>
               <span class="badge bg-light text-dark me-1">#<%= tag %></span>
               <% }); %>
             </div>
