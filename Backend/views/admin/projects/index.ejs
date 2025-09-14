@@ -98,11 +98,12 @@
                 <i class="fas fa-edit"></i>
               </a>
               <form
-                action="/admin/projects/<%= project.id %>?_method=DELETE"
+                action="/admin/projects/<%= project.id %>"
                 method="POST"
                 class="d-inline"
                 onsubmit="return confirm('Are you sure you want to delete this project?')"
               >
+                <input type="hidden" name="_method" value="DELETE" />
                 <button
                   type="submit"
                   class="btn btn-outline-danger"
