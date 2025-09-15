@@ -163,6 +163,8 @@ router.delete("/projects/:id", requireAdmin, async (req, res) => {
   try {
     console.log("DELETE PROJECT - Request params:", req.params);
     console.log("DELETE PROJECT - Request method:", req.method);
+    console.log("DELETE PROJECT - Request body:", req.body);
+    console.log("DELETE PROJECT - Request query:", req.query);
 
     const project = await Project.findByPk(req.params.id);
     if (!project) {
@@ -172,6 +174,14 @@ router.delete("/projects/:id", requireAdmin, async (req, res) => {
     }
 
     console.log("DELETE PROJECT - Found project:", project.title);
+    
+    // Additional validation to prevent accidental deletion
+    if (!req.params.id || req.params.id !== project.id.toString()) {
+      console.log("DELETE PROJECT - ID mismatch:", req.params.id, project.id);
+      req.flash("error", "Invalid project ID");
+      return res.redirect("/admin/projects");
+    }
+    
     await project.destroy();
     console.log("DELETE PROJECT - Successfully deleted");
 
@@ -179,7 +189,13 @@ router.delete("/projects/:id", requireAdmin, async (req, res) => {
     res.redirect("/admin/projects");
   } catch (error) {
     console.error("Delete project error:", error);
-    req.flash("error", "Error deleting project");
+    req.flash("error", "Error deleting project: " + error.message);
+    res.redirect("/admin/projects");
+  }
+}););
+    res.redirect("/admin/projects");
+  }
+}););
     res.redirect("/admin/projects");
   }
 });
