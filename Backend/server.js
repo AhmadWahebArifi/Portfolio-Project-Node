@@ -114,11 +114,11 @@ app.use((req, res, next) => {
   next();
 });
 
+// Admin Routes (mount before view routes to avoid conflicts)
+app.use("/admin", require("./routes/admin"));
+
 // View Routes
 app.use("/", require("./routes/views"));
-
-// Admin Routes
-app.use("/admin", require("./routes/admin"));
 
 // API Routes
 app.use("/api/contact", require("./routes/contact"));
