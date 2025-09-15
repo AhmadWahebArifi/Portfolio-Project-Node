@@ -192,12 +192,6 @@ router.delete("/projects/:id", requireAdmin, async (req, res) => {
     req.flash("error", "Error deleting project: " + error.message);
     res.redirect("/admin/projects");
   }
-}););
-    res.redirect("/admin/projects");
-  }
-}););
-    res.redirect("/admin/projects");
-  }
 });
 
 // Toggle project featured status
