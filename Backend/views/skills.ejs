@@ -18,13 +18,13 @@
             </div>
             <div class="col-md-4">
               <div class="stat-item">
-                <h3 class="stat-number"><%= yearsOfExperience %></h3>
+                <h3 class="stat-number"><%= avgExperience %></h3>
                 <p class="stat-label text-white">Years Experience</p>
               </div>
             </div>
             <div class="col-md-4">
               <div class="stat-item">
-                <h3 class="stat-number"><%= projectsCompleted %></h3>
+                <h3 class="stat-number"><%= featuredSkills.length %></h3>
                 <p class="stat-label text-white">Projects Done</p>
               </div>
             </div>
@@ -33,8 +33,9 @@
       </div>
       <div class="col-lg-6 d-none d-lg-block animate-on-scroll">
         <div class="floating-icons">
-          <% if (skills && skills.length > 0) { %> <% skills.slice(0,
-          6).forEach(function(skill, index) { %> <% if (skill.icon) { %>
+          <% if (featuredSkills && featuredSkills.length > 0) { %> <%
+          featuredSkills.slice(0, 6).forEach(function(skill, index) { %> <% if
+          (skill.icon) { %>
           <i
             class="floating-icon icon-<%= index + 1 %> <%= skill.icon %>"
             data-color="<%= skill.color %>"
@@ -55,8 +56,8 @@
         <button class="btn btn-outline-primary active" data-filter="all">
           All Skills
         </button>
-        <% if (categories && categories.length > 0) { %> <%
-        categories.forEach(function(category) { %>
+        <% if (groupedSkills && Object.keys(groupedSkills).length > 0) { %> <%
+        Object.keys(groupedSkills).forEach(function(category) { %>
         <button class="btn btn-outline-primary" data-filter="<%= category %>">
           <%= category.charAt(0).toUpperCase() + category.slice(1).replace('-',
           ' ') %>
