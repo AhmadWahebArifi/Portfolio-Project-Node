@@ -94,7 +94,8 @@
         <div class="blog-content mb-5"><%- renderMarkdown(blog.content) %></div>
 
         <!-- Tags -->
-        <% if (blog.tags && blog.tags.length > 0) { %>
+        <% if (blog.tags && Array.isArray(blog.tags) && blog.tags.length > 0) {
+        %>
         <div class="mb-4">
           <h6 class="fw-bold mb-3">Tags:</h6>
           <div class="d-flex flex-wrap gap-2">
@@ -115,21 +116,21 @@
           <h6 class="fw-bold mb-3">Share this post:</h6>
           <div class="d-flex gap-2">
             <a
-              href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(blog.title) %>&url=<%= encodeURIComponent(req.protocol + '://' + req.get('host') + req.originalUrl) %>"
+              href="https://twitter.com/intent/tweet?text=<%= encodeURIComponent(blog.title) %>&url=<%= encodeURIComponent(fullUrl || 'http://localhost:5000/blog/' + blog.slug) %>"
               target="_blank"
               class="btn btn-outline-primary btn-sm"
             >
               <i class="fab fa-twitter"></i> Twitter
             </a>
             <a
-              href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(req.protocol + '://' + req.get('host') + req.originalUrl) %>"
+              href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(fullUrl || 'http://localhost:5000/blog/' + blog.slug) %>"
               target="_blank"
               class="btn btn-outline-primary btn-sm"
             >
               <i class="fab fa-facebook"></i> Facebook
             </a>
             <a
-              href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(req.protocol + '://' + req.get('host') + req.originalUrl) %>"
+              href="https://www.linkedin.com/sharing/share-offsite/?url=<%= encodeURIComponent(fullUrl || 'http://localhost:5000/blog/' + blog.slug) %>"
               target="_blank"
               class="btn btn-outline-primary btn-sm"
             >
