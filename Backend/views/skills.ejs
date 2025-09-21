@@ -1,205 +1,234 @@
 <!-- Hero Section -->
-<section class="hero-section bg-gradient-primary text-white">
+<section class="py-5 mt-5 hero-section">
   <div class="container">
-    <div class="row align-items-center min-vh-75">
-      <div class="col-lg-6">
-        <h1 class="display-4 fw-bold mb-4">Ahmad's Skills & Expertise</h1>
-        <p class="lead mb-4">
-          Full Stack Developer specializing in MERN & LAMP stacks with expertise
-          in AI, Data Science, and building scalable university systems.
+    <div class="row align-items-center">
+      <div class="col-lg-6 animate-on-scroll">
+        <h1 class="display-3 fw-bold text-white mb-4">My Skills & Expertise</h1>
+        <p class="lead text-white mb-4">
+          A comprehensive overview of my technical skills, proficiency levels,
+          and years of experience in various technologies.
         </p>
-        <div class="d-flex flex-wrap gap-3 mb-4">
-          <a href="#skills" class="btn btn-light btn-lg">
-            <i class="fas fa-code me-2"></i>View Skills
-          </a>
-          <a href="/projects" class="btn btn-outline-light btn-lg">
-            <i class="fas fa-project-diagram me-2"></i>See Projects
-          </a>
-          <a href="/contact" class="btn btn-outline-light btn-lg">
-            <i class="fas fa-download me-2"></i>Download CV
-          </a>
-        </div>
         <div class="hero-stats">
           <div class="row">
-            <div class="col-sm-4">
+            <div class="col-md-4">
               <div class="stat-item">
                 <h3 class="stat-number"><%= totalSkills %></h3>
-                <p class="stat-label">Technologies</p>
+                <p class="stat-label text-white">Technologies</p>
               </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-md-4">
               <div class="stat-item">
-                <h3 class="stat-number">
-                  <%= Object.keys(groupedSkills).length %>
-                </h3>
-                <p class="stat-label">Categories</p>
+                <h3 class="stat-number"><%= yearsOfExperience %></h3>
+                <p class="stat-label text-white">Years Experience</p>
               </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col-md-4">
               <div class="stat-item">
-                <h3 class="stat-number">4+</h3>
-                <p class="stat-label">Years Experience</p>
+                <h3 class="stat-number"><%= projectsCompleted %></h3>
+                <p class="stat-label text-white">Projects Done</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-6">
-        <div class="hero-animation">
-          <div class="floating-icons">
-            <% if (featuredSkills.length > 0) { %> <% featuredSkills.slice(0,
-            6).forEach(function(skill, index) { %>
-            <div class="floating-icon icon-<%= index + 1 %>">
-              <i
-                class="<%= skill.icon %>"
-                style="color: <%= skill.color %>"
-              ></i>
-            </div>
-            <% }); %> <% } %>
-          </div>
+      <div class="col-lg-6 d-none d-lg-block animate-on-scroll">
+        <div class="floating-icons">
+          <% if (skills && skills.length > 0) { %> <% skills.slice(0,
+          6).forEach(function(skill, index) { %> <% if (skill.icon) { %>
+          <i
+            class="floating-icon icon-<%= index + 1 %> <%= skill.icon %>"
+            data-color="<%= skill.color %>"
+          ></i>
+          <% } %> <% }); %> <% } %>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Skills Categories Section -->
+<!-- Skills Content -->
 <section class="py-5">
   <div class="container">
     <!-- Category Filter -->
-    <div class="row mb-5">
-      <div class="col-12">
-        <div class="text-center mb-4">
-          <h2 class="section-title">Skills by Category</h2>
-          <p class="section-description">
-            Explore my expertise across different technology domains
-          </p>
-        </div>
-        <div class="skill-filters text-center">
-          <button class="btn btn-outline-primary active" data-filter="all">
-            All Skills
-          </button>
-          <% Object.keys(groupedSkills).forEach(function(category) { %>
-          <button class="btn btn-outline-primary" data-filter="<%= category %>">
-            <i class="fas fa-<%= getCategoryIcon(category) %>"></i>
-            <%= category.replace('-', ' ').replace(/\b\w/g, l =>
-            l.toUpperCase()) %>
-          </button>
-          <% }); %>
-        </div>
+    <div class="text-center mb-5 animate-on-scroll">
+      <div class="skill-filters">
+        <button class="btn btn-outline-primary active" data-filter="all">
+          All Skills
+        </button>
+        <% if (categories && categories.length > 0) { %> <%
+        categories.forEach(function(category) { %>
+        <button class="btn btn-outline-primary" data-filter="<%= category %>">
+          <%= category.charAt(0).toUpperCase() + category.slice(1).replace('-',
+          ' ') %>
+        </button>
+        <% }); %> <% } %>
       </div>
     </div>
 
-    <!-- Skills Grid -->
-    <div class="skills-grid">
-      <% Object.keys(groupedSkills).forEach(function(category) { %>
-      <div class="skill-category" data-category="<%= category %>">
-        <div class="category-header mb-4">
-          <h3 class="category-title">
-            <i
-              class="fas fa-<%= getCategoryIcon(category) %> me-2"
-              style="color: var(--primary-color)"
-            ></i>
-            <%= category.replace('-', ' ').replace(/\b\w/g, l =>
-            l.toUpperCase()) %>
-          </h3>
+    <!-- Skeleton loading for skills -->
+    <div id="skills-skeleton" class="skills-skeleton" style="display: none">
+      <% for(let i = 0; i < 4; i++) { %>
+      <div class="skill-category-skeleton">
+        <div class="text-center mb-4">
+          <div class="skeleton-text skeleton-title"></div>
+        </div>
+        <div class="row">
+          <% for(let j = 0; j < 3; j++) { %>
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="skeleton-card">
+              <div class="skeleton-header">
+                <div class="skeleton-icon"></div>
+                <div class="skeleton-info">
+                  <div class="skeleton-text skeleton-sm mb-2"></div>
+                  <div class="skeleton-text skeleton-xs"></div>
+                </div>
+              </div>
+              <div class="skeleton-text skeleton-desc mb-3"></div>
+              <div class="skeleton-progress mb-2"></div>
+              <div class="skeleton-text skeleton-xs mb-2"></div>
+              <div class="skeleton-badge"></div>
+            </div>
+          </div>
+          <% } %>
+        </div>
+      </div>
+      <% } %>
+    </div>
+
+    <!-- Actual skills content -->
+    <div id="skills-content">
+      <% if (groupedSkills && Object.keys(groupedSkills).length > 0) { %> <%
+      Object.keys(groupedSkills).forEach(function(category) { %>
+      <div
+        class="skill-category animate-on-scroll"
+        data-category="<%= category %>"
+      >
+        <div class="category-header">
+          <h2 class="category-title">
+            <%= category.charAt(0).toUpperCase() +
+            category.slice(1).replace('-', ' ') %> Skills
+          </h2>
           <p class="category-description">
-            <%= getCategoryDescription(category) %>
+            <%= category === 'frontend' ? 'Technologies I use to build
+            responsive and interactive user interfaces' : category === 'backend'
+            ? 'Server-side technologies and frameworks I work with' : category
+            === 'database' ? 'Database systems and management tools I specialize
+            in' : category === 'devops' ? 'Tools and practices I use for
+            deployment and infrastructure' : 'Additional tools and technologies
+            in my toolkit' %>
           </p>
         </div>
 
         <div class="row">
           <% groupedSkills[category].forEach(function(skill) { %>
-          <div class="col-lg-6 col-xl-4 mb-4">
-            <div class="skill-card h-100">
-              <div class="skill-card-body">
-                <div class="skill-header">
-                  <div class="skill-icon">
-                    <% if (skill.icon) { %>
-                    <i
-                      class="<%= skill.icon %>"
-                      style="color: <%= skill.color %>"
-                    ></i>
-                    <% } else { %>
-                    <i
-                      class="fas fa-code"
-                      style="color: <%= skill.color %>"
-                    ></i>
-                    <% } %>
-                  </div>
-                  <div class="skill-info">
-                    <h4 class="skill-name"><%= skill.name %></h4>
-                    <p class="skill-experience">
-                      <%= skill.yearsOfExperience %> year<%=
-                      skill.yearsOfExperience !== 1 ? 's' : '' %> experience
-                    </p>
-                  </div>
-                </div>
-
-                <% if (skill.description) { %>
-                <p class="skill-description"><%= skill.description %></p>
+          <div class="col-lg-4 col-md-6 mb-4">
+            <div class="skill-card">
+              <div class="skill-header">
+                <% if (skill.icon) { %>
+                <i
+                  class="skill-icon <%= skill.icon %>"
+                  data-color="<%= skill.color %>"
+                ></i>
                 <% } %>
-
-                <div class="skill-progress">
-                  <div class="progress-header">
-                    <span class="progress-label">Proficiency</span>
-                    <span class="progress-value"
-                      ><%= skill.proficiency %>%</span
-                    >
-                  </div>
-                  <div class="progress">
-                    <div
-                      class="progress-bar"
-                      style="
-                        width: <%= skill.proficiency %>%;
-                        background-color: <%= skill.color %>;
-                      "
-                      data-proficiency="<%= skill.proficiency %>"
-                    ></div>
-                  </div>
-                </div>
-
-                <div class="skill-level">
-                  <span
-                    class="level-badge level-<%= getSkillLevel(skill.proficiency) %>"
-                  >
-                    <%= getSkillLevelText(skill.proficiency) %>
-                  </span>
+                <div>
+                  <h3 class="skill-name"><%= skill.name %></h3>
+                  <p class="skill-experience">
+                    <%= skill.yearsOfExperience %> year<%=
+                    skill.yearsOfExperience !== 1 ? 's' : '' %> experience
+                  </p>
                 </div>
               </div>
+
+              <% if (skill.description) { %>
+              <p class="skill-description"><%= skill.description %></p>
+              <% } %>
+
+              <div class="skill-progress">
+                <div class="progress-header">
+                  <span class="progress-label">Proficiency</span>
+                  <span class="progress-value"><%= skill.proficiency %>%</span>
+                </div>
+                <div class="progress">
+                  <div
+                    class="progress-bar"
+                    data-proficiency="<%= skill.proficiency %>"
+                    data-color="<%= skill.color %>"
+                    role="progressbar"
+                    aria-valuenow="<%= skill.proficiency %>"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+              </div>
+
+              <span
+                class="level-badge level-<%= skill.proficiency < 50 ? 'beginner' : skill.proficiency < 75 ? 'intermediate' : skill.proficiency < 90 ? 'advanced' : 'expert' %>"
+              >
+                <%= skill.proficiency < 50 ? 'Beginner' : skill.proficiency < 75
+                ? 'Intermediate' : skill.proficiency < 90 ? 'Advanced' :
+                'Expert' %>
+              </span>
             </div>
           </div>
           <% }); %>
         </div>
       </div>
-      <% }); %>
+      <% }); %> <% } else { %>
+      <div class="text-center py-5">
+        <div class="mb-4">
+          <i class="fas fa-tools fa-5x text-muted"></i>
+        </div>
+        <h3>Skills Information Coming Soon</h3>
+        <p class="text-muted">
+          I'm currently updating my skills information. Please check back later.
+        </p>
+      </div>
+      <% } %>
     </div>
   </div>
 </section>
 
-<!-- Skills Chart Section -->
+<!-- Skills Charts -->
 <section class="py-5 bg-light">
   <div class="container">
-    <div class="row">
-      <div class="col-12">
-        <div class="text-center mb-5">
-          <h2 class="section-title">Proficiency Overview</h2>
-          <p class="section-description">
-            Visual representation of my skill levels across different categories
-          </p>
+    <div class="text-center mb-5 animate-on-scroll">
+      <h2 class="display-4 fw-bold">Skills Overview</h2>
+      <p class="lead">
+        Visual representation of my proficiency across different categories
+      </p>
+    </div>
+
+    <!-- Skeleton loading for charts -->
+    <div id="charts-skeleton" class="charts-skeleton" style="display: none">
+      <div class="row">
+        <% for(let i = 0; i < 3; i++) { %>
+        <div class="col-lg-4 mb-4">
+          <div class="skeleton-card">
+            <div class="skeleton-text skeleton-title mb-4"></div>
+            <% for(let j = 0; j < 5; j++) { %>
+            <div class="skeleton-bar">
+              <div class="skeleton-text skeleton-sm mb-2"></div>
+              <div class="skeleton-progress"></div>
+            </div>
+            <% } %>
+          </div>
         </div>
+        <% } %>
       </div>
     </div>
 
-    <div class="row">
-      <% Object.keys(groupedSkills).forEach(function(category) { %>
-      <div class="col-md-6 col-lg-4 mb-4">
-        <div class="category-chart">
-          <h4 class="chart-title">
-            <%= category.replace('-', ' ').replace(/\b\w/g, l =>
-            l.toUpperCase()) %>
-          </h4>
-          <div class="category-skills">
+    <!-- Actual charts content -->
+    <div id="charts-content">
+      <% if (groupedSkills && Object.keys(groupedSkills).length > 0) { %>
+      <div class="row">
+        <% Object.keys(groupedSkills).slice(0, 3).forEach(function(category) {
+        %>
+        <div class="col-lg-4 mb-4 animate-on-scroll">
+          <div class="category-chart">
+            <h3 class="chart-title">
+              <%= category.charAt(0).toUpperCase() +
+              category.slice(1).replace('-', ' ') %>
+            </h3>
             <% groupedSkills[category].slice(0, 5).forEach(function(skill) { %>
             <div class="skill-bar">
               <div class="skill-bar-header">
@@ -209,18 +238,23 @@
               <div class="skill-bar-track">
                 <div
                   class="skill-bar-fill"
-                  style="
-                    width: <%= skill.proficiency %>%;
-                    background-color: <%= skill.color %>;
-                  "
+                  data-proficiency="<%= skill.proficiency %>"
+                  data-color="<%= skill.color %>"
                 ></div>
               </div>
             </div>
             <% }); %>
           </div>
         </div>
+        <% }); %>
       </div>
-      <% }); %>
+      <% } else { %>
+      <div class="text-center py-5">
+        <p class="text-muted">
+          Charts will be available once skills data is loaded.
+        </p>
+      </div>
+      <% } %>
     </div>
   </div>
 </section>
@@ -542,6 +576,103 @@
     font-weight: 600;
   }
 
+  /* Skeleton styles */
+  .skills-skeleton,
+  .charts-skeleton {
+    opacity: 0.7;
+  }
+
+  .skill-category-skeleton {
+    margin-bottom: 3rem;
+  }
+
+  .skeleton-card {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+  }
+
+  .skeleton-text {
+    background: linear-gradient(90deg, #e0e0e0, #f5f5f5, #e0e0e0);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 0.25rem;
+    height: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .skeleton-title {
+    height: 1.8rem;
+    width: 60%;
+    margin: 0 auto 1rem;
+  }
+
+  .skeleton-sm {
+    height: 0.9rem;
+    width: 80%;
+  }
+
+  .skeleton-xs {
+    height: 0.8rem;
+    width: 60%;
+  }
+
+  .skeleton-desc {
+    height: 3rem;
+  }
+
+  .skeleton-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .skeleton-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #e0e0e0, #f5f5f5, #e0e0e0);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    margin-right: 1rem;
+  }
+
+  .skeleton-info {
+    flex: 1;
+  }
+
+  .skeleton-progress {
+    height: 8px;
+    background: linear-gradient(90deg, #e0e0e0, #f5f5f5, #e0e0e0);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 10px;
+  }
+
+  .skeleton-badge {
+    width: 30%;
+    height: 1.5rem;
+    background: linear-gradient(90deg, #e0e0e0, #f5f5f5, #e0e0e0);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 50px;
+  }
+
+  .skeleton-bar {
+    margin-bottom: 1rem;
+  }
+
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
   /* Responsive Design */
   @media (max-width: 768px) {
     .hero-section .row {
@@ -583,6 +714,70 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // Show skeleton loading while content is being prepared
+    const skillsSkeleton = document.getElementById("skills-skeleton");
+    const skillsContent = document.getElementById("skills-content");
+    const chartsSkeleton = document.getElementById("charts-skeleton");
+    const chartsContent = document.getElementById("charts-content");
+
+    // Show skeletons initially
+    if (skillsSkeleton && skillsContent) {
+      skillsSkeleton.style.display = "block";
+      skillsContent.style.display = "none";
+
+      // Simulate loading delay
+      setTimeout(function () {
+        skillsSkeleton.style.display = "none";
+        skillsContent.style.display = "block";
+      }, 300);
+    }
+
+    if (chartsSkeleton && chartsContent) {
+      chartsSkeleton.style.display = "block";
+      chartsContent.style.display = "none";
+
+      // Simulate loading delay
+      setTimeout(function () {
+        chartsSkeleton.style.display = "none";
+        chartsContent.style.display = "block";
+      }, 300);
+    }
+
+    // Apply colors to elements with data-color attributes
+    function applyColors() {
+      // Apply colors to skill icons
+      document.querySelectorAll("[data-color]").forEach(function (element) {
+        const color = element.getAttribute("data-color");
+        if (element.tagName === "I") {
+          element.style.color = color;
+        } else {
+          element.style.backgroundColor = color;
+        }
+      });
+
+      // Apply colors to progress bars
+      document
+        .querySelectorAll(".progress-bar, .skill-bar-fill")
+        .forEach(function (element) {
+          const proficiency = element.getAttribute("data-proficiency");
+          const color = element.getAttribute("data-color");
+
+          if (proficiency) {
+            element.style.width = "0%";
+            setTimeout(function () {
+              element.style.width = proficiency + "%";
+            }, 100);
+          }
+
+          if (color) {
+            element.style.backgroundColor = color;
+          }
+        });
+    }
+
+    // Apply colors after a short delay to ensure elements are rendered
+    setTimeout(applyColors, 100);
+
     // Category filtering
     const filterButtons = document.querySelectorAll("[data-filter]");
     const skillCategories = document.querySelectorAll(".skill-category");
@@ -619,19 +814,6 @@
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("animate");
-
-          // Animate progress bars
-          const progressBars = entry.target.querySelectorAll(
-            ".progress-bar, .skill-bar-fill"
-          );
-          progressBars.forEach((bar) => {
-            const width =
-              bar.getAttribute("data-proficiency") || bar.style.width;
-            bar.style.width = "0%";
-            setTimeout(() => {
-              bar.style.width = width.includes("%") ? width : width + "%";
-            }, 200);
-          });
         }
       });
     }, observerOptions);
