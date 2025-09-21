@@ -100,6 +100,15 @@ const Project = sequelize.define(
       {
         fields: ["category", "featured", "order"],
       },
+      {
+        fields: ["isPublic"],
+      },
+      {
+        fields: ["featured"],
+      },
+      {
+        fields: ["category", "isPublic", "featured"],
+      },
     ],
   }
 );
