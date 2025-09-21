@@ -15,6 +15,19 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// Add performance monitoring middleware
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    if (duration > 1000) {
+      // Log requests that take longer than 1 second
+      console.log(`Slow request: ${req.method} ${req.path} took ${duration}ms`);
+    }
+  });
+  next();
+});
+
 // View engine setup
 app.use(expressLayouts);
 app.set("layout", "layout");
