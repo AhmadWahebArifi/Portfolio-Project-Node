@@ -17,15 +17,15 @@
       <div class="col-lg-6 animate-on-scroll">
         <div class="text-center mb-4 mb-lg-0">
           <img
-            src="https://via.placeholder.com/400x400/4f46e5/ffffff?text=Your+Photo"
+            src="/ahmadpic.jpg"
             class="img-fluid rounded-circle shadow-lg"
-            alt="Profile Photo"
+            alt="Ahmad Waheb Arifi"
             style="max-width: 300px"
           />
         </div>
       </div>
       <div class="col-lg-6 animate-on-scroll">
-        <h2 class="display-5 fw-bold mb-4">Hi, I'm Your Name!</h2>
+        <h2 class="display-5 fw-bold mb-4">Hi, I'm Ahmad Waheb Arifi!</h2>
         <p class="lead mb-4">
           I'm a passionate full-stack developer with a love for creating
           innovative web solutions that make a difference.
@@ -72,7 +72,8 @@
         <i
           class="fas fa-<%= category === 'frontend' ? 'laptop-code' : category === 'backend' ? 'server' : category === 'database' ? 'database' : category === 'devops' ? 'cloud' : 'tools' %>"
         ></i>
-        <%= category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ') %>
+        <%= category.charAt(0).toUpperCase() + category.slice(1).replace('-', '
+        ') %>
       </h3>
 
       <div class="row">
@@ -81,10 +82,9 @@
           <div class="d-flex justify-content-between align-items-center mb-1">
             <span class="fw-medium">
               <% if (skill.icon) { %>
-              <i
-                class="<%= skill.icon %>"
-                style="color: <%= skill.color %>"
-              ></i>
+              <i class="<%= skill.icon %>" <% if (skill.color) { %
+                >style="color: <%= skill.color %>"<% } %>></i
+              >
               <% } %> <%= skill.name %>
             </span>
             <span class="text-muted">
@@ -93,17 +93,12 @@
             </span>
           </div>
           <div class="progress mb-2" style="height: 8px">
-            <div
-              class="progress-bar"
-              style="
-                width: <%= skill.proficiency %>%;
-                background-color: <%= skill.color %>;
-              "
-              role="progressbar"
-              aria-valuenow="<%= skill.proficiency %>"
-              aria-valuemin="0"
-              aria-valuemax="100"
-            ></div>
+            <div class="progress-bar" <% if (skill.proficiency) { %>
+              style="width: <%= skill.proficiency %>%;"<% } %> <% if
+              (skill.color) { %>style="background-color: <%= skill.color %>;"<%
+              } %> role="progressbar" aria-valuenow="<%= skill.proficiency %>"
+              aria-valuemin="0" aria-valuemax="100" >
+            </div>
           </div>
           <% if (skill.description) { %>
           <small class="text-muted"><%= skill.description %></small>
