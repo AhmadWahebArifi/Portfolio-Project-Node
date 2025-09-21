@@ -47,6 +47,12 @@
       </div>
       <div class="col-lg-6 animate-on-scroll">
         <div class="text-center">
+          <img
+            src="/ahmadpic.jpg"
+            class="img-fluid rounded-circle shadow-lg mb-4"
+            alt="Ahmad Waheb Arifi"
+            style="max-width: 250px"
+          />
           <div class="skill-item">
             <i class="fas fa-code skill-icon text-primary"></i>
             <h4>Clean Code</h4>
@@ -88,10 +94,8 @@
                   <span><%= skill.proficiency %>%</span>
                 </div>
                 <div class="progress">
-                  <div
-                    class="progress-bar"
-                    style="width: <%= skill.proficiency %>%"
-                  ></div>
+                  <% const widthStyle = 'width: ' + skill.proficiency + '%'; %>
+                  <div class="progress-bar" style="<%= widthStyle %>"></div>
                 </div>
               </div>
               <% }); %>
