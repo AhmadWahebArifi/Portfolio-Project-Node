@@ -73,7 +73,7 @@
       <div class="row">
         <% projects.forEach(function(project, index) { %>
         <div class="col-lg-4 col-md-6 mb-4 animate-on-scroll" <% if (index>
-          0) { %>style="animation-delay: <%= index * 0.1 %>s"<% } %> >
+          0) { %>style="animation-delay: <%= index * 0.1 %>s;"<% } %> >
           <div class="card h-100 project-card">
             <% if (project.images && Array.isArray(project.images) &&
             project.images.length > 0) { %>
