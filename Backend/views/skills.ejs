@@ -109,13 +109,14 @@
             category.slice(1).replace('-', ' ') %> Skills
           </h2>
           <p class="category-description">
-            <%= category === 'frontend' ? 'Technologies I use to build
-            responsive and interactive user interfaces' : category === 'backend'
-            ? 'Server-side technologies and frameworks I work with' : category
-            === 'database' ? 'Database systems and management tools I specialize
-            in' : category === 'devops' ? 'Tools and practices I use for
-            deployment and infrastructure' : 'Additional tools and technologies
-            in my toolkit' %>
+            <% if (category === 'frontend') { %> Technologies I use to build
+            responsive and interactive user interfaces <% } else if (category
+            === 'backend') { %> Server-side technologies and frameworks I work
+            with <% } else if (category === 'database') { %> Database systems
+            and management tools I specialize in <% } else if (category ===
+            'devops') { %> Tools and practices I use for deployment and
+            infrastructure <% } else { %> Additional tools and technologies in
+            my toolkit <% } %>
           </p>
         </div>
 
