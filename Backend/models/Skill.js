@@ -86,6 +86,15 @@ const Skill = sequelize.define(
       {
         fields: ["category", "order"],
       },
+      {
+        fields: ["isVisible"],
+      },
+      {
+        fields: ["proficiency"],
+      },
+      {
+        fields: ["category", "isVisible", "proficiency"],
+      },
     ],
   }
 );
