@@ -11,15 +11,21 @@ const sequelize = new Sequelize(
     dialect: "mysql",
     logging: process.env.NODE_ENV === "development" ? console.log : false,
     pool: {
-      max: 5,
-      min: 0,
+      max: 20, // Increased from 5 to 20
+      min: 5, // Increased from 0 to 5
       acquire: 30000,
       idle: 10000,
+      evict: 10000, // Add eviction timeout
     },
     define: {
       timestamps: true,
       underscored: false,
       freezeTableName: false,
+    },
+    // Add performance optimizations
+    benchmark: true,
+    retry: {
+      max: 3, // Retry failed queries up to 3 times
     },
   }
 );
