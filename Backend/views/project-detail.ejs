@@ -456,6 +456,22 @@
     document.querySelectorAll(".gallery-thumb").forEach((thumb) => {
       thumb.classList.remove("active");
     });
-    event.target.classList.add("active");
+
+    // Find the clicked thumbnail and make it active
+    const thumbnails = document.querySelectorAll(".gallery-thumb");
+    thumbnails.forEach((thumb) => {
+      // Compare the data-src attribute instead of src for better matching
+      if (thumb.getAttribute("data-src") === newSrc) {
+        thumb.classList.add("active");
+      }
+    });
   }
+
+  // Add data-src attribute to all thumbnails for better matching
+  document.addEventListener("DOMContentLoaded", function () {
+    const thumbnails = document.querySelectorAll(".gallery-thumb");
+    thumbnails.forEach((thumb) => {
+      thumb.setAttribute("data-src", thumb.src);
+    });
+  });
 </script>
