@@ -108,14 +108,28 @@ router.get("/", async (req, res) => {
 // Skills page
 router.get("/skills", async (req, res) => {
   try {
-    const skills = await Skill.findAll({
-      where: { isVisible: true },
-      order: [
-        ["category", "ASC"],
-        ["order", "ASC"],
-        ["proficiency", "DESC"],
-      ],
-    });
+    let skills;
+    const now = Date.now();
+
+    // Check if we have valid cached data
+    if (skillsCache.data && now - skillsCache.timestamp < skillsCache.ttl) {
+      skills = skillsCache.data;
+    } else {
+      // Fetch from database and cache
+      skills = await Skill.findAll({
+        where: { isVisible: true },
+        order: [
+          ["category", "ASC"],
+          ["order", "ASC"],
+          ["proficiency", "DESC"],
+        ],
+        limit: 100, // Limit to 100 skills
+      });
+
+      // Update cache
+      skillsCache.data = skills;
+      skillsCache.timestamp = now;
+    }
 
     const groupedSkills = skills.reduce((acc, skill) => {
       if (!acc[skill.category]) {
@@ -209,17 +223,38 @@ router.get("/skills", async (req, res) => {
   }
 });
 
+// Add a simple in-memory cache for skills
+let skillsCache = {
+  data: null,
+  timestamp: 0,
+  ttl: 5 * 60 * 1000, // 5 minutes cache
+};
+
 // About page
 router.get("/about", async (req, res) => {
   try {
-    const skills = await Skill.findAll({
-      where: { isVisible: true },
-      order: [
-        ["category", "ASC"],
-        ["order", "ASC"],
-        ["proficiency", "DESC"],
-      ],
-    });
+    let skills;
+    const now = Date.now();
+
+    // Check if we have valid cached data
+    if (skillsCache.data && now - skillsCache.timestamp < skillsCache.ttl) {
+      skills = skillsCache.data;
+    } else {
+      // Fetch from database and cache
+      skills = await Skill.findAll({
+        where: { isVisible: true },
+        order: [
+          ["category", "ASC"],
+          ["order", "ASC"],
+          ["proficiency", "DESC"],
+        ],
+        limit: 50, // Limit to 50 skills to prevent performance issues
+      });
+
+      // Update cache
+      skillsCache.data = skills;
+      skillsCache.timestamp = now;
+    }
 
     const groupedSkills = skills.reduce((acc, skill) => {
       if (!acc[skill.category]) {
