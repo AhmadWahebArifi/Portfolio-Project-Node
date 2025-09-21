@@ -68,7 +68,8 @@
 </section>
 
 <!-- Project Gallery -->
-<% if (project.images && project.images.length > 0) { %>
+<% if (project.images && Array.isArray(project.images) && project.images.length
+> 0) { %>
 <section class="py-5">
   <div class="container">
     <div class="row">
@@ -222,7 +223,8 @@
         </div>
 
         <!-- Technologies Used -->
-        <% if (project.technologies && project.technologies.length > 0) { %>
+        <% if (project.technologies && Array.isArray(project.technologies) &&
+        project.technologies.length > 0) { %>
         <div class="card mt-4">
           <div class="card-header">
             <h5 class="card-title mb-0">Technologies Used</h5>
@@ -294,7 +296,8 @@
       <% relatedProjects.forEach(function(relatedProject) { %>
       <div class="col-lg-4 mb-4">
         <div class="card h-100">
-          <% if (relatedProject.images && relatedProject.images.length > 0) { %>
+          <% if (relatedProject.images && Array.isArray(relatedProject.images)
+          && relatedProject.images.length > 0) { %>
           <img
             src="<%= relatedProject.images[0].url %>"
             class="card-img-top"
