@@ -270,9 +270,9 @@ router.get("/projects", async (req, res) => {
     ]);
 
     // Ensure images and technologies are properly parsed for each project
-    projects.forEach(project => {
+    projects.forEach((project) => {
       // Parse images
-      if (project.images && typeof project.images === 'string') {
+      if (project.images && typeof project.images === "string") {
         try {
           project.images = JSON.parse(project.images);
         } catch (parseError) {
@@ -280,14 +280,14 @@ router.get("/projects", async (req, res) => {
           project.images = [];
         }
       }
-      
+
       // Ensure images is an array
       if (!Array.isArray(project.images)) {
         project.images = [];
       }
 
       // Parse technologies
-      if (project.technologies && typeof project.technologies === 'string') {
+      if (project.technologies && typeof project.technologies === "string") {
         try {
           project.technologies = JSON.parse(project.technologies);
         } catch (parseError) {
@@ -295,7 +295,7 @@ router.get("/projects", async (req, res) => {
           project.technologies = [];
         }
       }
-      
+
       // Ensure technologies is an array
       if (!Array.isArray(project.technologies)) {
         project.technologies = [];
@@ -342,7 +342,7 @@ router.get("/projects/:id", async (req, res) => {
     }
 
     // Ensure images is properly parsed as an array
-    if (project.images && typeof project.images === 'string') {
+    if (project.images && typeof project.images === "string") {
       try {
         project.images = JSON.parse(project.images);
       } catch (parseError) {
@@ -350,14 +350,14 @@ router.get("/projects/:id", async (req, res) => {
         project.images = [];
       }
     }
-    
+
     // Ensure images is an array
     if (!Array.isArray(project.images)) {
       project.images = [];
     }
 
     // Ensure technologies is properly parsed as an array
-    if (project.technologies && typeof project.technologies === 'string') {
+    if (project.technologies && typeof project.technologies === "string") {
       try {
         project.technologies = JSON.parse(project.technologies);
       } catch (parseError) {
@@ -365,7 +365,7 @@ router.get("/projects/:id", async (req, res) => {
         project.technologies = [];
       }
     }
-    
+
     // Ensure technologies is an array
     if (!Array.isArray(project.technologies)) {
       project.technologies = [];
