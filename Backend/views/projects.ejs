@@ -51,10 +51,11 @@
       <% projects.forEach(function(project, index) { %>
       <div
         class="col-lg-4 col-md-6 mb-4 animate-on-scroll"
-        style="animation-delay: <%= index * 0.1 %>s"
+        style="<%= 'animation-delay: ' + (index * 0.1) + 's' %>"
       >
         <div class="card h-100 project-card">
-          <% if (project.images && Array.isArray(project.images) && project.images.length > 0) { %>
+          <% if (project.images && Array.isArray(project.images) &&
+          project.images.length > 0) { %>
           <div class="position-relative overflow-hidden">
             <img
               src="<%= project.images[0].url %>"
@@ -122,8 +123,9 @@
             <div class="mb-3">
               <small class="text-muted d-block mb-2">Technologies:</small>
               <% const techs = Array.isArray(project.technologies) ?
-              project.technologies : (typeof project.technologies === 'string' ? JSON.parse(project.technologies || '[]') : []); %>
-              <% techs.forEach(function(tech, index) { %>
+              project.technologies : (typeof project.technologies === 'string' ?
+              JSON.parse(project.technologies || '[]') : []); %> <%
+              techs.forEach(function(tech, index) { %>
               <span class="badge bg-secondary me-1 mb-1"><%= tech %></span>
               <% }); %>
             </div>
