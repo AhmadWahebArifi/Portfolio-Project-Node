@@ -116,12 +116,15 @@
               </span>
             </div>
             <div class="progress mb-2" style="height: 8px">
-              <div class="progress-bar" <% if (skill.proficiency) { %>
-                style="width: <%= skill.proficiency %>%;" <% } %> <% if
-                (skill.color) { %>style="background-color: <%= skill.color %>;"
-                <% } %> role="progressbar" aria-valuenow="<%= skill.proficiency
-                %>" aria-valuemin="0" aria-valuemax="100">
-              </div>
+              <div
+                class="progress-bar"
+                data-width="<%= skill.proficiency %>"
+                data-color="<%= skill.color || '' %>"
+                role="progressbar"
+                aria-valuenow="<%= skill.proficiency %>"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              ></div>
             </div>
             <% if (skill.description) { %>
             <small class="text-muted"><%= skill.description %></small>
@@ -368,5 +371,20 @@
         skillsContent.style.display = "block";
       }, 300);
     }
+
+    // Apply dynamic styles to progress bars
+    const progressBars = document.querySelectorAll(".progress-bar");
+    progressBars.forEach(function (bar) {
+      const width = bar.getAttribute("data-width");
+      const color = bar.getAttribute("data-color");
+
+      if (width) {
+        bar.style.width = width + "%";
+      }
+
+      if (color) {
+        bar.style.backgroundColor = color;
+      }
+    });
   });
 </script>
