@@ -269,6 +269,39 @@ router.get("/projects", async (req, res) => {
       Project.count({ where: query }),
     ]);
 
+    // Ensure images and technologies are properly parsed for each project
+    projects.forEach(project => {
+      // Parse images
+      if (project.images && typeof project.images === 'string') {
+        try {
+          project.images = JSON.parse(project.images);
+        } catch (parseError) {
+          console.error("Error parsing images JSON:", parseError);
+          project.images = [];
+        }
+      }
+      
+      // Ensure images is an array
+      if (!Array.isArray(project.images)) {
+        project.images = [];
+      }
+
+      // Parse technologies
+      if (project.technologies && typeof project.technologies === 'string') {
+        try {
+          project.technologies = JSON.parse(project.technologies);
+        } catch (parseError) {
+          console.error("Error parsing technologies JSON:", parseError);
+          project.technologies = [];
+        }
+      }
+      
+      // Ensure technologies is an array
+      if (!Array.isArray(project.technologies)) {
+        project.technologies = [];
+      }
+    });
+
     const totalPages = Math.ceil(total / limit);
 
     res.render("projects", {
