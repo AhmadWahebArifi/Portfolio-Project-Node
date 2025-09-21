@@ -421,8 +421,21 @@ router.get("/blog", async (req, res) => {
       attributes: ["tags"],
     }).then((results) => {
       const allTags = results.reduce((acc, blog) => {
-        if (blog.tags && Array.isArray(blog.tags)) {
-          acc.push(...blog.tags);
+        let blogTags = [];
+        // Parse tags if they're stored as a JSON string
+        if (blog.tags) {
+          if (typeof blog.tags === "string") {
+            try {
+              blogTags = JSON.parse(blog.tags);
+            } catch (e) {
+              blogTags = [];
+            }
+          } else if (Array.isArray(blog.tags)) {
+            blogTags = blog.tags;
+          }
+        }
+        if (Array.isArray(blogTags)) {
+          acc.push(...blogTags);
         }
         return acc;
       }, []);
@@ -444,6 +457,39 @@ router.get("/blog", async (req, res) => {
       Blog.count({ where: query }),
       tagsPromise,
     ]);
+
+    // Ensure tags and other JSON fields are properly parsed for each blog
+    blogs.forEach((blog) => {
+      // Parse tags
+      if (blog.tags && typeof blog.tags === "string") {
+        try {
+          blog.tags = JSON.parse(blog.tags);
+        } catch (parseError) {
+          console.error("Error parsing tags JSON:", parseError);
+          blog.tags = [];
+        }
+      }
+
+      // Ensure tags is an array
+      if (!Array.isArray(blog.tags)) {
+        blog.tags = [];
+      }
+
+      // Parse seoKeywords
+      if (blog.seoKeywords && typeof blog.seoKeywords === "string") {
+        try {
+          blog.seoKeywords = JSON.parse(blog.seoKeywords);
+        } catch (parseError) {
+          console.error("Error parsing seoKeywords JSON:", parseError);
+          blog.seoKeywords = [];
+        }
+      }
+
+      // Ensure seoKeywords is an array
+      if (!Array.isArray(blog.seoKeywords)) {
+        blog.seoKeywords = [];
+      }
+    });
 
     const totalPages = Math.ceil(total / limit);
 
@@ -501,6 +547,36 @@ router.get("/blog/:slug", async (req, res) => {
       return res.redirect("/blog");
     }
 
+    // Ensure tags is properly parsed as an array
+    if (blog.tags && typeof blog.tags === "string") {
+      try {
+        blog.tags = JSON.parse(blog.tags);
+      } catch (parseError) {
+        console.error("Error parsing tags JSON:", parseError);
+        blog.tags = [];
+      }
+    }
+
+    // Ensure tags is an array
+    if (!Array.isArray(blog.tags)) {
+      blog.tags = [];
+    }
+
+    // Ensure seoKeywords is properly parsed as an array
+    if (blog.seoKeywords && typeof blog.seoKeywords === "string") {
+      try {
+        blog.seoKeywords = JSON.parse(blog.seoKeywords);
+      } catch (parseError) {
+        console.error("Error parsing seoKeywords JSON:", parseError);
+        blog.seoKeywords = [];
+      }
+    }
+
+    // Ensure seoKeywords is an array
+    if (!Array.isArray(blog.seoKeywords)) {
+      blog.seoKeywords = [];
+    }
+
     // Increment views
     blog.views += 1;
     await blog.save();
@@ -518,10 +594,14 @@ router.get("/blog/:slug", async (req, res) => {
       attributes: { exclude: ["content"] },
     });
 
+    // Construct full URL for sharing
+    const fullUrl = `${req.protocol}://${req.get("host")}/blog/${blog.slug}`;
+
     res.render("blog-detail", {
       title: blog.title,
       blog,
       relatedPosts,
+      fullUrl: fullUrl,
     });
   } catch (error) {
     console.error("Blog detail error:", error);
