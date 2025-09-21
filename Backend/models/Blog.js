@@ -120,6 +120,18 @@ const Blog = sequelize.define(
         fields: ["slug"],
         unique: true,
       },
+      {
+        fields: ["authorId"],
+      },
+      {
+        fields: ["category"],
+      },
+      {
+        fields: ["featured"],
+      },
+      {
+        fields: ["status", "featured", "publishedAt"],
+      },
     ],
     hooks: {
       beforeCreate: (blog) => {
