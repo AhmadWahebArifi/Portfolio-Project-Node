@@ -1,4 +1,5 @@
 const express = require("express");
+const moment = require("moment");
 const { User, Project, Skill, Blog, Contact } = require("../models");
 const { protect, authorize } = require("../middleware/auth");
 const {
@@ -17,6 +18,12 @@ const requireAdmin = (req, res, next) => {
   }
   next();
 };
+
+// Middleware to make helpers available to admin views
+router.use((req, res, next) => {
+  res.locals.moment = moment;
+  next();
+});
 
 // ================== PROJECT MANAGEMENT ==================
 
@@ -195,7 +202,7 @@ router.get("/profile", requireAdmin, async (req, res) => {
       return res.redirect("/admin");
     }
 
-    res.render("admin/profile", {
+    res.render("admin/profile/index", {
       title: "Your Profile",
       layout: "admin/layout",
       user,
