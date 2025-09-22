@@ -224,7 +224,7 @@ router.get("/profile/edit", requireAdmin, async (req, res) => {
       return res.redirect("/admin");
     }
 
-    res.render("admin/profile-edit", {
+    res.render("admin/profile/edit", {
       title: "Edit Profile",
       layout: "admin/layout",
       user,
@@ -247,26 +247,39 @@ router.post("/profile/update", requireAdmin, async (req, res) => {
       return res.redirect("/admin");
     }
 
+    // Validate input
+    if (!name || name.trim().length < 2 || name.trim().length > 50) {
+      req.flash("error", "Name must be between 2 and 50 characters");
+      return res.redirect("/admin/profile/edit");
+    }
+
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      req.flash("error", "Please provide a valid email address");
+      return res.redirect("/admin/profile/edit");
+    }
+
     // Check if email is already taken by another user
-    if (email !== user.email) {
-      const existingUser = await User.findOne({ where: { email } });
+    if (email.toLowerCase() !== user.email.toLowerCase()) {
+      const existingUser = await User.findOne({
+        where: { email: email.toLowerCase() },
+      });
       if (existingUser) {
         req.flash("error", "Email is already taken by another user");
         return res.redirect("/admin/profile/edit");
       }
     }
 
-    await user.update({ name, email });
+    await user.update({ name: name.trim(), email: email.toLowerCase() });
 
     // Update session user data
-    req.session.user.name = name;
-    req.session.user.email = email;
+    req.session.user.name = name.trim();
+    req.session.user.email = email.toLowerCase();
 
     req.flash("success", "Profile updated successfully!");
     res.redirect("/admin/profile");
   } catch (error) {
     console.error("Update profile error:", error);
-    req.flash("error", "Error updating profile");
+    req.flash("error", "Error updating profile: " + error.message);
     res.redirect("/admin/profile/edit");
   }
 });
@@ -284,13 +297,28 @@ router.post("/profile/change-password", requireAdmin, async (req, res) => {
   try {
     const { currentPassword, newPassword, confirmPassword } = req.body;
 
+    // Validate input
+    if (!currentPassword || currentPassword.length < 1) {
+      req.flash("error", "Please enter your current password");
+      return res.redirect("/admin/profile/change-password");
+    }
+
+    if (!newPassword || newPassword.length < 6) {
+      req.flash("error", "New password must be at least 6 characters");
+      return res.redirect("/admin/profile/change-password");
+    }
+
     if (newPassword !== confirmPassword) {
       req.flash("error", "New passwords do not match");
       return res.redirect("/admin/profile/change-password");
     }
 
-    if (newPassword.length < 6) {
-      req.flash("error", "Password must be at least 6 characters");
+    // Check if new password is different from current password
+    if (currentPassword === newPassword) {
+      req.flash(
+        "error",
+        "New password must be different from current password"
+      );
       return res.redirect("/admin/profile/change-password");
     }
 
@@ -317,7 +345,7 @@ router.post("/profile/change-password", requireAdmin, async (req, res) => {
     res.redirect("/admin/profile");
   } catch (error) {
     console.error("Change password error:", error);
-    req.flash("error", "Error changing password");
+    req.flash("error", "Error changing password: " + error.message);
     res.redirect("/admin/profile/change-password");
   }
 });
