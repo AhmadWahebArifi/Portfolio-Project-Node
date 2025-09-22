@@ -2,6 +2,7 @@ const express = require("express");
 const moment = require("moment");
 const { User, Project, Skill, Blog, Contact } = require("../models");
 const { protect, authorize } = require("../middleware/auth");
+const upload = require("../middleware/upload");
 const {
   validateProject,
   validateSkill,
@@ -237,52 +238,74 @@ router.get("/profile/edit", requireAdmin, async (req, res) => {
 });
 
 // Update profile
-router.post("/profile/update", requireAdmin, async (req, res) => {
-  try {
-    const { name, email } = req.body;
-    const user = await User.findByPk(req.session.user.id);
+router.post(
+  "/profile/update",
+  requireAdmin,
+  upload.single("avatar"),
+  async (req, res) => {
+    try {
+      const { name, email } = req.body;
+      const user = await User.findByPk(req.session.user.id);
 
-    if (!user) {
-      req.flash("error", "User not found");
-      return res.redirect("/admin");
-    }
+      if (!user) {
+        req.flash("error", "User not found");
+        return res.redirect("/admin");
+      }
 
-    // Validate input
-    if (!name || name.trim().length < 2 || name.trim().length > 50) {
-      req.flash("error", "Name must be between 2 and 50 characters");
-      return res.redirect("/admin/profile/edit");
-    }
-
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      req.flash("error", "Please provide a valid email address");
-      return res.redirect("/admin/profile/edit");
-    }
-
-    // Check if email is already taken by another user
-    if (email.toLowerCase() !== user.email.toLowerCase()) {
-      const existingUser = await User.findOne({
-        where: { email: email.toLowerCase() },
-      });
-      if (existingUser) {
-        req.flash("error", "Email is already taken by another user");
+      // Validate input
+      if (!name || name.trim().length < 2 || name.trim().length > 50) {
+        req.flash("error", "Name must be between 2 and 50 characters");
         return res.redirect("/admin/profile/edit");
       }
+
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        req.flash("error", "Please provide a valid email address");
+        return res.redirect("/admin/profile/edit");
+      }
+
+      // Check if email is already taken by another user
+      if (email.toLowerCase() !== user.email.toLowerCase()) {
+        const existingUser = await User.findOne({
+          where: { email: email.toLowerCase() },
+        });
+        if (existingUser) {
+          req.flash("error", "Email is already taken by another user");
+          return res.redirect("/admin/profile/edit");
+        }
+      }
+
+      // Prepare update data
+      const updateData = {
+        name: name.trim(),
+        email: email.toLowerCase(),
+      };
+
+      // Handle avatar upload
+      if (req.file) {
+        // Save the file path relative to the public directory
+        updateData.avatar = `/uploads/${req.file.filename}`;
+      }
+
+      await user.update(updateData);
+
+      // Update session user data
+      req.session.user.name = name.trim();
+      req.session.user.email = email.toLowerCase();
+
+      // Update avatar in session if it was changed
+      if (req.file) {
+        req.session.user.avatar = `/uploads/${req.file.filename}`;
+      }
+
+      req.flash("success", "Profile updated successfully!");
+      res.redirect("/admin/profile");
+    } catch (error) {
+      console.error("Update profile error:", error);
+      req.flash("error", "Error updating profile: " + error.message);
+      res.redirect("/admin/profile/edit");
     }
-
-    await user.update({ name: name.trim(), email: email.toLowerCase() });
-
-    // Update session user data
-    req.session.user.name = name.trim();
-    req.session.user.email = email.toLowerCase();
-
-    req.flash("success", "Profile updated successfully!");
-    res.redirect("/admin/profile");
-  } catch (error) {
-    console.error("Update profile error:", error);
-    req.flash("error", "Error updating profile: " + error.message);
-    res.redirect("/admin/profile/edit");
   }
-});
+);
 
 // Change password page
 router.get("/profile/change-password", requireAdmin, (req, res) => {
