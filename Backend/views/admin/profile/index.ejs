@@ -29,40 +29,67 @@
             </div>
           </div>
           <div class="col-lg-9">
-            <div class="row mb-4">
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Full Name</label>
-                <p class="form-control-plaintext"><%= user.name %></p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Email Address</label>
-                <p class="form-control-plaintext"><%= user.email %></p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Role</label>
-                <p class="form-control-plaintext">
-                  <span class="badge bg-primary"><%= user.role %></span>
-                </p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Account Status</label>
-                <p class="form-control-plaintext">
-                  <% if (user.isActive) { %>
-                  <span class="badge bg-success">Active</span>
-                  <% } else { %>
-                  <span class="badge bg-danger">Inactive</span>
-                  <% } %>
-                </p>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Member Since</label>
-                <p class="form-control-plaintext">
-                  <%= moment(user.createdAt).format('MMMM Do, YYYY') %>
-                </p>
+            <div class="profile-section">
+              <h6 class="profile-section-header">Personal Information</h6>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold text-muted">Full Name</label>
+                  <p class="form-control-plaintext fs-6"><%= user.name %></p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold text-muted"
+                    >Email Address</label
+                  >
+                  <p class="form-control-plaintext fs-6"><%= user.email %></p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold text-muted">Role</label>
+                  <p class="form-control-plaintext">
+                    <span class="badge bg-primary"><%= user.role %></span>
+                  </p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold text-muted"
+                    >Account Status</label
+                  >
+                  <p class="form-control-plaintext">
+                    <% if (user.isActive) { %>
+                    <span class="badge bg-success">Active</span>
+                    <% } else { %>
+                    <span class="badge bg-danger">Inactive</span>
+                    <% } %>
+                  </p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold text-muted"
+                    >Member Since</label
+                  >
+                  <p class="form-control-plaintext fs-6">
+                    <%= moment(user.createdAt).format('MMMM Do, YYYY') %>
+                  </p>
+                </div>
               </div>
             </div>
 
-            <div class="d-flex gap-2">
+            <div class="profile-section">
+              <h6 class="profile-section-header">Security Settings</h6>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold text-muted">Password</label>
+                  <p class="form-control-plaintext fs-6">••••••••</p>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold text-muted"
+                    >Last Updated</label
+                  >
+                  <p class="form-control-plaintext fs-6">
+                    <%= moment(user.updatedAt).format('MMMM Do, YYYY') %>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
               <a href="/admin/profile/edit" class="btn btn-outline-primary">
                 <i class="fas fa-edit"></i> Edit Profile
               </a>
@@ -91,6 +118,7 @@
         <div class="text-center py-5">
           <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
           <p class="text-muted">No recent activity to display</p>
+          <small class="text-muted">Your recent actions will appear here</small>
         </div>
       </div>
     </div>
