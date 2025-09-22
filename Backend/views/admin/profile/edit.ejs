@@ -4,7 +4,7 @@
       <div class="card-header bg-transparent border-0 py-3">
         <h5 class="mb-0"><i class="fas fa-user-edit"></i> Edit Profile</h5>
       </div>
-      <div class="card-body">
+      <div class="card-body profile-form">
         <form action="/admin/profile/update" method="POST">
           <div class="row">
             <div class="col-lg-3 text-center mb-4 mb-lg-0">
@@ -25,53 +25,79 @@
                   <button type="button" class="btn btn-sm btn-outline-primary">
                     <i class="fas fa-camera"></i> Change Photo
                   </button>
+                  <p class="text-muted small mt-2 mb-0">
+                    JPG, PNG, GIF (Max 2MB)
+                  </p>
                 </div>
               </div>
             </div>
             <div class="col-lg-9">
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label for="name" class="form-label">Full Name</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="name"
-                    name="name"
-                    value="<%= user.name %>"
-                    required
-                  />
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="email" class="form-label">Email Address</label>
-                  <input
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    name="email"
-                    value="<%= user.email %>"
-                    required
-                  />
+              <div class="profile-section">
+                <h6 class="profile-section-header">Personal Information</h6>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      name="name"
+                      value="<%= user.name %>"
+                      required
+                      minlength="2"
+                      maxlength="50"
+                    />
+                    <div class="invalid-feedback">
+                      Please enter a valid name (2-50 characters)
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      name="email"
+                      value="<%= user.email %>"
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Please enter a valid email address
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Role</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    value="<%= user.role %>"
-                    readonly
-                  />
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label">Account Status</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    value="<%= user.isActive ? 'Active' : 'Inactive' %>"
-                    readonly
-                  />
+              <div class="profile-section">
+                <h6 class="profile-section-header">Account Information</h6>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Role</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      value="<%= user.role.charAt(0).toUpperCase() + user.role.slice(1) %>"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Account Status</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      value="<%= user.isActive ? 'Active' : 'Inactive' %>"
+                      readonly
+                    />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Member Since</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      value="<%= moment(user.createdAt).format('MMMM Do, YYYY') %>"
+                      readonly
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -90,3 +116,54 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Basic form validation
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+
+    form.addEventListener("submit", function (e) {
+      let isValid = true;
+
+      // Validate name
+      if (
+        nameInput.value.trim().length < 2 ||
+        nameInput.value.trim().length > 50
+      ) {
+        nameInput.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        nameInput.classList.remove("is-invalid");
+      }
+
+      // Validate email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailInput.value)) {
+        emailInput.classList.add("is-invalid");
+        isValid = false;
+      } else {
+        emailInput.classList.remove("is-invalid");
+      }
+
+      if (!isValid) {
+        e.preventDefault();
+      }
+    });
+
+    // Real-time validation
+    nameInput.addEventListener("input", function () {
+      if (this.value.trim().length >= 2 && this.value.trim().length <= 50) {
+        this.classList.remove("is-invalid");
+      }
+    });
+
+    emailInput.addEventListener("input", function () {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (emailRegex.test(this.value)) {
+        this.classList.remove("is-invalid");
+      }
+    });
+  });
+</script>
