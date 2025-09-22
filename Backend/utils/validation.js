@@ -155,7 +155,7 @@ const validateSkill = [
       req.body.yearsOfExperience !== null
     ) {
       const years = parseInt(req.body.yearsOfExperience, 10);
-      if (!isNaN(years)) {
+      if (!isNaN(years) && years >= 0) {
         req.body.yearsOfExperience = years;
       } else {
         req.body.yearsOfExperience = 0;
