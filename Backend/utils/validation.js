@@ -147,10 +147,24 @@ const validateSkill = [
     if (req.body.proficiency) {
       req.body.proficiency = parseInt(req.body.proficiency, 10) || 50;
     }
-    if (req.body.yearsOfExperience) {
-      req.body.yearsOfExperience =
-        parseInt(req.body.yearsOfExperience, 10) || 0;
+
+    // Handle yearsOfExperience - only process if provided and not empty
+    if (
+      req.body.yearsOfExperience !== undefined &&
+      req.body.yearsOfExperience !== "" &&
+      req.body.yearsOfExperience !== null
+    ) {
+      const years = parseInt(req.body.yearsOfExperience, 10);
+      if (!isNaN(years)) {
+        req.body.yearsOfExperience = years;
+      } else {
+        req.body.yearsOfExperience = 0;
+      }
+    } else {
+      // If not provided, set to default value
+      req.body.yearsOfExperience = 0;
     }
+
     if (req.body.order) {
       req.body.order = parseInt(req.body.order, 10) || 0;
     }
@@ -177,7 +191,7 @@ const validateSkill = [
     .isInt({ min: 1, max: 100 })
     .withMessage("Proficiency must be between 1 and 100"),
   body("yearsOfExperience")
-    .optional()
+    .optional({ checkFalsy: true })
     .isInt({ min: 0 })
     .withMessage("Years of experience cannot be negative"),
   handleValidationErrors,

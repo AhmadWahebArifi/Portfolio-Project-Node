@@ -68,19 +68,7 @@ const Skill = sequelize.define(
         min: {
           args: [0],
           msg: "Years of experience cannot be negative",
-        },
-        // Custom validator to debug the issue
-        customValidator(value) {
-          console.log(
-            "YearsOfExperience validation - value:",
-            value,
-            "type:",
-            typeof value
-          );
-          if (value < 0) {
-            throw new Error("Years of experience cannot be negative");
-          }
-        },
+        }
       },
     },
     description: {
