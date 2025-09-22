@@ -230,6 +230,13 @@ let skillsCache = {
   ttl: 5 * 60 * 1000, // 5 minutes cache
 };
 
+// Add a simple in-memory cache for projects
+let projectsCache = {
+  data: null,
+  timestamp: 0,
+  ttl: 5 * 60 * 1000, // 5 minutes cache
+};
+
 // About page
 router.get("/about", async (req, res) => {
   try {
@@ -290,19 +297,57 @@ router.get("/projects", async (req, res) => {
       query.category = req.query.category;
     }
 
-    const [projects, total] = await Promise.all([
-      Project.findAll({
-        where: query,
-        order: [
-          ["featured", "DESC"],
-          ["order", "ASC"],
-          ["createdAt", "DESC"],
-        ],
-        offset: skip,
-        limit: limit,
-      }),
-      Project.count({ where: query }),
-    ]);
+    // Check if we have valid cached data for all projects (no category filter)
+    const useCache = !req.query.category;
+    let projects, total;
+    const now = Date.now();
+
+    if (
+      useCache &&
+      projectsCache.data &&
+      now - projectsCache.timestamp < projectsCache.ttl
+    ) {
+      // Use cached data and filter/slice for pagination
+      const allProjects = projectsCache.data.allProjects.filter(
+        (p) => !query.category || p.category === query.category
+      );
+      total = allProjects.length;
+      const startIndex = skip;
+      const endIndex = Math.min(startIndex + limit, allProjects.length);
+      projects = allProjects.slice(startIndex, endIndex);
+    } else {
+      // Fetch from database
+      [projects, total] = await Promise.all([
+        Project.findAll({
+          where: query,
+          order: [
+            ["featured", "DESC"],
+            ["order", "ASC"],
+            ["createdAt", "DESC"],
+          ],
+          offset: skip,
+          limit: limit,
+        }),
+        Project.count({ where: query }),
+      ]);
+
+      // Update cache if we're fetching all projects (no category filter)
+      if (useCache) {
+        // For cache, we need to fetch all projects once
+        if (!projectsCache.data) {
+          const allProjects = await Project.findAll({
+            where: { isPublic: true },
+            order: [
+              ["featured", "DESC"],
+              ["order", "ASC"],
+              ["createdAt", "DESC"],
+            ],
+          });
+          projectsCache.data = { allProjects };
+        }
+        projectsCache.timestamp = now;
+      }
+    }
 
     // Ensure images and technologies are properly parsed for each project
     projects.forEach((project) => {
