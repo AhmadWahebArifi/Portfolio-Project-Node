@@ -82,6 +82,7 @@
                 src="<%= project.images[0].url %>"
                 class="card-img-top project-image"
                 alt="<%= project.images[0].alt || project.title %>"
+                loading="lazy"
               />
               <div class="project-overlay">
                 <div class="project-actions">
@@ -389,7 +390,39 @@
       setTimeout(function () {
         projectsSkeleton.style.display = "none";
         projectsContent.style.display = "block";
+
+        // Initialize animations for projects
+        initScrollAnimations();
       }, 300);
     }
   });
+
+  // Optimize scroll animations to reduce CPU usage
+  function initScrollAnimations() {
+    const animateElements = document.querySelectorAll(".animate-on-scroll");
+
+    // Use IntersectionObserver with better performance options
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animated");
+            // Unobserve to prevent unnecessary callbacks
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+        // Improve performance
+        trackVisibility: true,
+        delay: 100,
+      }
+    );
+
+    animateElements.forEach((element) => {
+      observer.observe(element);
+    });
+  }
 </script>
