@@ -184,6 +184,137 @@ router.delete("/projects/:id", requireAdmin, async (req, res) => {
   }
 });
 
+// Admin profile page
+router.get("/profile", requireAdmin, async (req, res) => {
+  try {
+    // Get the current user's full information
+    const user = await User.findByPk(req.session.user.id);
+
+    if (!user) {
+      req.flash("error", "User not found");
+      return res.redirect("/admin");
+    }
+
+    res.render("admin/profile", {
+      title: "Your Profile",
+      layout: "admin/layout",
+      user,
+    });
+  } catch (error) {
+    console.error("Profile page error:", error);
+    req.flash("error", "Error loading profile");
+    res.redirect("/admin");
+  }
+});
+
+// Update profile page
+router.get("/profile/edit", requireAdmin, async (req, res) => {
+  try {
+    const user = await User.findByPk(req.session.user.id);
+
+    if (!user) {
+      req.flash("error", "User not found");
+      return res.redirect("/admin");
+    }
+
+    res.render("admin/profile-edit", {
+      title: "Edit Profile",
+      layout: "admin/layout",
+      user,
+    });
+  } catch (error) {
+    console.error("Edit profile page error:", error);
+    req.flash("error", "Error loading profile edit page");
+    res.redirect("/admin");
+  }
+});
+
+// Update profile
+router.post("/profile/update", requireAdmin, async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    const user = await User.findByPk(req.session.user.id);
+
+    if (!user) {
+      req.flash("error", "User not found");
+      return res.redirect("/admin");
+    }
+
+    // Check if email is already taken by another user
+    if (email !== user.email) {
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        req.flash("error", "Email is already taken by another user");
+        return res.redirect("/admin/profile/edit");
+      }
+    }
+
+    await user.update({ name, email });
+
+    // Update session user data
+    req.session.user.name = name;
+    req.session.user.email = email;
+
+    req.flash("success", "Profile updated successfully!");
+    res.redirect("/admin/profile");
+  } catch (error) {
+    console.error("Update profile error:", error);
+    req.flash("error", "Error updating profile");
+    res.redirect("/admin/profile/edit");
+  }
+});
+
+// Change password page
+router.get("/profile/change-password", requireAdmin, (req, res) => {
+  res.render("admin/change-password", {
+    title: "Change Password",
+    layout: "admin/layout",
+  });
+});
+
+// Change password
+router.post("/profile/change-password", requireAdmin, async (req, res) => {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    if (newPassword !== confirmPassword) {
+      req.flash("error", "New passwords do not match");
+      return res.redirect("/admin/profile/change-password");
+    }
+
+    if (newPassword.length < 6) {
+      req.flash("error", "Password must be at least 6 characters");
+      return res.redirect("/admin/profile/change-password");
+    }
+
+    const user = await User.findByPk(req.session.user.id, {
+      attributes: { include: ["password"] },
+    });
+
+    if (!user) {
+      req.flash("error", "User not found");
+      return res.redirect("/admin");
+    }
+
+    // Check current password
+    const isMatch = await user.comparePassword(currentPassword);
+    if (!isMatch) {
+      req.flash("error", "Current password is incorrect");
+      return res.redirect("/admin/profile/change-password");
+    }
+
+    // Update password
+    await user.update({ password: newPassword });
+
+    req.flash("success", "Password changed successfully!");
+    res.redirect("/admin/profile");
+  } catch (error) {
+    console.error("Change password error:", error);
+    req.flash("error", "Error changing password");
+    res.redirect("/admin/profile/change-password");
+  }
+});
+
 // Toggle project featured status
 router.post("/projects/:id/toggle-featured", requireAdmin, async (req, res) => {
   try {
