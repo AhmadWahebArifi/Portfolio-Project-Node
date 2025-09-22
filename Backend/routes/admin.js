@@ -473,7 +473,44 @@ router.get("/skills/new", requireAdmin, (req, res) => {
 // Create skill
 router.post("/skills", requireAdmin, validateSkill, async (req, res) => {
   try {
-    await Skill.create(req.body);
+    // Log the incoming data for debugging
+    console.log("Incoming skill data:", req.body);
+
+    // Ensure numeric values are properly converted
+    const skillData = { ...req.body };
+
+    if (skillData.proficiency) {
+      skillData.proficiency = parseInt(skillData.proficiency, 10);
+    }
+
+    if (
+      skillData.yearsOfExperience !== undefined &&
+      skillData.yearsOfExperience !== ""
+    ) {
+      skillData.yearsOfExperience = parseInt(skillData.yearsOfExperience, 10);
+      // If NaN, set to default value
+      if (isNaN(skillData.yearsOfExperience)) {
+        skillData.yearsOfExperience = 0;
+      }
+    } else {
+      // If not provided, set to default value
+      skillData.yearsOfExperience = 0;
+    }
+
+    if (skillData.order) {
+      skillData.order = parseInt(skillData.order, 10) || 0;
+    }
+
+    // Log the processed data
+    console.log("Processed skill data:", skillData);
+    console.log(
+      "Years of experience type:",
+      typeof skillData.yearsOfExperience,
+      "value:",
+      skillData.yearsOfExperience
+    );
+
+    await Skill.create(skillData);
     req.flash("success", "Skill created successfully!");
     res.redirect("/admin/skills");
   } catch (error) {
@@ -567,12 +604,10 @@ router.post(
 
       // Validate proficiency
       if (proficiency < 1 || proficiency > 100) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: "Proficiency must be between 1 and 100",
-          });
+        return res.status(400).json({
+          success: false,
+          message: "Proficiency must be between 1 and 100",
+        });
       }
 
       await skill.update({ proficiency });
@@ -584,12 +619,10 @@ router.post(
       });
     } catch (error) {
       console.error("Update proficiency error:", error);
-      res
-        .status(500)
-        .json({
-          success: false,
-          message: "Error updating proficiency: " + error.message,
-        });
+      res.status(500).json({
+        success: false,
+        message: "Error updating proficiency: " + error.message,
+      });
     }
   }
 );
@@ -614,12 +647,10 @@ router.post("/skills/:id/toggle-visibility", requireAdmin, async (req, res) => {
     });
   } catch (error) {
     console.error("Toggle visibility error:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error toggling visibility: " + error.message,
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error toggling visibility: " + error.message,
+    });
   }
 });
 
