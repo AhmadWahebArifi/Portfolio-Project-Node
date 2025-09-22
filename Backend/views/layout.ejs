@@ -440,22 +440,38 @@
 
     <!-- Custom JS -->
     <script>
-      // Animate elements on scroll
-      const animateOnScroll = () => {
-        const elements = document.querySelectorAll(".animate-on-scroll");
-        elements.forEach((element) => {
-          const elementTop = element.offsetTop;
-          const scrollTop = window.pageYOffset;
-          const windowHeight = window.innerHeight;
+      // Optimized animate elements on scroll with throttling
+      let ticking = false;
 
-          if (scrollTop + windowHeight > elementTop + 100) {
+      function updateAnimations() {
+        const elements = document.querySelectorAll(
+          ".animate-on-scroll:not(.animated)"
+        );
+        const windowHeight = window.innerHeight;
+
+        elements.forEach((element) => {
+          const elementTop = element.getBoundingClientRect().top;
+
+          // Trigger animation when element is 15% from the bottom of the viewport
+          if (elementTop < windowHeight * 0.85) {
             element.classList.add("animated");
           }
         });
-      };
 
-      window.addEventListener("scroll", animateOnScroll);
-      window.addEventListener("load", animateOnScroll);
+        ticking = false;
+      }
+
+      function requestTick() {
+        if (!ticking) {
+          requestAnimationFrame(updateAnimations);
+          ticking = true;
+        }
+      }
+
+      // Use scroll event with throttling for better performance
+      window.addEventListener("scroll", requestTick);
+      window.addEventListener("load", updateAnimations);
+      window.addEventListener("resize", requestTick);
 
       // Auto-hide alerts after 5 seconds
       setTimeout(() => {
