@@ -5,7 +5,11 @@
         <h5 class="mb-0"><i class="fas fa-user-edit"></i> Edit Profile</h5>
       </div>
       <div class="card-body profile-form">
-        <form action="/admin/profile/update" method="POST">
+        <form
+          action="/admin/profile/update"
+          method="POST"
+          enctype="multipart/form-data"
+        >
           <div class="row">
             <div class="col-lg-3 text-center mb-4 mb-lg-0">
               <div class="profile-avatar mx-auto">
@@ -17,14 +21,35 @@
                     background-color: var(--admin-light);
                     border: 3px solid var(--border-color);
                     margin: 0 auto;
+                    position: relative;
+                    overflow: hidden;
                   "
                 >
+                  <% if (user.avatar) { %>
+                  <img
+                    src="<%= user.avatar %>"
+                    alt="Profile Photo"
+                    style="width: 100%; height: 100%; object-fit: cover"
+                  />
+                  <% } else { %>
                   <i class="fas fa-user fa-4x text-muted"></i>
+                  <% } %>
                 </div>
                 <div class="mt-3">
-                  <button type="button" class="btn btn-sm btn-outline-primary">
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-primary"
+                    id="changePhotoBtn"
+                  >
                     <i class="fas fa-camera"></i> Change Photo
                   </button>
+                  <input
+                    type="file"
+                    id="avatarInput"
+                    name="avatar"
+                    accept="image/*"
+                    style="display: none"
+                  />
                   <p class="text-muted small mt-2 mb-0">
                     JPG, PNG, GIF (Max 2MB)
                   </p>
@@ -123,6 +148,27 @@
     const form = document.querySelector("form");
     const nameInput = document.getElementById("name");
     const emailInput = document.getElementById("email");
+    const changePhotoBtn = document.getElementById("changePhotoBtn");
+    const avatarInput = document.getElementById("avatarInput");
+
+    // Change photo button click event
+    changePhotoBtn.addEventListener("click", function () {
+      avatarInput.click();
+    });
+
+    // Preview selected image
+    avatarInput.addEventListener("change", function () {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const avatarPlaceholder = document.querySelector(
+            ".avatar-placeholder"
+          );
+          avatarPlaceholder.innerHTML = `<img src="${e.target.result}" alt="Profile Photo" style="width: 100%; height: 100%; object-fit: cover;">`;
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
 
     form.addEventListener("submit", function (e) {
       let isValid = true;
