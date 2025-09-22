@@ -293,6 +293,14 @@
           </li>
           <li class="nav-item">
             <a
+              href="/admin/profile"
+              class="nav-link <%= currentPath === '/admin/profile' || currentPath.startsWith('/admin/profile/') ? 'active' : '' %>"
+            >
+              <i class="fas fa-user-circle"></i> Profile
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
               href="/admin/projects"
               class="nav-link <%= currentPath.startsWith('/admin/projects') ? 'active' : '' %>"
             >
@@ -370,7 +378,7 @@
             <ul class="dropdown-menu">
               <li>
                 <a class="dropdown-item" href="/admin/profile"
-                  ><i class="fas fa-user"></i> Profile</a
+                  ><i class="fas fa-user-circle"></i> Profile</a
                 >
               </li>
               <li><hr class="dropdown-divider" /></li>
