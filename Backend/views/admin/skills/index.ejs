@@ -40,13 +40,13 @@
           </thead>
           <tbody>
             <% groupedSkills[category].forEach(function(skill) { %>
-            <tr>
+            <tr data-skill-id="<%= skill.id %>">
               <td>
                 <div class="d-flex align-items-center">
                   <% if (skill.icon) { %>
                   <i
                     class="<%= skill.icon %> me-2"
-                    style="color: <%= skill.color %>"
+                    data-color="<%= skill.color %>"
                   ></i>
                   <% } %>
                   <div>
@@ -64,13 +64,25 @@
                   <div class="progress me-2" style="width: 80px; height: 6px">
                     <div
                       class="progress-bar"
-                      style="
-                        width: <%= skill.proficiency %>%;
-                        background-color: <%= skill.color %>;
-                      "
+                      data-width="<%= skill.proficiency %>"
+                      data-color="<%= skill.color %>"
                     ></div>
                   </div>
-                  <small><%= skill.proficiency %>%</small>
+                  <small class="proficiency-value"
+                    ><%= skill.proficiency %>%</small
+                  >
+                </div>
+                <!-- Instant proficiency update -->
+                <div class="mt-1">
+                  <input
+                    type="range"
+                    class="form-range proficiency-slider"
+                    min="1"
+                    max="100"
+                    value="<%= skill.proficiency %>"
+                    data-skill-id="<%= skill.id %>"
+                    style="width: 80px"
+                  />
                 </div>
               </td>
               <td>
@@ -80,11 +92,17 @@
                 >
               </td>
               <td>
-                <% if (skill.isVisible) { %>
-                <i class="fas fa-eye text-success"></i>
-                <% } else { %>
-                <i class="fas fa-eye-slash text-muted"></i>
-                <% } %>
+                <button
+                  class="btn btn-sm toggle-visibility"
+                  data-skill-id="<%= skill.id %>"
+                  data-visible="<%= skill.isVisible %>"
+                >
+                  <% if (skill.isVisible) { %>
+                  <i class="fas fa-eye text-success"></i>
+                  <% } else { %>
+                  <i class="fas fa-eye-slash text-muted"></i>
+                  <% } %>
+                </button>
               </td>
               <td>
                 <span class="badge bg-light text-dark"><%= skill.order %></span>
@@ -101,8 +119,8 @@
                   <form
                     action="/admin/skills/<%= skill.id %>"
                     method="POST"
-                    class="d-inline"
-                    onsubmit="return confirm('Are you sure you want to delete this skill?')"
+                    class="d-inline delete-form"
+                    data-skill-name="<%= skill.name %>"
                   >
                     <input type="hidden" name="_method" value="DELETE" />
                     <button
@@ -136,3 +154,116 @@
   </div>
   <% } %>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Apply styles dynamically to avoid EJS/CSS conflicts
+    const icons = document.querySelectorAll("i[data-color]");
+    icons.forEach((icon) => {
+      icon.style.color = icon.dataset.color;
+    });
+
+    const progressBars = document.querySelectorAll(".progress-bar");
+    progressBars.forEach((bar) => {
+      bar.style.width = bar.dataset.width + "%";
+      bar.style.backgroundColor = bar.dataset.color;
+    });
+
+    // Handle proficiency slider changes
+    const sliders = document.querySelectorAll(".proficiency-slider");
+    sliders.forEach((slider) => {
+      slider.addEventListener("input", function () {
+        const skillId = this.dataset.skillId;
+        const newValue = this.value;
+        const row = this.closest("tr");
+        const proficiencyValue = row.querySelector(".proficiency-value");
+        const progressBar = row.querySelector(".progress-bar");
+
+        // Update UI instantly
+        proficiencyValue.textContent = newValue + "%";
+        progressBar.style.width = newValue + "%";
+
+        // Send update to server
+        fetch(`/admin/skills/${skillId}/update-proficiency`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ proficiency: parseInt(newValue) }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Show success feedback
+              const originalColor = progressBar.style.backgroundColor;
+              progressBar.style.backgroundColor = "#28a745";
+              setTimeout(() => {
+                progressBar.style.backgroundColor = originalColor;
+              }, 500);
+            } else {
+              alert("Error updating proficiency: " + data.message);
+              // Revert UI on error
+              this.value = proficiencyValue.textContent.replace("%", "");
+              progressBar.style.width = this.value + "%";
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Error updating proficiency");
+            // Revert UI on error
+            this.value = proficiencyValue.textContent.replace("%", "");
+            progressBar.style.width = this.value + "%";
+          });
+      });
+    });
+
+    // Handle visibility toggle
+    const toggleButtons = document.querySelectorAll(".toggle-visibility");
+    toggleButtons.forEach((button) => {
+      button.addEventListener("click", function () {
+        const skillId = this.dataset.skillId;
+        const isVisible = this.dataset.visible === "true";
+        const icon = this.querySelector("i");
+
+        // Send update to server
+        fetch(`/admin/skills/${skillId}/toggle-visibility`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              // Update UI instantly
+              this.dataset.visible = !isVisible;
+              if (!isVisible) {
+                icon.className = "fas fa-eye text-success";
+              } else {
+                icon.className = "fas fa-eye-slash text-muted";
+              }
+            } else {
+              alert("Error toggling visibility: " + data.message);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            alert("Error toggling visibility");
+          });
+      });
+    });
+
+    // Handle delete confirmation
+    const deleteForms = document.querySelectorAll(".delete-form");
+    deleteForms.forEach((form) => {
+      form.addEventListener("submit", function (e) {
+        const skillName = this.dataset.skillName;
+        if (
+          !confirm(`Are you sure you want to delete the skill "${skillName}"?`)
+        ) {
+          e.preventDefault();
+        }
+      });
+    });
+  });
+</script>
