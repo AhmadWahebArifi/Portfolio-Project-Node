@@ -478,7 +478,7 @@ router.post("/skills", requireAdmin, validateSkill, async (req, res) => {
     res.redirect("/admin/skills");
   } catch (error) {
     console.error("Create skill error:", error);
-    req.flash("error", "Error creating skill");
+    req.flash("error", "Error creating skill: " + error.message);
     res.render("admin/skills/form", {
       title: "Add New Skill",
       layout: "admin/layout",
@@ -526,7 +526,7 @@ router.put("/skills/:id", requireAdmin, validateSkill, async (req, res) => {
     res.redirect("/admin/skills");
   } catch (error) {
     console.error("Update skill error:", error);
-    req.flash("error", "Error updating skill");
+    req.flash("error", "Error updating skill: " + error.message);
     res.redirect("/admin/skills");
   }
 });
@@ -545,8 +545,81 @@ router.delete("/skills/:id", requireAdmin, async (req, res) => {
     res.redirect("/admin/skills");
   } catch (error) {
     console.error("Delete skill error:", error);
-    req.flash("error", "Error deleting skill");
+    req.flash("error", "Error deleting skill: " + error.message);
     res.redirect("/admin/skills");
+  }
+});
+
+// API endpoint for instant proficiency update
+router.post(
+  "/skills/:id/update-proficiency",
+  requireAdmin,
+  async (req, res) => {
+    try {
+      const { proficiency } = req.body;
+      const skill = await Skill.findByPk(req.params.id);
+
+      if (!skill) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Skill not found" });
+      }
+
+      // Validate proficiency
+      if (proficiency < 1 || proficiency > 100) {
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: "Proficiency must be between 1 and 100",
+          });
+      }
+
+      await skill.update({ proficiency });
+
+      res.json({
+        success: true,
+        message: "Proficiency updated successfully",
+        proficiency: skill.proficiency,
+      });
+    } catch (error) {
+      console.error("Update proficiency error:", error);
+      res
+        .status(500)
+        .json({
+          success: false,
+          message: "Error updating proficiency: " + error.message,
+        });
+    }
+  }
+);
+
+// API endpoint for toggling visibility
+router.post("/skills/:id/toggle-visibility", requireAdmin, async (req, res) => {
+  try {
+    const skill = await Skill.findByPk(req.params.id);
+
+    if (!skill) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Skill not found" });
+    }
+
+    await skill.update({ isVisible: !skill.isVisible });
+
+    res.json({
+      success: true,
+      message: `Skill ${skill.isVisible ? "hidden" : "shown"} successfully`,
+      isVisible: skill.isVisible,
+    });
+  } catch (error) {
+    console.error("Toggle visibility error:", error);
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "Error toggling visibility: " + error.message,
+      });
   }
 });
 
