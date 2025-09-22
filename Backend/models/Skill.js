@@ -42,8 +42,14 @@ const Skill = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
-        min: { args: 1, msg: "Proficiency must be at least 1" },
-        max: { args: 100, msg: "Proficiency cannot exceed 100" },
+        min: {
+          args: [1],
+          msg: "Proficiency must be at least 1",
+        },
+        max: {
+          args: [100],
+          msg: "Proficiency cannot exceed 100",
+        },
         notEmpty: { msg: "Please provide proficiency level" },
       },
     },
@@ -59,7 +65,22 @@ const Skill = sequelize.define(
       type: DataTypes.INTEGER,
       defaultValue: 0,
       validate: {
-        min: { args: 0, msg: "Years of experience cannot be negative" },
+        min: {
+          args: [0],
+          msg: "Years of experience cannot be negative",
+        },
+        // Custom validator to debug the issue
+        customValidator(value) {
+          console.log(
+            "YearsOfExperience validation - value:",
+            value,
+            "type:",
+            typeof value
+          );
+          if (value < 0) {
+            throw new Error("Years of experience cannot be negative");
+          }
+        },
       },
     },
     description: {
