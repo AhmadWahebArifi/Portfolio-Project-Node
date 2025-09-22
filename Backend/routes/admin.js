@@ -13,10 +13,19 @@ const router = express.Router();
 
 // Middleware to check if user is admin
 const requireAdmin = (req, res, next) => {
+  console.log("requireAdmin middleware called");
+  console.log("Session user:", req.session.user);
+  console.log(
+    "User role:",
+    req.session.user ? req.session.user.role : "no user"
+  );
+
   if (!req.session.user || req.session.user.role !== "admin") {
+    console.log("Redirecting to admin login");
     req.flash("error", "Access denied. Admin privileges required.");
     return res.redirect("/admin/login");
   }
+  console.log("Admin access granted");
   next();
 };
 
@@ -476,41 +485,7 @@ router.post("/skills", requireAdmin, validateSkill, async (req, res) => {
     // Log the incoming data for debugging
     console.log("Incoming skill data:", req.body);
 
-    // Ensure numeric values are properly converted
-    const skillData = { ...req.body };
-
-    if (skillData.proficiency) {
-      skillData.proficiency = parseInt(skillData.proficiency, 10);
-    }
-
-    if (
-      skillData.yearsOfExperience !== undefined &&
-      skillData.yearsOfExperience !== ""
-    ) {
-      skillData.yearsOfExperience = parseInt(skillData.yearsOfExperience, 10);
-      // If NaN, set to default value
-      if (isNaN(skillData.yearsOfExperience)) {
-        skillData.yearsOfExperience = 0;
-      }
-    } else {
-      // If not provided, set to default value
-      skillData.yearsOfExperience = 0;
-    }
-
-    if (skillData.order) {
-      skillData.order = parseInt(skillData.order, 10) || 0;
-    }
-
-    // Log the processed data
-    console.log("Processed skill data:", skillData);
-    console.log(
-      "Years of experience type:",
-      typeof skillData.yearsOfExperience,
-      "value:",
-      skillData.yearsOfExperience
-    );
-
-    await Skill.create(skillData);
+    await Skill.create(req.body);
     req.flash("success", "Skill created successfully!");
     res.redirect("/admin/skills");
   } catch (error) {
@@ -687,15 +662,47 @@ router.get("/blog", requireAdmin, async (req, res) => {
   }
 });
 
+// Test route for debugging
+router.get("/test", requireAdmin, (req, res) => {
+  res.send("Admin test route working!");
+});
+
+// Test blog form route
+router.get("/blog/test", requireAdmin, (req, res) => {
+  res.render("admin/blog/test", {
+    title: "Test Blog Form",
+  });
+});
+
 // New blog form
 router.get("/blog/new", requireAdmin, (req, res) => {
-  res.render("admin/blog/form", {
-    title: "Write New Blog Post",
-    layout: "admin/layout",
-    blog: {},
-    action: "/admin/blog",
-    method: "POST",
-  });
+  try {
+    console.log("Rendering new blog form");
+    console.log("User:", req.session.user);
+    res.render(
+      "admin/blog/form",
+      {
+        title: "Write New Blog Post",
+        layout: "admin/layout",
+        blog: {},
+        action: "/admin/blog",
+        method: "POST",
+      },
+      (err, html) => {
+        if (err) {
+          console.error("Error rendering blog form:", err);
+          req.flash("error", "Error loading blog form: " + err.message);
+          return res.redirect("/admin/blog");
+        }
+        console.log("Successfully rendered blog form");
+        res.send(html);
+      }
+    );
+  } catch (error) {
+    console.error("Error in blog form route:", error);
+    req.flash("error", "Error loading blog form: " + error.message);
+    res.redirect("/admin/blog");
+  }
 });
 
 // Create blog
@@ -706,16 +713,36 @@ router.post("/blog", requireAdmin, validateBlog, async (req, res) => {
       authorId: req.session.user.id,
     };
 
+    // Handle the status from the submit button
+    if (req.body.status) {
+      blogData.status = req.body.status;
+    } else {
+      // Default to draft if no status specified
+      blogData.status = "draft";
+    }
+
+    // Set publishedAt if status is published
+    if (blogData.status === "published" && !blogData.publishedAt) {
+      blogData.publishedAt = new Date();
+    }
+
     if (typeof blogData.tags === "string") {
       blogData.tags = blogData.tags.split(",").map((t) => t.trim());
     }
 
-    await Blog.create(blogData);
-    req.flash("success", "Blog post created successfully!");
+    const blog = await Blog.create(blogData);
+
+    // Flash appropriate message based on status
+    if (blog.status === "published") {
+      req.flash("success", "Blog post published successfully!");
+    } else {
+      req.flash("success", "Blog post saved as draft!");
+    }
+
     res.redirect("/admin/blog");
   } catch (error) {
     console.error("Create blog error:", error);
-    req.flash("error", "Error creating blog post");
+    req.flash("error", "Error creating blog post: " + error.message);
     res.render("admin/blog/form", {
       title: "Write New Blog Post",
       layout: "admin/layout",
@@ -759,16 +786,34 @@ router.put("/blog/:id", requireAdmin, validateBlog, async (req, res) => {
     }
 
     const blogData = { ...req.body };
+
+    // Handle the status from the submit button
+    if (req.body.status) {
+      blogData.status = req.body.status;
+    }
+
+    // Set publishedAt if status is changing to published
+    if (blogData.status === "published" && !blog.publishedAt) {
+      blogData.publishedAt = new Date();
+    }
+
     if (typeof blogData.tags === "string") {
       blogData.tags = blogData.tags.split(",").map((t) => t.trim());
     }
 
     await blog.update(blogData);
-    req.flash("success", "Blog post updated successfully!");
+
+    // Flash appropriate message based on status
+    if (blogData.status === "published") {
+      req.flash("success", "Blog post published successfully!");
+    } else {
+      req.flash("success", "Blog post updated successfully!");
+    }
+
     res.redirect("/admin/blog");
   } catch (error) {
     console.error("Update blog error:", error);
-    req.flash("error", "Error updating blog post");
+    req.flash("error", "Error updating blog post: " + error.message);
     res.redirect("/admin/blog");
   }
 });
