@@ -68,7 +68,7 @@ const Skill = sequelize.define(
         min: {
           args: [0],
           msg: "Years of experience cannot be negative",
-        }
+        },
       },
     },
     description: {
