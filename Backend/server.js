@@ -125,6 +125,13 @@ app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   res.locals.messages = req.flash();
   res.locals.currentPath = req.path;
+
+  // Debug logging for admin routes
+  if (req.path.startsWith("/admin")) {
+    console.log("Admin route accessed:", req.path);
+    console.log("User session:", req.session.user);
+  }
+
   next();
 });
 
