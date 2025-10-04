@@ -1,11 +1,11 @@
-<div class="d-flex justify-content-between align-items-center mb-4">
-  <h2><i class="fas fa-folder"></i> Projects Management</h2>
-  <a href="/admin/projects/new" class="btn btn-admin-primary">
-    <i class="fas fa-plus"></i> Add New Project
+<div class="d-flex justify-content-between align-items-center mb-4 animate-on-scroll">
+  <h2><i class="fas fa-folder me-2"></i> Projects Management</h2>
+  <a href="/admin/projects/new" class="btn btn-admin-primary rounded-pill">
+    <i class="fas fa-plus me-1"></i> Add New Project
   </a>
 </div>
 
-<div class="admin-card">
+<div class="admin-card animate-on-scroll">
   <div class="card-header bg-transparent border-0 py-3">
     <div class="row align-items-center">
       <div class="col">
@@ -42,13 +42,13 @@
             </div>
           </td>
           <td>
-            <span class="badge bg-secondary text-capitalize"
+            <span class="badge bg-secondary text-capitalize rounded-pill"
               ><%= project.category %></span
             >
           </td>
           <td>
             <span
-              class="badge bg-<%= project.status === 'completed' ? 'success' : project.status === 'in-progress' ? 'warning' : 'info' %>"
+              class="badge bg-<%= project.status === 'completed' ? 'success' : project.status === 'in-progress' ? 'warning' : 'info' %> rounded-pill"
             >
               <%= project.status.replace('-', ' ').replace(/\b\w/g, l =>
               l.toUpperCase()) %>
@@ -77,14 +77,14 @@
             <div class="btn-group btn-group-sm">
               <a
                 href="/admin/projects/<%= project.id %>"
-                class="btn btn-outline-info"
+                class="btn btn-outline-info rounded-circle me-1"
                 title="View Details"
               >
                 <i class="fas fa-eye"></i>
               </a>
               <a
                 href="/projects/<%= project.id %>"
-                class="btn btn-outline-secondary"
+                class="btn btn-outline-secondary rounded-circle me-1"
                 target="_blank"
                 title="View Public Page"
               >
@@ -92,7 +92,7 @@
               </a>
               <a
                 href="/admin/projects/<%= project.id %>/edit"
-                class="btn btn-outline-primary"
+                class="btn btn-outline-primary rounded-circle me-1"
                 title="Edit"
               >
                 <i class="fas fa-edit"></i>
@@ -100,13 +100,13 @@
               <form
                 action="/admin/projects/<%= project.id %>"
                 method="POST"
-                class="d-inline"
-                onsubmit="return confirm('Are you sure you want to delete the project <%= project.title %>?\n\nThis action cannot be undone.')"
+                class="d-inline delete-form"
+                data-project-title="<%= project.title %>"
               >
                 <input type="hidden" name="_method" value="DELETE" />
                 <button
                   type="submit"
-                  class="btn btn-outline-danger"
+                  class="btn btn-outline-danger rounded-circle"
                   title="Delete"
                 >
                   <i class="fas fa-trash"></i>
@@ -128,7 +128,7 @@
         <% if (currentPage > 1) { %>
         <li class="page-item">
           <a
-            class="page-link"
+            class="page-link rounded-pill"
             href="/admin/projects?page=<%= currentPage - 1 %>"
             >Previous</a
           >
@@ -136,12 +136,12 @@
         <% } %> <% for (let i = Math.max(1, currentPage - 2); i <=
         Math.min(totalPages, currentPage + 2); i++) { %>
         <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-          <a class="page-link" href="/admin/projects?page=<%= i %>"><%= i %></a>
+          <a class="page-link rounded-pill" href="/admin/projects?page=<%= i %>"><%= i %></a>
         </li>
         <% } %> <% if (currentPage < totalPages) { %>
         <li class="page-item">
           <a
-            class="page-link"
+            class="page-link rounded-pill"
             href="/admin/projects?page=<%= currentPage + 1 %>"
             >Next</a
           >
@@ -157,8 +157,8 @@
     </div>
     <h5>No Projects Found</h5>
     <p class="text-muted">Start by creating your first project.</p>
-    <a href="/admin/projects/new" class="btn btn-admin-primary">
-      <i class="fas fa-plus"></i> Add First Project
+    <a href="/admin/projects/new" class="btn btn-admin-primary rounded-pill">
+      <i class="fas fa-plus me-1"></i> Add First Project
     </a>
   </div>
   <% } %>
@@ -187,3 +187,46 @@
     });
   });
 </script>
+
+<style>
+  .table > :not(caption) > * > * {
+    padding: 1rem 1.5rem;
+    vertical-align: middle;
+  }
+  
+  .table thead th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .btn-group .btn {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50% !important;
+  }
+  
+  .page-link {
+    border-radius: var(--radius-full) !important;
+    margin: 0 0.25rem;
+    border: none;
+    color: var(--admin-dark);
+    transition: var(--transition);
+  }
+  
+  .page-link:hover {
+    background: var(--admin-secondary);
+    color: white;
+  }
+  
+  .page-item.active .page-link {
+    background: var(--admin-secondary);
+    color: white;
+    border: none;
+  }
+</style>
