@@ -38,7 +38,7 @@
               </select>
             </div>
             <div class="col-md-3">
-              <button type="submit" class="btn btn-primary w-100">
+              <button type="submit" class="btn btn-primary w-100 rounded-pill">
                 <i class="fas fa-search"></i> Search
               </button>
             </div>
@@ -53,7 +53,7 @@
             <% tags.slice(0, 10).forEach(function(tag) { %>
             <a
               href="/blog?tag=<%= encodeURIComponent(tag) %>"
-              class="badge bg-secondary text-decoration-none <%= selectedTag === tag ? 'bg-primary' : '' %>"
+              class="badge bg-secondary text-decoration-none <%= selectedTag === tag ? 'bg-primary' : '' %> rounded-pill"
             >
               #<%= tag %>
             </a>
@@ -85,11 +85,11 @@
           
           <div class="card-body d-flex flex-column">
             <div class="mb-2">
-              <span class="badge bg-primary me-2">
+              <span class="badge bg-primary me-2 rounded-pill">
                 <%= blog.category.charAt(0).toUpperCase() + blog.category.slice(1).replace('-', ' ') %>
               </span>
               <% if (blog.featured) { %>
-              <span class="badge bg-warning">Featured</span>
+              <span class="badge bg-warning text-dark rounded-pill">Featured</span>
               <% } %>
             </div>
 
@@ -120,7 +120,7 @@
             <% if (tagsArray && tagsArray.length > 0) { %>
             <div class="mb-2">
               <% tagsArray.slice(0, 3).forEach(function(tag) { %>
-              <span class="badge bg-light text-dark me-1">#<%= tag %></span>
+              <span class="badge bg-light text-dark me-1 rounded-pill">#<%= tag %></span>
               <% }); %>
             </div>
             <% } %>
@@ -150,7 +150,7 @@
 
               <a
                 href="/blog/<%= blog.slug %>"
-                class="btn btn-outline-primary btn-sm mt-3"
+                class="btn btn-outline-primary btn-sm mt-3 rounded-pill"
               >
                 Read More <i class="fas fa-arrow-right"></i>
               </a>
@@ -222,7 +222,7 @@
 </section>
 
 <!-- Newsletter Subscription -->
-<section class="py-5 bg-primary text-white">
+<section class="py-5 bg-dark-gradient text-white">
   <div class="container">
     <div class="row">
       <div class="col-lg-6 mx-auto text-center">
@@ -233,11 +233,11 @@
         <form class="d-flex gap-2">
           <input
             type="email"
-            class="form-control"
+            class="form-control rounded-pill"
             placeholder="Enter your email"
             required
           />
-          <button type="submit" class="btn btn-light">
+          <button type="submit" class="btn btn-accent rounded-pill">
             <i class="fas fa-paper-plane"></i> Subscribe
           </button>
         </form>
@@ -248,3 +248,81 @@
     </div>
   </div>
 </section>
+
+<style>
+  .card {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+    border: none;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .card-img-top {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .card-title a {
+    transition: var(--transition);
+  }
+
+  .card-title a:hover {
+    color: var(--secondary-color) !important;
+  }
+
+  .badge {
+    font-size: 0.75em;
+    padding: 0.5em 0.75em;
+  }
+
+  .form-control, .form-select {
+    border-radius: var(--radius);
+    border: 2px solid var(--gray-200);
+    padding: 10px 15px;
+    transition: var(--transition);
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
+    outline: none;
+  }
+
+  .page-link {
+    border-radius: var(--radius-full) !important;
+    margin: 0 0.25rem;
+    border: none;
+    color: var(--gray-700);
+    transition: var(--transition);
+  }
+
+  .page-link:hover {
+    background: var(--secondary-color);
+    color: white;
+  }
+
+  .page-item.active .page-link {
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+  }
+
+  .pagination {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 768px) {
+    .pagination .page-link {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.9rem;
+    }
+  }
+</style>
