@@ -54,9 +54,10 @@
           id="content"
           name="content"
           rows="15"
-          placeholder="Write your blog post content here..."
+          placeholder="Write your blog post content here... (minimum 20 characters)"
           required
         ><%= blog.content || '' %></textarea>
+        <div class="form-text">Content must be at least 20 characters long</div>
       </div>
 
       <div class="mb-3">
@@ -98,6 +99,23 @@
     </form>
   </div>
 </div>
+
+<script>
+// Add client-side validation to help users
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('form');
+  const contentField = document.getElementById('content');
+  
+  form.addEventListener('submit', function(e) {
+    if (contentField.value.trim().length < 20) {
+      e.preventDefault();
+      alert('Content must be at least 20 characters long');
+      contentField.focus();
+      return false;
+    }
+  });
+});
+</script>
 
 <% if (typeof layout === 'undefined' || layout === 'none') { %>
     </div>
