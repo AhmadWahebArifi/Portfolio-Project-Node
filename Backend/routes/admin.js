@@ -8,6 +8,7 @@ const {
   validateSkill,
   validateBlog,
 } = require("../utils/validation");
+const { Sequelize } = require("sequelize");
 
 const router = express.Router();
 
@@ -708,8 +709,25 @@ router.get("/blog/new", requireAdmin, (req, res) => {
 // Create blog
 router.post("/blog", requireAdmin, validateBlog, async (req, res) => {
   try {
+    // Generate slug from title if not provided
+    let slug = req.body.slug;
+    if (!slug && req.body.title) {
+      slug = req.body.title
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9]/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+
+      // Ensure slug is unique
+      const existingBlog = await Blog.findOne({ where: { slug } });
+      if (existingBlog) {
+        slug = slug + "-" + Date.now();
+      }
+    }
+
     const blogData = {
       ...req.body,
+      slug: slug,
       authorId: req.session.user.id,
     };
 
@@ -778,7 +796,31 @@ router.put("/blog/:id", requireAdmin, validateBlog, async (req, res) => {
       return res.redirect("/admin/blog");
     }
 
-    const blogData = { ...req.body };
+    // Generate slug from title if title changed and slug not provided
+    let slug = req.body.slug;
+    if (req.body.title && req.body.title !== blog.title && !slug) {
+      slug = req.body.title
+        .toLowerCase()
+        .replace(/[^a-zA-Z0-9]/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+
+      // Ensure slug is unique (but allow the current blog to keep its slug)
+      const existingBlog = await Blog.findOne({
+        where: {
+          slug: slug,
+          id: { [Sequelize.Op.ne]: blog.id },
+        },
+      });
+      if (existingBlog) {
+        slug = slug + "-" + Date.now();
+      }
+    }
+
+    const blogData = {
+      ...req.body,
+      ...(slug && { slug: slug }), // Only update slug if it was generated
+    };
 
     // Set publishedAt if status is changing to published
     if (blogData.status === "published" && !blog.publishedAt) {
