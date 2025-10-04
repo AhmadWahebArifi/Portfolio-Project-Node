@@ -1,4 +1,6 @@
-<div class="d-flex justify-content-between align-items-center mb-4 animate-on-scroll">
+<div
+  class="d-flex justify-content-between align-items-center mb-4 animate-on-scroll"
+>
   <h2><i class="fas fa-folder me-2"></i> Projects Management</h2>
   <a href="/admin/projects/new" class="btn btn-admin-primary rounded-pill">
     <i class="fas fa-plus me-1"></i> Add New Project
@@ -136,7 +138,9 @@
         <% } %> <% for (let i = Math.max(1, currentPage - 2); i <=
         Math.min(totalPages, currentPage + 2); i++) { %>
         <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-          <a class="page-link rounded-pill" href="/admin/projects?page=<%= i %>"><%= i %></a>
+          <a class="page-link rounded-pill" href="/admin/projects?page=<%= i %>"
+            ><%= i %></a
+          >
         </li>
         <% } %> <% if (currentPage < totalPages) { %>
         <li class="page-item">
@@ -193,14 +197,14 @@
     padding: 1rem 1.5rem;
     vertical-align: middle;
   }
-  
+
   .table thead th {
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.8rem;
     letter-spacing: 0.5px;
   }
-  
+
   .btn-group .btn {
     width: 35px;
     height: 35px;
@@ -210,7 +214,7 @@
     padding: 0;
     border-radius: 50% !important;
   }
-  
+
   .page-link {
     border-radius: var(--radius-full) !important;
     margin: 0 0.25rem;
@@ -218,12 +222,12 @@
     color: var(--admin-dark);
     transition: var(--transition);
   }
-  
+
   .page-link:hover {
     background: var(--admin-secondary);
     color: white;
   }
-  
+
   .page-item.active .page-link {
     background: var(--admin-secondary);
     color: white;
