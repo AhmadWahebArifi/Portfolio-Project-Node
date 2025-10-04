@@ -713,19 +713,12 @@ router.post("/blog", requireAdmin, validateBlog, async (req, res) => {
       authorId: req.session.user.id,
     };
 
-    // Handle the status from the submit button
-    if (req.body.status) {
-      blogData.status = req.body.status;
-    } else {
-      // Default to draft if no status specified
-      blogData.status = "draft";
-    }
-
     // Set publishedAt if status is published
     if (blogData.status === "published" && !blogData.publishedAt) {
       blogData.publishedAt = new Date();
     }
 
+    // Handle tags if provided as string
     if (typeof blogData.tags === "string") {
       blogData.tags = blogData.tags.split(",").map((t) => t.trim());
     }
@@ -787,16 +780,12 @@ router.put("/blog/:id", requireAdmin, validateBlog, async (req, res) => {
 
     const blogData = { ...req.body };
 
-    // Handle the status from the submit button
-    if (req.body.status) {
-      blogData.status = req.body.status;
-    }
-
     // Set publishedAt if status is changing to published
     if (blogData.status === "published" && !blog.publishedAt) {
       blogData.publishedAt = new Date();
     }
 
+    // Handle tags if provided as string
     if (typeof blogData.tags === "string") {
       blogData.tags = blogData.tags.split(",").map((t) => t.trim());
     }
