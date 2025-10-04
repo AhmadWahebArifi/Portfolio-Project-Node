@@ -19,14 +19,14 @@
         <div class="btn-group" role="group">
           <a
             href="/projects"
-            class="btn <%= selectedCategory === '' ? 'btn-primary' : 'btn-outline-primary' %>"
+            class="btn <%= selectedCategory === '' ? 'btn-primary' : 'btn-outline-primary' %> rounded-pill me-2 mb-2"
           >
             All Projects
           </a>
           <% categories.forEach(function(category) { %>
           <a
             href="/projects?category=<%= category %>"
-            class="btn <%= selectedCategory === category ? 'btn-primary' : 'btn-outline-primary' %>"
+            class="btn <%= selectedCategory === category ? 'btn-primary' : 'btn-outline-primary' %> rounded-pill me-2 mb-2"
           >
             <%= category.charAt(0).toUpperCase() + category.slice(1) %>
           </a>
@@ -155,7 +155,10 @@
               </div>
 
               <div class="d-grid">
-                <a href="/projects/<%= project.id %>" class="btn btn-primary">
+                <a
+                  href="/projects/<%= project.id %>"
+                  class="btn btn-primary rounded-pill"
+                >
                   <i class="fas fa-eye"></i> View Details
                 </a>
               </div>
@@ -212,7 +215,7 @@
           the moment. <% } %>
         </p>
         <% if (selectedCategory) { %>
-        <a href="/projects" class="btn btn-primary">
+        <a href="/projects" class="btn btn-primary rounded-pill">
           <i class="fas fa-list"></i> View All Projects
         </a>
         <% } %>
@@ -224,14 +227,19 @@
 
 <style>
   .project-card {
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
     border: none;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   .project-card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-xl);
   }
 
   .project-image {
@@ -246,7 +254,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(15, 23, 42, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -264,6 +272,11 @@
 
   .project-actions .btn {
     transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .project-actions .btn:hover {
@@ -271,37 +284,47 @@
   }
 
   .status-completed {
-    color: #28a745;
+    color: var(--success);
   }
 
   .status-in-progress {
-    color: #ffc107;
+    color: var(--warning);
   }
 
   .status-planning {
-    color: #6c757d;
+    color: var(--gray-500);
   }
 
   .status-on-hold {
-    color: #dc3545;
+    color: var(--danger);
   }
 
   .badge {
     font-size: 0.75em;
+    padding: 0.5em 0.75em;
+    border-radius: var(--radius-full);
   }
 
   .btn-group .btn {
-    border-radius: 0;
+    border-radius: var(--radius-full) !important;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 2px solid transparent;
   }
 
-  .btn-group .btn:first-child {
-    border-top-left-radius: 0.375rem;
-    border-bottom-left-radius: 0.375rem;
+  .btn-group .btn.btn-outline-primary {
+    border-color: var(--gray-300);
   }
 
-  .btn-group .btn:last-child {
-    border-top-right-radius: 0.375rem;
-    border-bottom-right-radius: 0.375rem;
+  .btn-group .btn.btn-outline-primary:hover,
+  .btn-group .btn.btn-outline-primary.active {
+    border-color: var(--secondary-color);
+    background: linear-gradient(
+      135deg,
+      var(--secondary-color) 0%,
+      #0284c7 100%
+    );
+    color: white;
   }
 
   /* Skeleton styles */
@@ -311,7 +334,8 @@
 
   .skeleton-card {
     border: none;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius-lg);
   }
 
   .skeleton-image {
@@ -319,13 +343,14 @@
     background: linear-gradient(90deg, #e0e0e0, #f5f5f5, #e0e0e0);
     background-size: 200% 100%;
     animation: loading 1.5s infinite;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   }
 
   .skeleton-text {
     background: linear-gradient(90deg, #e0e0e0, #f5f5f5, #e0e0e0);
     background-size: 200% 100%;
     animation: loading 1.5s infinite;
-    border-radius: 0.25rem;
+    border-radius: var(--radius-sm);
     height: 1rem;
     margin-bottom: 0.5rem;
   }
@@ -349,7 +374,7 @@
     background: linear-gradient(90deg, #e0e0e0, #f5f5f5, #e0e0e0);
     background-size: 200% 100%;
     animation: loading 1.5s infinite;
-    border-radius: 0.375rem;
+    border-radius: var(--radius-full);
   }
 
   @keyframes loading {
@@ -369,7 +394,6 @@
 
     .btn-group .btn {
       margin-bottom: 0.5rem;
-      border-radius: 0.375rem !important;
       margin-right: 0.5rem;
     }
   }
