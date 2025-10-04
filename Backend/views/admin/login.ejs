@@ -32,10 +32,14 @@
         --admin-dark: #0f172a;
         --admin-light: #f1f5f9;
         --transition: all 0.3s ease;
-        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+          0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
         --radius-sm: 0.25rem;
         --radius: 0.5rem;
         --radius-lg: 0.75rem;
@@ -45,7 +49,11 @@
 
       body {
         font-family: "Inter", sans-serif;
-        background: linear-gradient(135deg, var(--admin-primary) 0%, #1e293b 100%);
+        background: linear-gradient(
+          135deg,
+          var(--admin-primary) 0%,
+          #1e293b 100%
+        );
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -78,7 +86,11 @@
       .login-header {
         padding: 2rem 2rem 1rem;
         text-align: center;
-        background: linear-gradient(135deg, var(--admin-primary) 0%, #1e293b 100%);
+        background: linear-gradient(
+          135deg,
+          var(--admin-primary) 0%,
+          #1e293b 100%
+        );
         color: white;
         position: relative;
         overflow: hidden;
@@ -91,7 +103,11 @@
         left: -50%;
         width: 200%;
         height: 200%;
-        background: radial-gradient(circle, rgba(14, 165, 233, 0.1) 0%, transparent 70%);
+        background: radial-gradient(
+          circle,
+          rgba(14, 165, 233, 0.1) 0%,
+          transparent 70%
+        );
         animation: rotate 20s linear infinite;
       }
 
@@ -99,7 +115,8 @@
         padding: 2rem;
       }
 
-      .form-control, .form-select {
+      .form-control,
+      .form-select {
         border-radius: var(--radius);
         border: 2px solid var(--border-color);
         padding: 12px 15px;
@@ -107,7 +124,8 @@
         background-color: var(--header-bg);
       }
 
-      .form-control:focus, .form-select:focus {
+      .form-control:focus,
+      .form-select:focus {
         border-color: var(--admin-secondary);
         box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
         outline: none;
@@ -133,7 +151,11 @@
       }
 
       .btn-login {
-        background: linear-gradient(135deg, var(--admin-secondary) 0%, #0284c7 100%);
+        background: linear-gradient(
+          135deg,
+          var(--admin-secondary) 0%,
+          #0284c7 100%
+        );
         border: none;
         color: white;
         padding: 0.75rem 2rem;
@@ -151,7 +173,11 @@
       }
 
       .btn-login:hover {
-        background: linear-gradient(135deg, #0284c7 0%, var(--admin-secondary) 100%);
+        background: linear-gradient(
+          135deg,
+          #0284c7 0%,
+          var(--admin-secondary) 100%
+        );
         color: white;
         transform: translateY(-2px);
         box-shadow: var(--shadow-lg);
@@ -260,7 +286,7 @@
         .login-card {
           margin: 1rem;
         }
-        
+
         .login-body {
           padding: 1.5rem;
         }
@@ -280,7 +306,8 @@
 
         <div class="login-body">
           <!-- Flash Messages -->
-          <% if (messages.error && messages.error.length > 0) { %> <% messages.error.forEach(function(message) { %>
+          <% if (messages.error && messages.error.length > 0) { %> <%
+          messages.error.forEach(function(message) { %>
           <div class="alert alert-danger alert-dismissible fade show">
             <i class="fas fa-exclamation-circle"></i> <%= message %>
             <button
