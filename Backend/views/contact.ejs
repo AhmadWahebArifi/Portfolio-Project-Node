@@ -126,7 +126,7 @@
             <i class="fas fa-envelope fa-2x"></i>
           </div>
           <h4>Email</h4>
-          <p class="text-muted">your.email@example.com</p>
+          <p class="text-muted">AhmadWahebArifi@gmail.com</p>
         </div>
       </div>
 
@@ -139,7 +139,7 @@
             <i class="fas fa-phone fa-2x"></i>
           </div>
           <h4>Phone</h4>
-          <p class="text-muted">+1 (555) 123-4567</p>
+          <p class="text-muted">+92 340-9455559</p>
         </div>
       </div>
 
@@ -152,7 +152,7 @@
             <i class="fas fa-map-marker-alt fa-2x"></i>
           </div>
           <h4>Location</h4>
-          <p class="text-muted">Your City, Country</p>
+          <p class="text-muted">Pakistan</p>
         </div>
       </div>
     </div>
@@ -166,32 +166,27 @@
       <h3 class="mb-4">Connect With Me</h3>
       <div class="social-links">
         <a
-          href="#"
+          href="https://github.com/AhmadWahebArifi"
           class="btn btn-outline-primary btn-lg rounded-circle me-3"
           style="width: 60px; height: 60px"
+          target="_blank"
         >
           <i class="fab fa-github"></i>
         </a>
         <a
-          href="#"
+          href="https://linkedin.com/in/AhmadArifi"
           class="btn btn-outline-primary btn-lg rounded-circle me-3"
           style="width: 60px; height: 60px"
+          target="_blank"
         >
           <i class="fab fa-linkedin"></i>
         </a>
         <a
-          href="#"
-          class="btn btn-outline-primary btn-lg rounded-circle me-3"
-          style="width: 60px; height: 60px"
-        >
-          <i class="fab fa-twitter"></i>
-        </a>
-        <a
-          href="#"
+          href="mailto:AhmadWahebArifi@gmail.com"
           class="btn btn-outline-primary btn-lg rounded-circle"
           style="width: 60px; height: 60px"
         >
-          <i class="fab fa-instagram"></i>
+          <i class="fas fa-envelope"></i>
         </a>
       </div>
     </div>
@@ -227,7 +222,15 @@
 
       if (!isValid) {
         e.preventDefault();
-        alert("Please fill in all required fields correctly.");
+        // Create alert message
+        const alertDiv = document.createElement("div");
+        alertDiv.className =
+          "alert alert-danger alert-dismissible fade show mt-3";
+        alertDiv.innerHTML = `
+          <i class="fas fa-exclamation-circle"></i> Please fill in all required fields correctly.
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        form.insertBefore(alertDiv, form.firstChild);
       }
     });
 
@@ -252,19 +255,91 @@
 
 <style>
   .is-invalid {
-    border-color: #dc3545 !important;
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 0.2rem rgba(239, 68, 68, 0.25) !important;
   }
 
   .social-links .btn {
-    transition: all 0.3s ease;
-    color: #0d6efd; /* Blue color for better visibility */
-    border-color: #0d6efd; /* Blue border */
+    transition: all 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .social-links .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    background-color: #0d6efd; /* Blue background on hover */
-    color: white; /* White icon on hover */
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(
+      135deg,
+      var(--secondary-color) 0%,
+      #0284c7 100%
+    );
+    color: white;
+    border-color: var(--secondary-color);
+  }
+
+  .card {
+    border-radius: var(--radius-xl);
+    transition: all 0.3s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .form-control {
+    border-radius: var(--radius);
+    border: 2px solid var(--gray-200);
+    padding: 12px 15px;
+    transition: var(--transition);
+  }
+
+  .form-control:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
+    outline: none;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: var(--gray-700);
+    margin-bottom: 0.5rem;
+  }
+
+  .alert {
+    border-radius: var(--radius);
+    border: none;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .alert i {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+  }
+
+  .alert-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+  }
+
+  .btn-close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    opacity: 0.7;
+    transition: var(--transition);
+  }
+
+  .btn-close:hover {
+    opacity: 1;
+    transform: rotate(90deg);
   }
 </style>
