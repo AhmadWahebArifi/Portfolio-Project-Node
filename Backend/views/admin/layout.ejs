@@ -38,10 +38,14 @@
         --border-color: #e2e8f0;
         --sidebar-width: 250px;
         --transition: all 0.3s ease;
-        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+          0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+          0 10px 10px -5px rgba(0, 0, 0, 0.04);
         --radius-sm: 0.25rem;
         --radius: 0.5rem;
         --radius-lg: 0.75rem;
@@ -60,26 +64,50 @@
         background-color: var(--admin-light);
         color: var(--admin-dark);
         overflow-x: hidden;
+        padding-top: 70px; /* Account for fixed top bar on mobile */
       }
 
-      h1, h2, h3, h4, h5, h6 {
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
         font-family: "Poppins", sans-serif;
         font-weight: 700;
         letter-spacing: -0.025em;
       }
 
+      /* Top Bar */
+      .top-bar {
+        background: var(--header-bg);
+        padding: 1rem 1.5rem;
+        margin-bottom: 0;
+        box-shadow: var(--shadow);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid var(--border-color);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1020;
+      }
+
       /* Sidebar */
       .sidebar {
         width: var(--sidebar-width);
-        height: 100vh;
+        height: calc(100vh - 70px);
         background-color: var(--sidebar-bg);
         border-right: 1px solid var(--border-color);
         position: fixed;
-        top: 0;
+        top: 70px;
         left: 0;
         z-index: 1000;
         transition: var(--transition);
         box-shadow: var(--shadow);
+        overflow-y: auto;
       }
 
       .sidebar-header {
@@ -137,22 +165,10 @@
       /* Main Content */
       .main-content {
         margin-left: var(--sidebar-width);
-        min-height: 100vh;
+        min-height: calc(100vh - 70px);
         padding: 2rem;
         background-color: #f8f9fa;
-      }
-
-      /* Top Bar */
-      .top-bar {
-        background: var(--header-bg);
-        border-radius: var(--radius);
-        padding: 1rem 1.5rem;
-        margin-bottom: 2rem;
-        box-shadow: var(--shadow);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border: 1px solid var(--border-color);
+        margin-top: 70px;
       }
 
       /* Cards */
@@ -242,32 +258,56 @@
       }
 
       .btn-admin-primary {
-        background: linear-gradient(135deg, var(--admin-secondary) 0%, #0284c7 100%);
+        background: linear-gradient(
+          135deg,
+          var(--admin-secondary) 0%,
+          #0284c7 100%
+        );
         color: white;
       }
 
       .btn-admin-primary:hover {
-        background: linear-gradient(135deg, #0284c7 0%, var(--admin-secondary) 100%);
+        background: linear-gradient(
+          135deg,
+          #0284c7 0%,
+          var(--admin-secondary) 100%
+        );
         color: white;
       }
 
       .btn-success {
-        background: linear-gradient(135deg, var(--admin-success) 0%, #059669 100%);
+        background: linear-gradient(
+          135deg,
+          var(--admin-success) 0%,
+          #059669 100%
+        );
         color: white;
       }
 
       .btn-success:hover {
-        background: linear-gradient(135deg, #059669 0%, var(--admin-success) 100%);
+        background: linear-gradient(
+          135deg,
+          #059669 0%,
+          var(--admin-success) 100%
+        );
         color: white;
       }
 
       .btn-warning {
-        background: linear-gradient(135deg, var(--admin-warning) 0%, #d97706 100%);
+        background: linear-gradient(
+          135deg,
+          var(--admin-warning) 0%,
+          #d97706 100%
+        );
         color: white;
       }
 
       .btn-warning:hover {
-        background: linear-gradient(135deg, #d97706 0%, var(--admin-warning) 100%);
+        background: linear-gradient(
+          135deg,
+          #d97706 0%,
+          var(--admin-warning) 100%
+        );
         color: white;
       }
 
@@ -321,7 +361,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, var(--admin-primary) 0%, #1e293b 100%);
+        background: linear-gradient(
+          135deg,
+          var(--admin-primary) 0%,
+          #1e293b 100%
+        );
+        padding: 1rem;
       }
 
       .login-card {
@@ -332,13 +377,17 @@
         max-width: 450px;
         width: 100%;
         border: 1px solid var(--border-color);
-        margin: 2rem;
+        margin: 2rem auto;
       }
 
       .login-header {
         padding: 2rem 2rem 1rem;
         text-align: center;
-        background: linear-gradient(135deg, var(--admin-primary) 0%, #1e293b 100%);
+        background: linear-gradient(
+          135deg,
+          var(--admin-primary) 0%,
+          #1e293b 100%
+        );
         color: white;
       }
 
@@ -347,7 +396,8 @@
       }
 
       /* Form elements */
-      .form-control, .form-select {
+      .form-control,
+      .form-select {
         border-radius: var(--radius);
         border: 2px solid var(--border-color);
         padding: 12px 15px;
@@ -355,7 +405,8 @@
         background-color: var(--header-bg);
       }
 
-      .form-control:focus, .form-select:focus {
+      .form-control:focus,
+      .form-select:focus {
         border-color: var(--admin-secondary);
         box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
         outline: none;
@@ -451,12 +502,46 @@
         background-color: var(--admin-light);
       }
 
+      /* Mobile menu button */
+      .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--admin-dark);
+        font-size: 1.5rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: var(--radius);
+      }
+
+      .mobile-menu-btn:focus {
+        box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
+        outline: none;
+      }
+
+      /* Animation */
+      .animate-on-scroll {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+      }
+
+      .animate-on-scroll.animated {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
       /* Comprehensive Responsive Design for Admin */
       /* Extra small devices (phones, less than 576px) */
       @media (max-width: 575.98px) {
+        body {
+          padding-top: 60px;
+        }
+
         .sidebar {
           transform: translateX(-100%);
-          width: 200px;
+          width: 250px;
+          height: calc(100vh - 60px);
+          top: 60px;
         }
 
         .sidebar.show {
@@ -466,58 +551,75 @@
         .main-content {
           margin-left: 0;
           padding: 1rem;
+          margin-top: 60px;
         }
 
         .mobile-menu-btn {
           display: block !important;
         }
-        
+
         .top-bar {
           padding: 0.75rem 1rem;
           flex-direction: column;
           gap: 1rem;
           text-align: center;
+          height: auto;
         }
-        
+
         .top-bar .d-flex.align-items-center:last-child {
           width: 100%;
           justify-content: center;
         }
-        
+
         .stat-card {
           margin-bottom: 1rem;
+          padding: 1rem;
         }
-        
+
         .admin-card .card-body {
           padding: 1rem;
         }
-        
+
         .btn {
           padding: 0.5rem 1rem;
           font-size: 0.875rem;
         }
-        
+
         .table-responsive {
           font-size: 0.875rem;
         }
-        
+
         .table > :not(caption) > * > * {
           padding: 0.75rem 1rem;
         }
-        
+
         .login-card {
           margin: 1rem;
         }
-        
+
         .login-body {
           padding: 1.5rem;
+        }
+
+        .stat-number {
+          font-size: 1.5rem;
+        }
+
+        .stat-label {
+          font-size: 0.7rem;
         }
       }
 
       /* Small devices (landscape phones, 576px and up) */
       @media (min-width: 576px) and (max-width: 767.98px) {
+        body {
+          padding-top: 65px;
+        }
+
         .sidebar {
           transform: translateX(-100%);
+          height: calc(100vh - 65px);
+          top: 65px;
         }
 
         .sidebar.show {
@@ -527,16 +629,18 @@
         .main-content {
           margin-left: 0;
           padding: 1.5rem;
+          margin-top: 65px;
         }
 
         .mobile-menu-btn {
           display: block !important;
         }
-        
+
         .top-bar {
           padding: 0.75rem 1.25rem;
+          height: auto;
         }
-        
+
         .stat-card {
           padding: 1.25rem;
         }
@@ -544,19 +648,27 @@
 
       /* Medium devices (tablets, 768px and up) */
       @media (min-width: 768px) and (max-width: 991.98px) {
+        body {
+          padding-top: 70px;
+        }
+
         .sidebar {
           width: 220px;
+          height: calc(100vh - 70px);
+          top: 70px;
         }
 
         .main-content {
           margin-left: 220px;
           padding: 1.75rem;
+          margin-top: 70px;
         }
-        
+
         .top-bar {
           padding: 0.875rem 1.375rem;
+          height: auto;
         }
-        
+
         .stat-card {
           padding: 1.375rem;
         }
@@ -585,7 +697,7 @@
       }
 
       /* General responsive improvements */
-      @media (max-width: 768px) {
+      @media (max-width: 991.98px) {
         .sidebar {
           transform: translateX(-100%);
         }
@@ -596,40 +708,54 @@
 
         .main-content {
           margin-left: 0;
-          padding: 1rem;
         }
 
         .mobile-menu-btn {
           display: block !important;
         }
-        
+
         .top-bar {
           padding: 0.75rem 1rem;
         }
-        
+
         .d-none.d-lg-block {
           display: none !important;
         }
-        
+
         .stat-number {
           font-size: 1.75rem;
         }
-        
+
         .stat-label {
           font-size: 0.75rem;
         }
-        
+
         .btn-group .btn {
           padding: 0.25rem 0.5rem;
           font-size: 0.875rem;
         }
-        
+
         .card-header {
           padding: 0.75rem 1rem;
         }
-        
-        h1, h2, h3, h4, h5, h6 {
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
           line-height: 1.3;
+        }
+
+        /* Mobile sidebar adjustments */
+        .sidebar-nav {
+          padding: 0.5rem 0;
+        }
+
+        .nav-link {
+          padding: 0.5rem 1rem;
+          margin: 0.1rem 0.25rem;
         }
       }
 
@@ -639,78 +765,107 @@
           flex-direction: column;
           gap: 0.75rem;
         }
-        
+
         .btn-group {
           flex-wrap: wrap;
           gap: 0.5rem;
         }
-        
+
         .btn-group .btn {
           margin-bottom: 0.25rem;
           margin-right: 0.25rem;
         }
-        
+
         .pagination .page-link {
           padding: 0.5rem 0.75rem;
           font-size: 0.875rem;
         }
-        
-        .form-control, .form-select {
+
+        .form-control,
+        .form-select {
           font-size: 1rem;
         }
-        
+
         .input-group {
           flex-direction: column;
         }
-        
+
         .input-group .form-control:not(:first-child) {
           border-left: 2px solid var(--border-color);
           border-top: none;
           border-radius: 0 0 var(--radius) var(--radius);
         }
-        
+
         .input-group .input-group-text {
           border-radius: var(--radius) var(--radius) 0 0;
           border-right: 2px solid var(--border-color);
           border-bottom: none;
         }
-        
+
         .alert {
           padding: 0.75rem 1rem;
           font-size: 0.875rem;
         }
-        
+
         .alert i {
           font-size: 1rem;
           margin-right: 0.5rem;
         }
-        
+
         .btn-close {
           top: 0.75rem;
           right: 0.75rem;
           font-size: 1.25rem;
         }
       }
-
-      .mobile-menu-btn {
-        display: none;
-      }
-
-      /* Animation */
-      .animate-on-scroll {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
-      }
-
-      .animate-on-scroll.animated {
-        opacity: 1;
-        transform: translateY(0);
-      }
     </style>
   </head>
   <body>
     <% if (typeof layout === 'undefined' || layout !== 'none') { %>
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="d-flex align-items-center">
+        <button
+          class="mobile-menu-btn me-3"
+          onclick="toggleSidebar()"
+          aria-label="Toggle sidebar"
+        >
+          <i class="fas fa-bars"></i>
+        </button>
+        <h4 class="mb-0"><%= title %></h4>
+      </div>
+      <div class="d-flex align-items-center">
+        <span class="text-muted me-3 d-none d-md-inline"
+          >Welcome, <%= user ? user.name : 'Admin' %></span
+        >
+        <div class="dropdown">
+          <button
+            class="btn btn-outline-secondary dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fas fa-user"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="/admin/profile"
+                ><i class="fas fa-user-circle"></i> Profile</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <form action="/admin/logout" method="POST" class="d-inline">
+                <button type="submit" class="dropdown-item">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
@@ -791,64 +946,27 @@
 
     <!-- Main Content -->
     <div class="main-content">
-      <!-- Top Bar -->
-      <div class="top-bar">
-        <div class="d-flex align-items-center">
-          <button
-            class="btn btn-link mobile-menu-btn me-3"
-            onclick="toggleSidebar()"
-          >
-            <i class="fas fa-bars"></i>
-          </button>
-          <h4 class="mb-0"><%= title %></h4>
-        </div>
-        <div class="d-flex align-items-center">
-          <span class="text-muted me-3"
-            >Welcome, <%= user ? user.name : 'Admin' %></span
-          >
-          <div class="dropdown">
-            <button
-              class="btn btn-outline-secondary dropdown-toggle"
-              data-bs-toggle="dropdown"
-            >
-              <i class="fas fa-user"></i>
-            </button>
-            <ul class="dropdown-menu">
-              <li>
-                <a class="dropdown-item" href="/admin/profile"
-                  ><i class="fas fa-user-circle"></i> Profile</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <form action="/admin/logout" method="POST" class="d-inline">
-                  <button type="submit" class="dropdown-item">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                  </button>
-                </form>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
       <!-- Flash Messages -->
-      <% if (messages.success && messages.success.length > 0) { %> <% messages.success.forEach(function(message) { %>
+      <% if (messages.success && messages.success.length > 0) { %> <%
+      messages.success.forEach(function(message) { %>
       <div class="alert alert-success alert-dismissible fade show">
         <i class="fas fa-check-circle"></i> <%= message %>
         <button
           type="button"
           class="btn-close"
           data-bs-dismiss="alert"
+          aria-label="Close"
         ></button>
       </div>
-      <% }); %> <% } %> <% if (messages.error && messages.error.length > 0) { %> <% messages.error.forEach(function(message) { %>
+      <% }); %> <% } %> <% if (messages.error && messages.error.length > 0) { %>
+      <% messages.error.forEach(function(message) { %>
       <div class="alert alert-danger alert-dismissible fade show">
         <i class="fas fa-exclamation-circle"></i> <%= message %>
         <button
           type="button"
           class="btn-close"
           data-bs-dismiss="alert"
+          aria-label="Close"
         ></button>
       </div>
       <% }); %> <% } %>
@@ -863,7 +981,8 @@
 
     <script>
       function toggleSidebar() {
-        document.getElementById("sidebar").classList.toggle("show");
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.toggle("show");
       }
 
       // Auto-hide alerts
@@ -897,6 +1016,28 @@
       window.addEventListener("scroll", updateAnimations);
       window.addEventListener("load", updateAnimations);
       window.addEventListener("resize", updateAnimations);
+
+      // Close sidebar when clicking outside on mobile
+      document.addEventListener("DOMContentLoaded", function () {
+        const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+        const sidebar = document.getElementById("sidebar");
+
+        if (mobileMenuBtn && sidebar) {
+          document.addEventListener("click", function (event) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnMenuBtn = mobileMenuBtn.contains(event.target);
+
+            // Close sidebar if click is outside and sidebar is open
+            if (
+              !isClickInsideSidebar &&
+              !isClickOnMenuBtn &&
+              sidebar.classList.contains("show")
+            ) {
+              sidebar.classList.remove("show");
+            }
+          });
+        }
+      });
     </script>
   </body>
 </html>
