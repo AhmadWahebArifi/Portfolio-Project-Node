@@ -7,16 +7,14 @@
         <p class="lead">
           Full-Stack Developer | Creating Amazing Web Experiences
         </p>
-        <a href="/contact" class="btn-custom">
-          <i class="fas fa-envelope"></i> Get In Touch
-        </a>
-        <a
-          href="/projects"
-          class="btn-custom ms-3"
-          style="background: transparent; border: 2px solid white"
-        >
-          <i class="fas fa-folder-open"></i> View My Work
-        </a>
+        <div class="d-flex flex-wrap justify-content-center">
+          <a href="/contact" class="btn-custom">
+            <i class="fas fa-envelope"></i> Get In Touch
+          </a>
+          <a href="/projects" class="btn-custom-outline">
+            <i class="fas fa-folder-open"></i> View My Work
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -51,7 +49,7 @@
             src="/ahmadpic.jpg"
             class="img-fluid rounded-circle shadow-lg mb-4"
             alt="Ahmad Waheb Arifi"
-            style="max-width: 250px"
+            style="max-width: 250px; border: 5px solid rgba(14, 165, 233, 0.2)"
           />
           <div class="skill-item">
             <i class="fas fa-code skill-icon text-primary"></i>
@@ -81,7 +79,7 @@
           <div class="card-body">
             <h5 class="card-title text-capitalize">
               <i
-                class="fas fa-<%= category === 'frontend' ? 'laptop-code' : category === 'backend' ? 'server' : 'tools' %>"
+                class="fas fa-<%= category === 'frontend' ? 'laptop-code' : category === 'backend' ? 'server' : 'tools' %> me-2"
               ></i>
               <%= category.replace('-', ' ') %>
             </h5>
@@ -94,8 +92,10 @@
                   <span><%= skill.proficiency %>%</span>
                 </div>
                 <div class="progress">
-                  <% const widthStyle = 'width: ' + skill.proficiency + '%'; %>
-                  <div class="progress-bar" style="<%= widthStyle %>"></div>
+                  <div
+                    class="progress-bar"
+                    data-width="<%= skill.proficiency %>"
+                  ></div>
                 </div>
               </div>
               <% }); %>
@@ -107,7 +107,7 @@
     </div>
 
     <div class="text-center mt-4">
-      <a href="/about" class="btn btn-outline-primary btn-lg rounded-pill">
+      <a href="/skills" class="btn btn-outline-primary btn-lg rounded-pill">
         <i class="fas fa-chart-bar"></i> View All Skills
       </a>
     </div>
@@ -159,7 +159,7 @@
               <% } %>
             </div>
 
-            <div class="d-flex gap-2">
+            <div class="d-flex gap-2 mt-auto">
               <a
                 href="/projects/<%= project.id %>"
                 class="btn btn-primary flex-fill"
@@ -234,7 +234,9 @@
             <h5 class="card-title"><%= blog.title %></h5>
             <p class="card-text flex-grow-1"><%= blog.excerpt %></p>
 
-            <div class="d-flex justify-content-between align-items-center">
+            <div
+              class="d-flex justify-content-between align-items-center mt-auto"
+            >
               <small class="text-muted">
                 <i class="fas fa-clock"></i> <%= blog.readTime %> min read
               </small>
@@ -258,16 +260,7 @@
 <% } %>
 
 <!-- Call to Action -->
-<section
-  class="py-5"
-  style="
-    background: linear-gradient(
-      135deg,
-      var(--primary-color) 0%,
-      var(--secondary-color) 100%
-    );
-  "
->
+<section class="py-5 bg-dark-gradient">
   <div class="container">
     <div class="row">
       <div class="col-lg-8 mx-auto text-center text-white animate-on-scroll">
@@ -276,13 +269,28 @@
           Have a project in mind? I'd love to hear about it and discuss how we
           can bring your ideas to life.
         </p>
-        <a href="/contact" class="btn btn-light btn-lg rounded-pill me-3">
-          <i class="fas fa-envelope"></i> Start a Conversation
-        </a>
-        <a href="/resume" class="btn btn-outline-light btn-lg rounded-pill">
-          <i class="fas fa-download"></i> Download Resume
-        </a>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+          <a href="/contact" class="btn btn-light btn-lg rounded-pill">
+            <i class="fas fa-envelope"></i> Start a Conversation
+          </a>
+          <a href="/resume" class="btn btn-outline-light btn-lg rounded-pill">
+            <i class="fas fa-download"></i> Download Resume
+          </a>
+        </div>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  // Set progress bar widths after page load
+  document.addEventListener("DOMContentLoaded", function () {
+    const progressBars = document.querySelectorAll(".progress-bar");
+    progressBars.forEach(function (bar) {
+      const width = bar.getAttribute("data-width");
+      if (width) {
+        bar.style.width = width + "%";
+      }
+    });
+  });
+</script>
