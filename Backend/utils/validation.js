@@ -74,6 +74,8 @@ const validateUserLogin = [
 const validateProject = [
   // Transform and normalize form data before validation
   (req, res, next) => {
+    console.log("Project validation - Raw body:", req.body);
+    
     // Handle technologies field (string to array conversion)
     if (req.body.technologies && typeof req.body.technologies === "string") {
       req.body.technologies = req.body.technologies
@@ -83,6 +85,11 @@ const validateProject = [
     }
     // Ensure technologies is an array
     if (req.body.technologies && !Array.isArray(req.body.technologies)) {
+      req.body.technologies = [];
+    }
+    
+    // Handle case where technologies might be an empty string
+    if (req.body.technologies === "") {
       req.body.technologies = [];
     }
 
@@ -98,6 +105,8 @@ const validateProject = [
     if (req.body.order) {
       req.body.order = parseInt(req.body.order, 10) || 0;
     }
+    
+    console.log("Project validation - Processed body:", req.body);
 
     next();
   },
@@ -127,6 +136,13 @@ const validateProject = [
     .optional()
     .isURL()
     .withMessage("Please provide a valid URL"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log("Project validation errors:", errors.array());
+    }
+    next();
+  },
   handleValidationErrors,
 ];
 
