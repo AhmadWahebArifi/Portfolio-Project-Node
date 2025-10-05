@@ -18,23 +18,33 @@
             <label for="title" class="form-label">Project Title *</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control <%= typeof messages !== 'undefined' && messages.error && messages.error.includes('Title') ? 'is-invalid' : '' %>"
               id="title"
               name="title"
               value="<%= project.title || '' %>"
               required
             />
+            <% if (typeof messages !== 'undefined' && messages.error && messages.error.includes('Title')) { %>
+              <div class="invalid-feedback">
+                <%= messages.error %>
+              </div>
+            <% } %>
           </div>
 
           <div class="mb-3">
             <label for="description" class="form-label">Short Description *</label>
             <textarea
-              class="form-control"
+              class="form-control <%= typeof messages !== 'undefined' && messages.error && messages.error.includes('Description') ? 'is-invalid' : '' %>"
               id="description"
               name="description"
               rows="3"
               required
             ><%= project.description || '' %></textarea>
+            <% if (typeof messages !== 'undefined' && messages.error && messages.error.includes('Description')) { %>
+              <div class="invalid-feedback">
+                <%= messages.error %>
+              </div>
+            <% } %>
           </div>
 
           <div class="mb-3">
@@ -51,7 +61,7 @@
         <div class="col-md-4">
           <div class="mb-3">
             <label for="category" class="form-label">Category *</label>
-            <select class="form-select" id="category" name="category" required>
+            <select class="form-select <%= typeof messages !== 'undefined' && messages.error && messages.error.includes('category') ? 'is-invalid' : '' %>" id="category" name="category" required>
               <option value="">Select Category</option>
               <option value="web" <%= project.category === 'web' ? 'selected' : '' %>>Web</option>
               <option value="mobile" <%= project.category === 'mobile' ? 'selected' : '' %>>Mobile</option>
@@ -59,6 +69,11 @@
               <option value="api" <%= project.category === 'api' ? 'selected' : '' %>>API</option>
               <option value="other" <%= project.category === 'other' ? 'selected' : '' %>>Other</option>
             </select>
+            <% if (typeof messages !== 'undefined' && messages.error && messages.error.includes('category')) { %>
+              <div class="invalid-feedback">
+                <%= messages.error %>
+              </div>
+            <% } %>
           </div>
 
           <div class="mb-3">
@@ -90,7 +105,7 @@
             <label for="technologies" class="form-label">Technologies *</label>
             <input
               type="text"
-              class="form-control"
+              class="form-control <%= typeof messages !== 'undefined' && messages.error && (messages.error.includes('technology') || messages.error.includes('Technologies')) ? 'is-invalid' : '' %>"
               id="technologies"
               name="technologies"
               value="<%= Array.isArray(project.technologies) ? project.technologies.join(', ') : project.technologies || '' %>"
@@ -98,6 +113,11 @@
               required
             />
             <div class="form-text">Separate technologies with commas</div>
+            <% if (typeof messages !== 'undefined' && messages.error && (messages.error.includes('technology') || messages.error.includes('Technologies'))) { %>
+              <div class="invalid-feedback">
+                <%= messages.error %>
+              </div>
+            <% } %>
           </div>
         </div>
 
@@ -108,11 +128,16 @@
                 <label for="liveUrl" class="form-label">Live URL</label>
                 <input
                   type="url"
-                  class="form-control"
+                  class="form-control <%= typeof messages !== 'undefined' && messages.error && messages.error.includes('URL') ? 'is-invalid' : '' %>"
                   id="liveUrl"
                   name="liveUrl"
                   value="<%= project.liveUrl || '' %>"
                 />
+                <% if (typeof messages !== 'undefined' && messages.error && messages.error.includes('URL')) { %>
+                  <div class="invalid-feedback">
+                    <%= messages.error %>
+                  </div>
+                <% } %>
               </div>
             </div>
             <div class="col-6">
@@ -120,11 +145,16 @@
                 <label for="githubUrl" class="form-label">GitHub URL</label>
                 <input
                   type="url"
-                  class="form-control"
+                  class="form-control <%= typeof messages !== 'undefined' && messages.error && messages.error.includes('URL') ? 'is-invalid' : '' %>"
                   id="githubUrl"
                   name="githubUrl"
                   value="<%= project.githubUrl || '' %>"
                 />
+                <% if (typeof messages !== 'undefined' && messages.error && messages.error.includes('URL')) { %>
+                  <div class="invalid-feedback">
+                    <%= messages.error %>
+                  </div>
+                <% } %>
               </div>
             </div>
           </div>
