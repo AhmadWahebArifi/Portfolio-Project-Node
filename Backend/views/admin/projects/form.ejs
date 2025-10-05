@@ -108,7 +108,7 @@
               class="form-control <%= typeof messages !== 'undefined' && messages.error && (messages.error.includes('technology') || messages.error.includes('Technologies')) ? 'is-invalid' : '' %>"
               id="technologies"
               name="technologies"
-              value="<%= Array.isArray(project.technologies) ? project.technologies.join(', ') : project.technologies || '' %>"
+              value="<%= Array.isArray(project.technologies) ? project.technologies.join(', ') : (typeof project.technologies === 'string' ? project.technologies : '') %>"
               placeholder="React, Node.js, MongoDB"
               required
             />
@@ -170,7 +170,7 @@
               id="featured"
               name="featured"
               value="true"
-              <%= project.featured ? 'checked' : '' %>
+              <%= (project.featured === true || project.featured === 'true') ? 'checked' : '' %>
             />
             <label class="form-check-label" for="featured">
               <i class="fas fa-star text-warning"></i> Featured Project
@@ -185,7 +185,7 @@
               id="isPublic"
               name="isPublic"
               value="true"
-              <%= project.isPublic !== false ? 'checked' : '' %>
+              <%= (project.isPublic === true || project.isPublic === 'true' || project.isPublic === undefined) ? 'checked' : '' %>
             />
             <label class="form-check-label" for="isPublic">
               <i class="fas fa-eye text-success"></i> Public Project
