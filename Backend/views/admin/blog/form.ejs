@@ -82,7 +82,7 @@
           id="tags"
           name="tags"
           placeholder="Enter tags separated by commas"
-          value="<%= blog.tags ? blog.tags.join(', ') : '' %>"
+          value="<%= Array.isArray(blog.tags) ? blog.tags.join(', ') : (typeof blog.tags === 'string' ? blog.tags : '') %>"
         />
         <div class="form-text">Separate tags with commas (e.g., javascript, nodejs, express)</div>
       </div>
