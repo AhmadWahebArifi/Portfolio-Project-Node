@@ -264,6 +264,16 @@ const validateBlog = [
       req.body.tags = [];
     }
 
+    // Handle case where tags might be an empty string
+    if (req.body.tags === "") {
+      req.body.tags = [];
+    }
+
+    // If tags is not provided at all, set it to empty array
+    if (req.body.tags === undefined) {
+      req.body.tags = [];
+    }
+
     // Handle status field
     if (req.body.status) {
       // Validate that status is one of the allowed values
