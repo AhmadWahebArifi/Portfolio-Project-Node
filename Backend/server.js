@@ -61,12 +61,6 @@ app.use(
 app.use(flash());
 
 // Method override for forms
-app.use((req, res, next) => {
-  console.log("Method override check - Original method:", req.method);
-  console.log("Method override check - Body:", req.body);
-  console.log("Method override check - Query:", req.query);
-  next();
-});
 app.use(methodOverride("_method"));
 
 // Security middleware
