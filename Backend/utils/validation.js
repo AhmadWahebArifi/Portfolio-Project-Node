@@ -4,11 +4,35 @@ const { body, validationResult } = require("express-validator");
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({
-      success: false,
-      message: "Validation failed",
-      errors: errors.array(),
-    });
+    console.log("Validation errors:", errors.array());
+    // For API requests, return JSON
+    if (req.path.startsWith("/api/")) {
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors: errors.array(),
+      });
+    } 
+    // For admin panel requests, flash error and redirect back
+    else if (req.path.startsWith("/admin/")) {
+      const errorMessages = errors.array().map(err => err.msg);
+      req.flash("error", errorMessages.join(", "));
+      
+      // Redirect back to the form
+      if (req.path.includes("/projects/") && req.method === "PUT") {
+        const projectId = req.params.id || req.body.id;
+        if (projectId) {
+          console.log("Redirecting to edit form for project:", projectId);
+          return res.redirect(`/admin/projects/${projectId}/edit`);
+        }
+      } else if (req.path.includes("/projects") && req.method === "POST" && !req.path.includes("/edit")) {
+        // For new project creation
+        console.log("Redirecting back to new project form");
+        return res.redirect("/admin/projects/new");
+      }
+      console.log("Redirecting back to previous page");
+      return res.redirect("back");
+    }
   }
   next();
 };
@@ -78,6 +102,7 @@ const validateProject = [
     
     // Handle technologies field (string to array conversion)
     if (req.body.technologies && typeof req.body.technologies === "string") {
+      // Split by comma and trim each technology, filter out empty ones
       req.body.technologies = req.body.technologies
         .split(",")
         .map((t) => t.trim())
@@ -92,6 +117,11 @@ const validateProject = [
     if (req.body.technologies === "") {
       req.body.technologies = [];
     }
+    
+    // If technologies is not provided at all, set it to empty array
+    if (req.body.technologies === undefined) {
+      req.body.technologies = [];
+    }
 
     // Handle boolean fields (checkboxes)
     // When checkboxes are checked, they send "true" as string
@@ -102,8 +132,10 @@ const validateProject = [
       req.body.isPublic === "true" || req.body.isPublic === true;
 
     // Handle numeric fields
-    if (req.body.order) {
+    if (req.body.order !== undefined && req.body.order !== "") {
       req.body.order = parseInt(req.body.order, 10) || 0;
+    } else if (req.body.order === "") {
+      req.body.order = 0;
     }
     
     console.log("Project validation - Processed body:", req.body);
@@ -126,7 +158,19 @@ const validateProject = [
     .isLength({ max: 2000 })
     .withMessage("Long description cannot exceed 2000 characters"),
   body("technologies")
-    .isArray({ min: 1 })
+    .custom((value) => {
+      // Custom validation for technologies array
+      if (!Array.isArray(value)) {
+        throw new Error("Technologies must be an array");
+      }
+      // Check if all technologies are non-empty strings
+      for (let tech of value) {
+        if (typeof tech !== 'string' || tech.trim().length === 0) {
+          throw new Error("All technologies must be non-empty strings");
+        }
+      }
+      return true;
+    })
     .withMessage("At least one technology is required"),
   body("category")
     .isIn(["web", "mobile", "desktop", "api", "other"])
