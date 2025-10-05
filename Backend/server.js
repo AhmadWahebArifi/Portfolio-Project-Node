@@ -61,7 +61,11 @@ app.use(
 app.use(flash());
 
 // Method override for forms
-app.use(methodOverride("_method"));
+app.use(
+  methodOverride("_method", {
+    methods: ["POST"],
+  })
+);
 
 // Security middleware
 app.use(
