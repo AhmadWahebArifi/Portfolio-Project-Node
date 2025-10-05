@@ -12,12 +12,12 @@ const handleValidationErrors = (req, res, next) => {
         message: "Validation failed",
         errors: errors.array(),
       });
-    } 
+    }
     // For admin panel requests, flash error and redirect back
     else if (req.path.startsWith("/admin/")) {
-      const errorMessages = errors.array().map(err => err.msg);
+      const errorMessages = errors.array().map((err) => err.msg);
       req.flash("error", errorMessages.join(", "));
-      
+
       // Redirect back to the form
       if (req.path.includes("/projects/") && req.method === "PUT") {
         const projectId = req.params.id || req.body.id;
@@ -25,7 +25,11 @@ const handleValidationErrors = (req, res, next) => {
           console.log("Redirecting to edit form for project:", projectId);
           return res.redirect(`/admin/projects/${projectId}/edit`);
         }
-      } else if (req.path.includes("/projects") && req.method === "POST" && !req.path.includes("/edit")) {
+      } else if (
+        req.path.includes("/projects") &&
+        req.method === "POST" &&
+        !req.path.includes("/edit")
+      ) {
         // For new project creation
         console.log("Redirecting back to new project form");
         return res.redirect("/admin/projects/new");
@@ -98,8 +102,6 @@ const validateUserLogin = [
 const validateProject = [
   // Transform and normalize form data before validation
   (req, res, next) => {
-    console.log("Project validation - Raw body:", req.body);
-    
     // Handle technologies field (string to array conversion)
     if (req.body.technologies && typeof req.body.technologies === "string") {
       // Split by comma and trim each technology, filter out empty ones
@@ -112,12 +114,12 @@ const validateProject = [
     if (req.body.technologies && !Array.isArray(req.body.technologies)) {
       req.body.technologies = [];
     }
-    
+
     // Handle case where technologies might be an empty string
     if (req.body.technologies === "") {
       req.body.technologies = [];
     }
-    
+
     // If technologies is not provided at all, set it to empty array
     if (req.body.technologies === undefined) {
       req.body.technologies = [];
@@ -137,8 +139,6 @@ const validateProject = [
     } else if (req.body.order === "") {
       req.body.order = 0;
     }
-    
-    console.log("Project validation - Processed body:", req.body);
 
     next();
   },
@@ -165,7 +165,7 @@ const validateProject = [
       }
       // Check if all technologies are non-empty strings
       for (let tech of value) {
-        if (typeof tech !== 'string' || tech.trim().length === 0) {
+        if (typeof tech !== "string" || tech.trim().length === 0) {
           throw new Error("All technologies must be non-empty strings");
         }
       }
@@ -180,13 +180,6 @@ const validateProject = [
     .optional()
     .isURL()
     .withMessage("Please provide a valid URL"),
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      console.log("Project validation errors:", errors.array());
-    }
-    next();
-  },
   handleValidationErrors,
 ];
 
