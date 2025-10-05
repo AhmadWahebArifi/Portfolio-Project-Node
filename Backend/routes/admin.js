@@ -144,9 +144,14 @@ router.get("/projects/:id", requireAdmin, async (req, res) => {
 
 // Update project
 router.put("/projects/:id", requireAdmin, validateProject, async (req, res) => {
+  console.log("UPDATE PROJECT ROUTE HIT - Request params:", req.params);
+  console.log("UPDATE PROJECT ROUTE HIT - Raw body:", req.body);
+  console.log("UPDATE PROJECT ROUTE HIT - Method:", req.method);
+
   try {
     console.log("UPDATE PROJECT - Request params:", req.params);
     console.log("UPDATE PROJECT - Raw body:", req.body);
+    console.log("UPDATE PROJECT - Method:", req.method);
 
     const project = await Project.findByPk(req.params.id);
     if (!project) {
@@ -653,9 +658,26 @@ router.get("/blog", requireAdmin, async (req, res) => {
   }
 });
 
-// Test route for debugging
-router.get("/test", requireAdmin, (req, res) => {
-  res.send("Admin test route working!");
+// Test form route
+router.get("/test-form", requireAdmin, (req, res) => {
+  res.render("admin/test-form", {
+    title: "Test Form",
+    layout: "admin/layout",
+  });
+});
+
+// Test route for debugging method override
+router.post("/test-method-override", requireAdmin, (req, res) => {
+  console.log("TEST METHOD OVERRIDE - Method:", req.method);
+  console.log("TEST METHOD OVERRIDE - Body:", req.body);
+  console.log("TEST METHOD OVERRIDE - Query:", req.query);
+  res.send(`Method: ${req.method}, Body: ${JSON.stringify(req.body)}`);
+});
+
+router.put("/test-method-override", requireAdmin, (req, res) => {
+  console.log("TEST METHOD OVERRIDE PUT - Method:", req.method);
+  console.log("TEST METHOD OVERRIDE PUT - Body:", req.body);
+  res.send(`Method: ${req.method}, Body: ${JSON.stringify(req.body)}`);
 });
 
 // Test blog form route
