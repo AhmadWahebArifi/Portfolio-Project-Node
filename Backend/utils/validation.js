@@ -11,19 +11,23 @@ const handleValidationErrors = (req, res, next) => {
         message: "Validation failed",
         errors: errors.array(),
       });
-    } 
+    }
     // For admin panel requests, flash error and redirect back
     else if (req.path.startsWith("/admin/")) {
-      const errorMessages = errors.array().map(err => err.msg);
+      const errorMessages = errors.array().map((err) => err.msg);
       req.flash("error", errorMessages.join(", "));
-      
+
       // Redirect back to the form
       if (req.path.includes("/projects/") && req.method === "PUT") {
         const projectId = req.params.id || req.body.id;
         if (projectId) {
           return res.redirect(`/admin/projects/${projectId}/edit`);
         }
-      } else if (req.path.includes("/projects") && req.method === "POST" && !req.path.includes("/edit")) {
+      } else if (
+        req.path.includes("/projects") &&
+        req.method === "POST" &&
+        !req.path.includes("/edit")
+      ) {
         // For new project creation
         return res.redirect("/admin/projects/new");
       }
@@ -106,12 +110,12 @@ const validateProject = [
     if (req.body.technologies && !Array.isArray(req.body.technologies)) {
       req.body.technologies = [];
     }
-    
+
     // Handle case where technologies might be an empty string
     if (req.body.technologies === "") {
       req.body.technologies = [];
     }
-    
+
     // If technologies is not provided at all, set it to empty array
     if (req.body.technologies === undefined) {
       req.body.technologies = [];
@@ -131,7 +135,7 @@ const validateProject = [
     } else if (req.body.order === "") {
       req.body.order = 0;
     }
-    
+
     next();
   },
   body("title")
@@ -149,24 +153,23 @@ const validateProject = [
     .trim()
     .isLength({ max: 2000 })
     .withMessage("Long description cannot exceed 2000 characters"),
-  body("technologies")
-    .custom((value) => {
-      // Custom validation for technologies array
-      if (!Array.isArray(value)) {
-        throw new Error("Technologies must be an array");
+  body("technologies").custom((value) => {
+    // Custom validation for technologies array
+    if (!Array.isArray(value)) {
+      throw new Error("Technologies must be an array");
+    }
+    // Check if all technologies are non-empty strings
+    for (let tech of value) {
+      if (typeof tech !== "string" || tech.trim().length === 0) {
+        throw new Error("All technologies must be non-empty strings");
       }
-      // Check if all technologies are non-empty strings
-      for (let tech of value) {
-        if (typeof tech !== 'string' || tech.trim().length === 0) {
-          throw new Error("All technologies must be non-empty strings");
-        }
-      }
-      // Check if array is not empty
-      if (value.length === 0) {
-        throw new Error("At least one technology is required");
-      }
-      return true;
-    }),
+    }
+    // Check if array is not empty
+    if (value.length === 0) {
+      throw new Error("At least one technology is required");
+    }
+    return true;
+  }),
   body("category")
     .isIn(["web", "mobile", "desktop", "api", "other"])
     .withMessage("Invalid category"),
