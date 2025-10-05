@@ -145,28 +145,13 @@ router.get("/projects/:id", requireAdmin, async (req, res) => {
 // Update project
 router.put("/projects/:id", requireAdmin, validateProject, async (req, res) => {
   try {
-    console.log("UPDATE PROJECT - Request params:", req.params);
-    console.log("UPDATE PROJECT - Raw body:", req.body);
-
     const project = await Project.findByPk(req.params.id);
     if (!project) {
       req.flash("error", "Project not found");
       return res.redirect("/admin/projects");
     }
 
-    console.log("UPDATE PROJECT - Before update:", {
-      id: project.id,
-      featured: project.featured,
-      isPublic: project.isPublic,
-    });
-
     await project.update(req.body);
-
-    console.log("UPDATE PROJECT - After update:", {
-      id: project.id,
-      featured: project.featured,
-      isPublic: project.isPublic,
-    });
 
     req.flash("success", "Project updated successfully!");
     res.redirect("/admin/projects");
