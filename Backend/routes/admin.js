@@ -145,6 +145,9 @@ router.get("/projects/:id", requireAdmin, async (req, res) => {
 // Update project
 router.put("/projects/:id", requireAdmin, validateProject, async (req, res) => {
   try {
+    console.log("UPDATE PROJECT - Request params:", req.params);
+    console.log("UPDATE PROJECT - Raw body:", req.body);
+
     const project = await Project.findByPk(req.params.id);
     if (!project) {
       req.flash("error", "Project not found");
