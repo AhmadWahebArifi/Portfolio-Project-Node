@@ -173,14 +173,8 @@ router.put("/projects/:id", requireAdmin, validateProject, async (req, res) => {
   } catch (error) {
     console.error("Update project error:", error);
     req.flash("error", "Error updating project: " + error.message);
-    // Re-render the form with the project data and errors
-    res.render("admin/projects/form", {
-      title: "Edit Project",
-      layout: "admin/layout",
-      project: { ...req.body, id: req.params.id },
-      action: `/admin/projects/${req.params.id}`,
-      method: "PUT",
-    });
+    // Redirect back to the edit form
+    res.redirect(`/admin/projects/${req.params.id}/edit`);
   }
 });
 
