@@ -61,6 +61,12 @@ app.use(
 app.use(flash());
 
 // Method override for forms
+app.use((req, res, next) => {
+  console.log("Method override check - Original method:", req.method);
+  console.log("Method override check - Body:", req.body);
+  console.log("Method override check - Query:", req.query);
+  next();
+});
 app.use(methodOverride("_method"));
 
 // Security middleware
@@ -130,6 +136,7 @@ app.use((req, res, next) => {
   if (req.path.startsWith("/admin")) {
     console.log("Admin route accessed:", req.path);
     console.log("User session:", req.session.user);
+    console.log("Request method:", req.method);
   }
 
   next();
