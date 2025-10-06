@@ -62,7 +62,7 @@ const skillsData = [
     color: "#4fc08d",
     yearsOfExperience: 2,
   },
-  // {
+  {
     name: "HTML5",
     category: "frontend",
     proficiency: 95,
