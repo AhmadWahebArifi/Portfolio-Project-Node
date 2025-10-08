@@ -9,6 +9,22 @@
       content="Professional portfolio showcasing web development projects and skills"
     />
 
+    <script>
+      // Apply saved theme ASAP to avoid flash
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = saved || (prefersDark ? 'dark' : 'light');
+          if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+          } else {
+            document.documentElement.removeAttribute('data-theme');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Bootstrap CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -63,6 +79,34 @@
         --radius-full: 9999px;
       }
 
+      /* Dark theme overrides */
+      :root[data-theme="dark"] {
+        --primary-color: #0b1220;
+        --secondary-color: #38bdf8;
+        --accent-color: #fb923c;
+        --text-dark: #e5e7eb;
+        --text-light: #94a3b8;
+        --bg-light: #0b1220;
+        --bg-dark: #0b1220;
+        --success: #34d399;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --white: #0f172a;
+        --gray-100: #111827;
+        --gray-200: #1f2937;
+        --gray-300: #374151;
+        --gray-400: #4b5563;
+        --gray-500: #6b7280;
+        --gray-600: #9ca3af;
+        --gray-700: #d1d5db;
+        --gray-800: #e5e7eb;
+        --gray-900: #f3f4f6;
+      }
+
+      /* Base text/link colors */
+      a { color: var(--secondary-color); }
+      a:hover { color: var(--accent-color); }
+
       * {
         margin: 0;
         padding: 0;
@@ -102,6 +146,10 @@
         left: 0;
         right: 0;
         z-index: 1030;
+      }
+
+      :root[data-theme="dark"] .navbar {
+        background: rgba(2, 6, 23, 0.95);
       }
 
       .navbar.scrolled {
@@ -331,7 +379,7 @@
 
       /* Enhanced Skills */
       .skill-item {
-        background: white;
+        background: var(--white);
         padding: 2rem;
         border-radius: var(--radius-lg);
         text-align: center;
@@ -387,6 +435,8 @@
         padding: 3rem 0 1rem;
         margin-top: 5rem;
       }
+
+      :root[data-theme="dark"] .footer { color: var(--gray-600); }
 
       .footer h5,
       .footer h6 {
@@ -995,6 +1045,12 @@
               </a>
             </li>
             <% } %>
+            <li class="nav-item d-flex align-items-center ms-2">
+              <button id="themeToggle" class="btn btn-sm btn-light rounded-pill px-3">
+                <i class="fas fa-moon me-1"></i>
+                <span class="theme-label">Dark</span>
+              </button>
+            </li>
           </ul>
         </div>
       </div>
@@ -1088,6 +1144,18 @@
     <script src="/js/main.js"></script>
 
     <script>
+      // Theme: apply persisted theme early
+      (function () {
+        const saved = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = saved || (prefersDark ? 'dark' : 'light');
+        if (theme === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+      })();
+
       // Navbar scroll effect
       window.addEventListener("scroll", function () {
         const navbar = document.querySelector(".navbar");
@@ -1114,6 +1182,34 @@
       document.addEventListener("DOMContentLoaded", function () {
         const navbarToggler = document.querySelector(".navbar-toggler");
         const navbarCollapse = document.querySelector(".navbar-collapse");
+        const toggleBtn = document.getElementById('themeToggle');
+        const label = toggleBtn ? toggleBtn.querySelector('.theme-label') : null;
+
+        function updateToggleUi() {
+          const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+          if (toggleBtn) {
+            toggleBtn.classList.toggle('btn-light', !isDark);
+            toggleBtn.classList.toggle('btn-warning', isDark);
+            const icon = toggleBtn.querySelector('i');
+            if (icon) icon.className = isDark ? 'fas fa-sun me-1' : 'fas fa-moon me-1';
+            if (label) label.textContent = isDark ? 'Light' : 'Dark';
+          }
+        }
+
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', function () {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+              document.documentElement.removeAttribute('data-theme');
+              localStorage.setItem('theme', 'light');
+            } else {
+              document.documentElement.setAttribute('data-theme', 'dark');
+              localStorage.setItem('theme', 'dark');
+            }
+            updateToggleUi();
+          });
+          updateToggleUi();
+        }
 
         if (navbarToggler && navbarCollapse) {
           document.addEventListener("click", function (event) {
