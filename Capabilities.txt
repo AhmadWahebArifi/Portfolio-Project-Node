@@ -1,0 +1,83 @@
+Project Capabilities
+
+Public Website (EJS views)
+- Home page: featured projects, featured blogs, skills by category
+- Skills page: grouped skills with proficiency, featured skills, stats (avg experience)
+- Projects page: category filter, pagination, project cards; project detail with related projects
+- Blog page: categories, tags, search, pagination; blog detail with safe rendered content
+- Contact page: form submission with validation and flash messages
+- Resume download: serves PDF from public assets
+- UI/UX: responsive Bootstrap 5, enhanced components, animations, back-to-top
+- Theming: light/dark mode with persistent toggle
+
+Admin Panel (EJS views)
+- Dashboard: stats (projects/skills/blogs/contacts), recent items
+- Projects: list, create, edit, delete, view details, toggle featured/visibility
+- Skills: list grouped by category, create, edit, delete, reorder, update proficiency, toggle visibility, bulk create
+- Blog: list with pagination, create (slug generation), edit, delete, publish/draft, tags, SEO keywords
+- Contacts: list with filters, view, update status/priority/notes, delete; auto mark as read
+- Profile: view, edit profile (name/email/avatar upload), change password, session update
+- Auth: admin login/logout via session
+- UI: responsive sidebar/topbar, mobile menu, dark mode toggle
+
+REST API Endpoints (JSON)
+- Auth
+  - POST /api/auth/register: register user
+  - POST /api/auth/login: email/password login, JWT cookie response
+  - GET  /api/auth/me: current user profile (auth)
+  - POST /api/auth/logout: clears auth cookie
+  - PUT  /api/auth/update-profile: update name/email/avatar (auth)
+- Projects
+  - GET    /api/projects: list (filters: category/status/featured, pagination)
+  - GET    /api/projects/featured: featured list
+  - GET    /api/projects/{id}: get one (public-only for non-admin)
+  - POST   /api/projects: create (admin)
+  - PUT    /api/projects/{id}: update (admin)
+  - DELETE /api/projects/{id}: delete (admin)
+  - PUT    /api/projects/reorder: reorder (admin)
+- Skills
+  - GET    /api/skills: list (filters; visible-only for non-admin), grouped data included
+  - GET    /api/skills/categories: grouped by category
+  - GET    /api/skills/{id}: get one (visible-only for non-admin)
+  - POST   /api/skills: create (admin)
+  - PUT    /api/skills/{id}: update (admin)
+  - DELETE /api/skills/{id}: delete (admin)
+  - PUT    /api/skills/reorder: reorder (admin)
+  - POST   /api/skills/bulk: bulk create (admin)
+- Blog
+  - GET    /api/blog: list (filters: category/status/featured/tags/search, pagination)
+  - GET    /api/blog/featured: featured list
+  - GET    /api/blog/{slug}: get one by slug (increments views)
+  - POST   /api/blog: create (admin)
+  - PUT    /api/blog/{id}: update (admin)
+  - DELETE /api/blog/{id}: delete (admin)
+  - POST   /api/blog/{id}/like: like published post
+  - GET    /api/blog/tags: unique published tags
+- Contact
+  - POST   /api/contact: submit contact form (validation)
+  - GET    /api/contact: list (admin, filters + pagination)
+  - GET    /api/contact/{id}: get one (admin; marks read)
+  - PUT    /api/contact/{id}: update status/priority/notes (admin)
+  - DELETE /api/contact/{id}: delete (admin)
+
+Server/Backend
+- Express server with EJS templating and express-ejs-layouts
+- Models: User, Project, Skill, Blog, Contact (Sequelize + some Mongoose-style APIs in APIs)
+- Middleware: auth (protect/authorize/optional), upload (multer for avatar), validation helpers
+- Utilities: email sending (admin notification + auto-reply; conditional on EMAIL_* env), markdown rendering (marked + DOMPurify)
+- Sessions: admin session-based auth for panel; JWT-based auth for API
+- Flash messages for user feedback
+- Caching: simple in-memory caching for skills/projects on public pages
+- Static assets: served from Backend/public (CSS/JS/images/resume)
+
+Front-End Assets
+- Bootstrap 5.3, Font Awesome, Google Fonts
+- Public JS: navbar scroll behavior, back-to-top, mobile collapse handling
+- Theming: data-theme attribute on <html> with localStorage persistence (site + admin)
+
+Deployment/Environment
+- .env-driven optional email; database configured via Backend/config/database.js
+- Seed scripts: seedAdmin, seedAhmadData, seedDatabase (MySQL variant included)
+
+Notes
+- Some API routes use Mongo-style models whereas server-side views use Sequelize; ensure the chosen database layer is correctly configured for runtime.
